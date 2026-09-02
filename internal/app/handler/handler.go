@@ -71,7 +71,7 @@ func (h *Handler) GetGrid(ctx *gin.Context) {
 	}
 
 	ctx.HTML(http.StatusOK, "grid.html", gin.H{
-		"corpora": corporaData, // оставляем ключи шаблона для совместимости с html
+		"corpora": corporaData,
 		"query":   searchQuery,
 	})
 }
@@ -104,7 +104,7 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 	}
 
 	ctx.HTML(http.StatusOK, "feed.html", gin.H{
-		"corpus":     corpus, // Передаем как .corpus вместо .profile
+		"corpus":     corpus,
 		"likesCount": len(corpus.Likes),
 		"isLiked":    isLiked,
 	})
