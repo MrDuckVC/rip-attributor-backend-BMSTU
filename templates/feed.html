@@ -2,17 +2,17 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Attributor - Лента</title>
+    <title>Атрибутор - Лента</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <video autoplay loop muted playsinline class="bg-video">
-        <source src="{{ .profile.VideoURL }}" type="video/mp4">
+        <source src="{{ .corpus.VideoURL }}" type="video/mp4">
         Ваш браузер не поддерживает видео.
     </video>
 
     <header class="header">
-        <a href="/grid" class="logo">Attributor</a>
+        <a href="/grid" class="logo">Атрибутор</a>
     </header>
 
     <div class="side-buttons">
@@ -23,7 +23,7 @@
             <span>{{ .likesCount }}</span>
         </div>
 
-        <a href="/feed/{{ .profile.ID }}?next=true">
+        <a href="/feed/{{ .corpus.ID }}?next=true">
             <div class="down-action-btn" title="Следующий">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16181D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 9l6 6 6-6"/>
@@ -33,17 +33,17 @@
     </div>
 
     <div class="info-card">
-        <h2 class="info-title">{{ .profile.Author }}</h2>
-        <p class="info-subtitle">Стилистический эталон: {{ .profile.Source }}</p>
+        <h2 class="info-title">{{ .corpus.Author }}</h2>
+        <p class="info-subtitle">Стилистический эталон: {{ .corpus.Source }}</p>
 
         <div class="stats-container">
-            <div class="chip">Объем: {{ .profile.WordCount }} слов</div>
-            <div class="chip">Предлогов: {{ .profile.PrepPercent }}%</div>
-            <div class="chip">Местоимений: {{ .profile.PronPercent }}%</div>
-            <div class="chip">Союзов: {{ .profile.ConjPercent }}%</div>
+            <div class="chip">Объем: {{ .corpus.WordCount }} слов</div>
+            <div class="chip">Предлогов: {{ .corpus.PrepPercent }}%</div>
+            <div class="chip">Местоимений: {{ .corpus.PronPercent }}%</div>
+            <div class="chip">Союзов: {{ .corpus.ConjPercent }}%</div>
         </div>
 
-        <p class="info-desc">Данный профиль отражает распределение служебных частей речи в прозе автора. Используется в качестве эталона...</p>
+        <p class="info-desc">Данный корпус отражает распределение служебных частей речи в прозе автора. Используется в качестве эталона для атрибуции...</p>
 
         <div class="btn-sm">Развернуть</div>
     </div>

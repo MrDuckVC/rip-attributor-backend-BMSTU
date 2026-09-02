@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-// TextProfile - структура профиля автора
-type TextProfile struct {
+// AuthorCorpus - структура корпуса текста автора (наша "Услуга")
+type AuthorCorpus struct {
 	ID          int
 	Author      string
 	Source      string
@@ -15,8 +15,8 @@ type TextProfile struct {
 	PrepPercent float64
 	PronPercent float64
 	ConjPercent float64
-	Status      string
-	Likes       []int
+	Status      string // "опубликован", "черновик", "удален"
+	Likes       []int  // Вложенные ID пользователей, поставивших лайк
 }
 
 type Repository struct{}
@@ -35,9 +35,9 @@ func generateLikes(count int, likedByMe bool) []int {
 	return likes
 }
 
-// GetProfiles возвращает нашу мок-коллекцию
-func (r *Repository) GetProfiles() ([]TextProfile, error) {
-	profiles := []TextProfile{
+// GetCorpora возвращает нашу мок-коллекцию корпусов
+func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
+	corpora := []AuthorCorpus{
 		{
 			ID:          1,
 			Author:      "А. С. Пушкин",
@@ -106,27 +106,27 @@ func (r *Repository) GetProfiles() ([]TextProfile, error) {
 		},
 	}
 
-	return profiles, nil
+	return corpora, nil
 }
 
-// GetProfileByID
-func (r *Repository) GetProfileByID(id int) (TextProfile, error) {
-	profiles, _ := r.GetProfiles()
-	for _, p := range profiles {
-		if p.ID == id {
-			return p, nil
+// GetCorpusByID
+func (r *Repository) GetCorpusByID(id int) (AuthorCorpus, error) {
+	corpora, _ := r.GetCorpora()
+	for _, c := range corpora {
+		if c.ID == id {
+			return c, nil
 		}
 	}
-	return TextProfile{}, fmt.Errorf("профиль не найден")
+	return AuthorCorpus{}, fmt.Errorf("корпус не найден")
 }
 
-// GetProfilesByWordCount
-func (r *Repository) GetProfilesByWordCount(minWords int) ([]TextProfile, error) {
-	profiles, _ := r.GetProfiles()
-	var result []TextProfile
-	for _, p := range profiles {
-		if p.Status == "опубликован" && p.WordCount >= minWords {
-			result = append(result, p)
+// GetCorporaByWordCount
+func (r *Repository) GetCorporaByWordCount(minWords int) ([]AuthorCorpus, error) {
+	corpora, _ := r.GetCorpora()
+	var result []AuthorCorpus
+	for _, c := range corpora {
+		if c.Status == "опубликован" && c.WordCount >= minWords {
+			result = append(result, c)
 		}
 	}
 	return result, nil

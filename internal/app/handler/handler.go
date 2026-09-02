@@ -24,16 +24,16 @@ const currentUserID = 1
 
 // Плитка (Grid)
 func (h *Handler) GetGrid(ctx *gin.Context) {
-	var profiles []repository.TextProfile
+	var corpora []repository.AuthorCorpus
 	var err error
 
 	searchQuery := ctx.Query("query")
 
 	if searchQuery == "" {
-		allProfiles, _ := h.Repository.GetProfiles()
-		for _, p := range allProfiles {
-			if p.Status == "опубликован" {
-				profiles = append(profiles, p)
+		allCorpora, _ := h.Repository.GetCorpora()
+		for _, c := range allCorpora {
+			if c.Status == "опубликован" {
+				corpora = append(corpora, c)
 			}
 		}
 	} else {
@@ -41,36 +41,37 @@ func (h *Handler) GetGrid(ctx *gin.Context) {
 		if errParse != nil {
 			logrus.Warn("Некорректный запрос поиска: ", searchQuery)
 		} else {
-			profiles, err = h.Repository.GetProfilesByWordCount(minWords)
+			corpora, err = h.Repository.GetCorporaByWordCount(minWords)
 			if err != nil {
 				logrus.Error(err)
 			}
 		}
 	}
 
-	var profilesData []gin.H
-	for _, p := range profiles {
+	var corporaData []gin.H
+	for _, c := range corpora {
 		isLiked := false
-		for _, userID := range p.Likes {
+		for _, userID := range c.Likes {
 			if userID == currentUserID {
 				isLiked = true
 				break
 			}
 		}
 
-		profilesData = append(profilesData, gin.H{
-			"ID":         p.ID,
-			"Author":     p.Author,
-			"Source":     p.Source,
-			"ImageURL":   p.ImageURL,
-			"WordCount":  p.WordCount,
-			"LikesCount": len(p.Likes),
-			"IsLiked":    isLiked,
+		corporaData = append(corporaData, gin.H{
+			"ID":          c.ID,
+			"Author":      c.Author,
+			"Source":      c.Source,
+			"ImageURL":    c.ImageURL,
+			"WordCount":   c.WordCount,
+			"PrepPercent": c.PrepPercent,
+			"LikesCount":  len(c.Likes),
+			"IsLiked":     isLiked,
 		})
 	}
 
 	ctx.HTML(http.StatusOK, "grid.html", gin.H{
-		"profiles": profilesData,
+		"profiles": corporaData, // оставляем ключи шаблона для совместимости с html
 		"query":    searchQuery,
 	})
 }
@@ -89,13 +90,13 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 		id = id + 1
 	}
 
-	profile, err := h.Repository.GetProfileByID(id)
+	corpus, err := h.Repository.GetCorpusByID(id)
 	if err != nil {
-		profile, _ = h.Repository.GetProfileByID(1)
+		corpus, _ = h.Repository.GetCorpusByID(1)
 	}
 
 	isLiked := false
-	for _, userID := range profile.Likes {
+	for _, userID := range corpus.Likes {
 		if userID == currentUserID {
 			isLiked = true
 			break
@@ -103,20 +104,20 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 	}
 
 	ctx.HTML(http.StatusOK, "feed.html", gin.H{
-		"profile":    profile,
-		"likesCount": len(profile.Likes),
+		"corpus":     corpus, // Передаем как .corpus вместо .profile
+		"likesCount": len(corpus.Likes),
 		"isLiked":    isLiked,
 	})
 }
 
 // Добавление (Draft)
 func (h *Handler) GetDraft(ctx *gin.Context) {
-	allProfiles, _ := h.Repository.GetProfiles()
-	var draft repository.TextProfile
+	allCorpora, _ := h.Repository.GetCorpora()
+	var draft repository.AuthorCorpus
 
-	for _, p := range allProfiles {
-		if p.Status == "черновик" {
-			draft = p
+	for _, c := range allCorpora {
+		if c.Status == "черновик" {
+			draft = c
 			break
 		}
 	}
