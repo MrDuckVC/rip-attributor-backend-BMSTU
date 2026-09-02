@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* ================== 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ================== */
+:root {
+    /* Цвета */
+    --bg-main: #F5F6F8;
+    --accent-blue: #316DE0;
+    --text-primary: #16181D;
+    --text-secondary: #5B6270;
+    --text-muted: #5C626F;
+
+    /* Фоны для эффекта стекла */
+    --glass-light: rgba(255, 255, 255, 0.6);
+    --glass-base: rgba(255, 255, 255, 0.72);
+    --glass-heavy: rgba(255, 255, 255, 0.85);
+
+    /* Границы и тени */
+    --border-glass: rgba(255, 255, 255, 0.6);
+    --border-input: rgba(0, 0, 0, 0.12);
+    --shadow-main: 0px 0px 32px 8px rgba(22, 24, 29, 0.07);
+    --shadow-sm: 0px 0px 20px 4px rgba(22, 24, 29, 0.05);
+
+    /* Скругления и размытие */
+    --radius-card: 20px;
+    --radius-input: 11px;
+    --radius-pill: 980px;
+    --blur-main: blur(10px);
+
+    /* Слои */
+    --z-content: 10;
+    --z-floating: 20;
+    --z-nav: 100;
+}
+
+/* ================== 2. БАЗОВЫЕ НАСТРОЙКИ ================== */
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'JetBrains Mono', monospace; text-decoration: none;
+}
+
+html {
+    background-color: #d1d5db; display: flex; justify-content: center;
+    align-items: center; min-height: 100vh;
+}
+
+body {
+    width: 412px; height: 917px; position: relative;
+    background: var(--bg-main); color: var(--text-primary);
+    overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); border-radius: 24px;
+}
+
+.content { position: absolute; top: 0; left: 0; width: 412px; height: 917px; }
+.scrollable { padding: 0 !important; overflow-y: auto; }
+
+/* ================== 3. ОБЩИЕ UI-КОМПОНЕНТЫ ================== */
+
+/* --- Стеклянные карточки (Поиск, Авторы, Формы добавления) --- */
+.search-container, .author-card, .form-glass-card {
+    background: var(--glass-base);
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-main);
+    backdrop-filter: var(--blur-main);
+    -webkit-backdrop-filter: var(--blur-main);
+    border-radius: var(--radius-card);
+    z-index: var(--z-content);
+}
+
+/* --- Инпуты (Поле поиска, Поля добавления) --- */
+.search-input-box, .form-input {
+    background: var(--glass-heavy);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-input);
+    color: var(--text-primary);
+    outline: none;
+}
+
+/* --- Синие кнопки (Развернуть, Фильтр, Опубликовать) --- */
+.btn-sm, .btn-filter, .btn-publish {
+    background: var(--accent-blue);
+    color: #FFFFFF;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-pill);
+}
+
+/* --- Прозрачные кнопки с обводкой (Черновик) --- */
+.btn-draft {
+    background: var(--glass-light);
+    border: 1px solid var(--border-input);
+    color: var(--text-primary);
+    border-radius: var(--radius-pill);
+}
+
+/* --- Строго круглая кнопка Лайк (40x40, центрирование элементов) --- */
+.like-action-btn {
+    width: 40px;
+    height: 40px;
+    background: var(--glass-light);
+    border: 1px solid var(--border-input);
+    color: var(--text-primary);
+    border-radius: 980px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* --- Состояние "Лайк поставлен" (.liked) --- */
+.like-action-btn.liked, .author-likes.liked {
+    background: var(--accent-blue);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+}
+
+/* --- Строго круглая кнопка Вниз (40x40 со стеклом и центрированием иконки) --- */
+.down-action-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 980px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Аккуратная маленькая стрелочка по центру кнопки вниз */
+.down-action-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: #16181D;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* --- Чипсы (теги) и счетчики (Лайки на Плитке) --- */
+.chip, .author-likes {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--glass-light); border: 1px solid var(--border-input);
+    border-radius: var(--radius-pill); color: var(--text-primary);
+}
+
+/* Умные SVG-иконки для лайков */
+.like-action-btn svg, .author-likes svg {
+    fill: currentColor;
+    transition: fill 0.2s ease;
+}
+
+/* ================== 4. НАВИГАЦИЯ (ХЕДЕР И ФУТЕР) ================== */
+.header, .navbar {
+    position: absolute; width: 412px; left: 0;
+    background: var(--glass-heavy); z-index: var(--z-nav);
+}
+
+/* Хедер */
+.header { height: 60px; top: 0; display: flex; align-items: center; padding-left: 16px; }
+.header.transparent { background: transparent; }
+.logo { font-weight: 700; font-size: 16px; color: var(--accent-blue); }
+
+/* Футер */
+.navbar { height: 70px; top: 847px; border-top: 1px solid var(--border-input); display: flex; justify-content: center; align-items: center; }
+.nav-item {
+    position: absolute; height: 36px; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; color: var(--text-secondary); border-radius: var(--radius-pill); transition: none;
+}
+.nav-item:nth-child(1) { width: 56px; left: 66px; top: 17px; }
+.nav-item:nth-child(2) { width: 64px; left: 174px; top: 17px; }
+.nav-item:nth-child(3) { width: 78px; left: 279px; top: 17px; }
+.nav-item.active { background: var(--accent-blue); font-weight: 700; color: #FFFFFF; }
+
+
+/* ================== 5. СТРАНИЦА: ЛЕНТА (FEED) ================== */
+.bg-video { position: absolute; width: 412px; height: 917px; left: 0; top: 0; object-fit: cover; z-index: 1; }
+
+.side-buttons { position: absolute; right: 16px; top: 443px; display: flex; flex-direction: column; gap: 11px; z-index: var(--z-floating); }
+
+.info-card {
+    position: absolute; width: 382px; left: 15px; bottom: 85px; padding: 15px;
+    background: var(--glass-base); border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-sm); backdrop-filter: blur(7.5px); border-radius: 18px;
+    z-index: var(--z-content); display: flex; flex-direction: column; gap: 10px;
+}
+.info-title { font-weight: 700; font-size: 20px; }
+.info-subtitle { font-weight: 500; font-size: 14px; color: var(--accent-blue); }
+.info-desc { font-weight: 500; font-size: 12px; line-height: 16px; }
+.stats-container { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 6px 12px; font-weight: 500; font-size: 11px; white-space: nowrap; }
+.btn-sm { width: 70px; height: 23px; font-size: 10px; padding: 5px; }
+
+
+/* ================== 6. СТРАНИЦА: ПЛИТКА (GRID) ================== */
+.search-container { position: absolute; width: 380px; height: 276px; left: 16px; top: 82px; padding: 16px; }
+.search-title { font-weight: 500; font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; }
+.search-input-box { width: 100%; height: 158px; padding: 12px; margin-bottom: 16px; }
+.btn-filter { width: 113px; height: 38px; font-size: 14px; }
+
+.authors-grid-container {
+    position: absolute; width: 412px; top: 375px; left: 0; padding: 0 16px 100px 16px;
+    display: flex; flex-wrap: wrap; gap: 16px;
+}
+.author-card { position: relative; width: 182px; height: 227px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
+.author-img { width: 162px; height: 105px; object-fit: cover; border-radius: 18px; position: relative; }
+.author-likes { position: absolute; top: 15px; right: 15px; padding: 2px 6px; gap: 4px; font-weight: 700; font-size: 11px; }
+.author-name { font-weight: 700; font-size: 14px; margin-top: 4px; }
+.author-source { font-weight: 500; font-size: 11px; color: var(--text-secondary); }
+.author-volume { font-weight: 500; font-size: 11px; color: var(--accent-blue); }
+
+
+/* ================== 7. СТРАНИЦА: ДОБАВЛЕНИЕ (ADD) ================== */
+.page-heading { position: absolute; width: 110px; left: 24px; top: 82px; font-weight: 700; font-size: 14px; }
+
+.form-glass-card { position: absolute; width: 380px; left: 16px; }
+.card-author-info { height: 160px; top: 122px; }
+.card-media-info { height: 160px; top: 304px; }
+.card-stats-info { height: 202px; top: 486px; }
+
+.form-label { position: absolute; font-weight: 500; font-size: 14px; color: var(--text-muted); }
+.form-input { position: absolute; padding: 10px; font-weight: 500; font-size: 14px; color: #757575; }
+
+.btn-publish { position: absolute; width: 137px; height: 56px; left: 45px; top: 710px; font-size: 14px; z-index: var(--z-floating); }
+.btn-draft { position: absolute; width: 139px; height: 58px; left: 229px; top: 710px; font-weight: 500; font-size: 14px; z-index: var(--z-floating); }

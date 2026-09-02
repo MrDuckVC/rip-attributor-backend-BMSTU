@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Attributor - Плитка</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="header">
+        <a href="/grid" class="logo">Attributor</a>
+    </header>
+
+    <main class="content grid-page">
+        <div class="search-container">
+            <p class="search-title">Объём текста (кол-во слов)</p>
+            <form action="/grid" method="GET">
+                <textarea name="query" class="search-input-box" placeholder="Ввод...">{{ .query }}</textarea>
+                <button type="submit" class="btn-filter">Фильтровать</button>
+            </form>
+        </div>
+
+        <div class="authors-grid-container">
+            {{ range .profiles }}
+            <a href="/feed/{{ .ID }}" class="author-card">
+                <div style="position: relative;">
+                    <img src="{{ .ImageURL }}" alt="{{ .Author }}" class="author-img">
+                    <div class="author-likes {{ if .IsLiked }}liked{{ end }}">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <span>{{ .LikesCount }}</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="author-name">{{ .Author }}</h3>
+                    <p class="author-source">{{ .Source }}</p>
+                    <p class="author-volume">Объём: {{ .WordCount }} слов</p>
+                </div>
+            </a>
+            {{ end }}
+        </div>
+    </main>
+
+    <nav class="navbar">
+        <a href="/feed/1" class="nav-item">Лента</a>
+        <a href="/grid" class="nav-item active">Плитка</a>
+        <a href="/add" class="nav-item">Добавить</a>
+    </nav>
+</body>
+</html>
