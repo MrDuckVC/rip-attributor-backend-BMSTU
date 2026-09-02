@@ -71,8 +71,8 @@ func (h *Handler) GetGrid(ctx *gin.Context) {
 	}
 
 	ctx.HTML(http.StatusOK, "grid.html", gin.H{
-		"profiles": corporaData, // оставляем ключи шаблона для совместимости с html
-		"query":    searchQuery,
+		"corpora": corporaData, // оставляем ключи шаблона для совместимости с html
+		"query":   searchQuery,
 	})
 }
 
