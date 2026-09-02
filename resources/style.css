@@ -160,7 +160,6 @@ body {
 
 /* Хедер */
 .header { height: 60px; top: 0; display: flex; align-items: center; padding-left: 16px; }
-.header.transparent { background: transparent; }
 .logo { font-weight: 700; font-size: 16px; color: var(--accent-blue); }
 
 /* Футер */
@@ -213,15 +212,94 @@ body {
 
 
 /* ================== 7. СТРАНИЦА: ДОБАВЛЕНИЕ (ADD) ================== */
-.page-heading { position: absolute; width: 110px; left: 24px; top: 82px; font-weight: 700; font-size: 14px; }
+.add-page {
+    position: relative;
+    padding: 0 !important;
+    height: 917px;
+    overflow-y: auto;
+}
 
-.form-glass-card { position: absolute; width: 380px; left: 16px; }
+/* Заголовок "Новый профиль" */
+.page-heading {
+    position: absolute;
+    width: 110px;
+    height: 18px;
+    left: 24px;
+    top: 82px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* Карточки-контейнеры формы */
+.form-glass-card {
+    position: absolute;
+    width: 380px;
+    left: 16px;
+}
 .card-author-info { height: 160px; top: 122px; }
 .card-media-info { height: 160px; top: 304px; }
 .card-stats-info { height: 202px; top: 486px; }
 
-.form-label { position: absolute; font-weight: 500; font-size: 14px; color: var(--text-muted); }
-.form-input { position: absolute; padding: 10px; font-weight: 500; font-size: 14px; color: #757575; }
+/* Общие стили лейблов и инпутов внутри формы */
+.form-label {
+    position: absolute;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--text-muted);
+}
+.form-input {
+    position: absolute;
+    box-sizing: border-box;
+    padding: 10px;
+    font-weight: 500;
+    font-size: 14px;
+}
 
-.btn-publish { position: absolute; width: 137px; height: 56px; left: 45px; top: 710px; font-size: 14px; z-index: var(--z-floating); }
-.btn-draft { position: absolute; width: 139px; height: 58px; left: 229px; top: 710px; font-weight: 500; font-size: 14px; z-index: var(--z-floating); }
+/* Позиционирование элементов в Карточке 1 (Автор и Источник) */
+.label-author { left: 10px; top: 10px; }
+.input-author { width: 360px; height: 40px; left: 10px; top: 35px; }
+
+.label-source { left: 10px; top: 85px; }
+.input-source { width: 360px; height: 40px; left: 10px; top: 110px; }
+
+/* Позиционирование элементов в Карточке 2 (Медиафайлы) */
+.label-img { left: 10px; top: 10px; }
+.input-img { width: 360px; height: 40px; left: 10px; top: 35px; padding: 6px !important; }
+
+.label-video { left: 10px; top: 85px; }
+.input-video { width: 360px; height: 40px; left: 10px; top: 110px; padding: 6px !important; }
+
+/* Позиционирование элементов в Карточке 3 (Статистика 2x2) */
+.label-words { left: 10px; top: 10px; width: 175px; }
+.input-words { width: 175px; height: 40px; left: 10px; top: 56px; }
+
+.label-prep { left: 195px; top: 10px; width: 175px; }
+.input-prep { width: 175px; height: 40px; left: 195px; top: 56px; }
+
+.label-pron { left: 10px; top: 106px; width: 175px; }
+.input-pron { width: 175px; height: 40px; left: 10px; top: 152px; }
+
+.label-conj { left: 195px; top: 106px; width: 175px; }
+.input-conj { width: 175px; height: 40px; left: 195px; top: 152px; }
+
+/* Кнопки в нижней части */
+.btn-publish {
+    position: absolute;
+    width: 137px;
+    height: 56px;
+    left: 45px;
+    top: 710px;
+    font-size: 14px;
+    z-index: var(--z-floating);
+}
+.btn-draft {
+    position: absolute;
+    width: 139px;
+    height: 58px;
+    left: 229px;
+    top: 710px;
+    font-weight: 500;
+    font-size: 14px;
+    z-index: var(--z-floating);
+}

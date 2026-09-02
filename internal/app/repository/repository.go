@@ -93,13 +93,13 @@ func (r *Repository) GetProfiles() ([]TextProfile, error) {
 		// Пустой черновик
 		{
 			ID:          5,
-			Author:      "",
-			Source:      "",
+			Author:      "Черновик",
+			Source:      "Блокнот",
 			ImageURL:    "",
 			VideoURL:    "",
-			WordCount:   0,
-			PrepPercent: 0,
-			PronPercent: 0,
+			WordCount:   8,
+			PrepPercent: 99,
+			PronPercent: 1,
 			ConjPercent: 0,
 			Status:      "черновик",
 			Likes:       []int{},

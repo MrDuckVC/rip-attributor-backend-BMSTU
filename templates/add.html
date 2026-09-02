@@ -14,33 +14,33 @@
         <h2 class="page-heading">Новый профиль</h2>
 
         <div class="form-glass-card card-author-info">
-            <label class="form-label" style="left: 10px; top: 10px;">Имя автора</label>
-            <input type="text" class="form-input" style="width: 360px; height: 40px; left: 10px; top: 35px;" value="{{ .draft.Author }}" placeholder="Введите имя...">
+            <label class="form-label label-author">Имя автора</label>
+            <input type="text" class="form-input input-author" value="{{ .draft.Author }}" placeholder="Введите имя...">
 
-            <label class="form-label" style="left: 10px; top: 85px;">Источник / Произведение</label>
-            <input type="text" class="form-input" style="width: 360px; height: 40px; left: 10px; top: 110px;" value="{{ .draft.Source }}" placeholder="Укажите источник...">
+            <label class="form-label label-source">Источник / Произведение</label>
+            <input type="text" class="form-input input-source" value="{{ .draft.Source }}" placeholder="Укажите источник...">
         </div>
 
         <div class="form-glass-card card-media-info">
-            <label class="form-label" style="left: 10px; top: 10px;">Ссылка на изображение</label>
-            <input type="text" class="form-input" style="width: 360px; height: 40px; left: 10px; top: 35px;" value="{{ .draft.ImageURL }}" placeholder="http://...">
+            <label class="form-label label-img">Файл изображения</label>
+            <input type="file" class="form-input input-img" accept="image/*">
 
-            <label class="form-label" style="left: 10px; top: 85px;">Ссылка на фоновое видео</label>
-            <input type="text" class="form-input" style="width: 360px; height: 40px; left: 10px; top: 110px;" value="{{ .draft.VideoURL }}" placeholder="http://...">
+            <label class="form-label label-video">Файл фонового видео</label>
+            <input type="file" class="form-input input-video" accept="video/mp4">
         </div>
 
         <div class="form-glass-card card-stats-info">
-            <label class="form-label" style="left: 10px; top: 10px; width: 175px;">Объем текста в словах</label>
-            <input type="number" class="form-input" style="width: 175px; height: 40px; left: 10px; top: 56px;" value="{{ .draft.WordCount }}" placeholder="1-10000000">
+            <label class="form-label label-words">Объем текста в словах</label>
+            <input type="number" class="form-input input-words" value="{{ .draft.WordCount }}" placeholder="1-10000000">
 
-            <label class="form-label" style="left: 195px; top: 10px; width: 175px;">Частотность предлогов (%)</label>
-            <input type="number" step="0.01" class="form-input" style="width: 175px; height: 40px; left: 195px; top: 56px;" value="{{ .draft.PrepPercent }}" placeholder="0-100">
+            <label class="form-label label-prep">Частотность предлогов (%)</label>
+            <input type="number" step="0.01" class="form-input input-prep" value="{{ .draft.PrepPercent }}" placeholder="0-100">
 
-            <label class="form-label" style="left: 10px; top: 106px; width: 175px;">Частотность местоимений (%)</label>
-            <input type="number" step="0.01" class="form-input" style="width: 175px; height: 40px; left: 10px; top: 152px;" value="{{ .draft.PronPercent }}" placeholder="0-100">
+            <label class="form-label label-pron">Частотность местоимений (%)</label>
+            <input type="number" step="0.01" class="form-input input-pron" value="{{ .draft.PronPercent }}" placeholder="0-100">
 
-            <label class="form-label" style="left: 195px; top: 106px; width: 175px;">Частотность союзов (%)</label>
-            <input type="number" step="0.01" class="form-input" style="width: 175px; height: 40px; left: 195px; top: 152px;" value="{{ .draft.ConjPercent }}" placeholder="0-100">
+            <label class="form-label label-conj">Частотность союзов (%)</label>
+            <input type="number" step="0.01" class="form-input input-conj" value="{{ .draft.ConjPercent }}" placeholder="0-100">
         </div>
 
         <button type="button" class="btn-publish">Опубликовать профиль</button>
