@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// AuthorCorpus - структура корпуса текста автора (наша "Услуга")
+// AuthorCorpus - структура корпуса текста
 type AuthorCorpus struct {
 	ID          int
 	Author      string
@@ -25,16 +25,6 @@ func NewRepository() (*Repository, error) {
 	return &Repository{}, nil
 }
 
-func generateLikes(count int, likedByMe bool) []int {
-	likes := make([]int, count)
-	if likedByMe && count > 0 {
-		likes[0] = 1
-	} else if count > 0 {
-		likes[0] = 999
-	}
-	return likes
-}
-
 // GetCorpora возвращает нашу мок-коллекцию корпусов
 func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
 	corpora := []AuthorCorpus{
@@ -49,7 +39,7 @@ func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
 			PronPercent: 10.15,
 			ConjPercent: 5.13,
 			Status:      "опубликован",
-			Likes:       generateLikes(141, true),
+			Likes:       []int{1, 45, 76, 12, 89, 104, 233, 41},
 		},
 		{
 			ID:          2,
@@ -62,7 +52,7 @@ func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
 			PronPercent: 11.20,
 			ConjPercent: 6.05,
 			Status:      "опубликован",
-			Likes:       generateLikes(115, false),
+			Likes:       []int{44, 2, 99, 105, 77},
 		},
 		{
 			ID:          3,
@@ -75,7 +65,7 @@ func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
 			PronPercent: 10.50,
 			ConjPercent: 5.80,
 			Status:      "опубликован",
-			Likes:       generateLikes(64, true),
+			Likes:       []int{1, 5, 8, 13},
 		},
 		{
 			ID:          4,
@@ -88,7 +78,7 @@ func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
 			PronPercent: 10.80,
 			ConjPercent: 6.20,
 			Status:      "опубликован",
-			Likes:       generateLikes(82, false),
+			Likes:       []int{22, 33, 44, 55, 66, 77, 88},
 		},
 		// Пустой черновик
 		{

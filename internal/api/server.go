@@ -18,13 +18,17 @@ func StartServer() {
 	r.LoadHTMLGlob("templates/*")
 	r.Static("/static", "./resources")
 
-	r.GET("/grid", h.GetGrid)
-	r.GET("/feed/:id", h.GetFeed)
-	r.GET("/add", h.GetDraft)
+	// Группа маршрутов /corpora
+	corporaGroup := r.Group("/corpora")
+	{
+		corporaGroup.GET("/grid", h.GetGrid) // Плитка: /corpora/grid
+		corporaGroup.GET("/add", h.GetDraft) // Добавление: /corpora/add
+		corporaGroup.GET("/:id", h.GetFeed)  // Лента: /corpora/1
+	}
 
 	// Редирект на стартовую страницу
 	r.GET("/", func(c *gin.Context) {
-		c.Redirect(302, "/grid")
+		c.Redirect(302, "/corpora/grid")
 	})
 
 	log.Println("Server is running on :8080")

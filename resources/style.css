@@ -2,225 +2,391 @@
 
 /* ================== 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ================== */
 :root {
-    /* Цвета */
-    --bg-main: #F5F6F8;
-    --accent-blue: #316DE0;
-    --text-primary: #16181D;
-    --text-secondary: #5B6270;
-    --text-muted: #5C626F;
-
-    /* Фоны для эффекта стекла */
-    --glass-light: rgba(255, 255, 255, 0.6);
-    --glass-base: rgba(255, 255, 255, 0.72);
-    --glass-heavy: rgba(255, 255, 255, 0.85);
-
-    /* Границы и тени */
-    --border-glass: rgba(255, 255, 255, 0.6);
-    --border-input: rgba(0, 0, 0, 0.12);
-    --shadow-main: 0px 0px 32px 8px rgba(22, 24, 29, 0.07);
-    --shadow-sm: 0px 0px 20px 4px rgba(22, 24, 29, 0.05);
-
-    /* Скругления и размытие */
-    --radius-card: 20px;
-    --radius-input: 11px;
-    --radius-pill: 980px;
-    --blur-main: blur(10px);
-
-    /* Слои */
-    --z-content: 10;
-    --z-floating: 20;
-    --z-nav: 100;
+    --color-blue: #316DE0;                   /* Синий 100% */
+    --color-black: #000000;                  /* Чёрный 100% */
+    --color-white: #FFFFFF;                  /* Белый 100% */
+    --color-bg-white: rgba(255, 255, 255, 0.8); /* Белый фон 80% (панели) */
+    --color-border: rgba(0, 0, 0, 0.12);     /* Чёрные грани 12% */
+    --color-gray: #5B6270;                   /* Серый 100% */
+    --color-dark-gray: #16181D;              /* Тёмносерый 100% */
 }
 
-/* ================== 2. БАЗОВЫЕ НАСТРОЙКИ ================== */
+/* ================== 2. БАЗОВЫЕ НАСТРОЙКИ (Rectangle 3) ================== */
 * {
-    margin: 0; padding: 0; box-sizing: border-box;
-    font-family: 'JetBrains Mono', monospace; text-decoration: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'JetBrains Mono', monospace;
+    text-decoration: none;
 }
 
 html {
-    background-color: #d1d5db; display: flex; justify-content: center;
-    align-items: center; min-height: 100vh;
+    background-color: #E8EDF2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 body {
-    width: 412px; height: 917px; position: relative;
-    background: var(--bg-main); color: var(--text-primary);
-    overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); border-radius: 24px;
+    position: relative;
+    width: 412px;
+    height: 917px;
+    background: #F4F7FA;
+    color: var(--color-dark-gray);
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
-.content { position: absolute; top: 0; left: 0; width: 412px; height: 917px; }
-.scrollable { padding: 0 !important; overflow-y: auto; }
+/* ================== 3. НАВИГАЦИЯ (ХЕДЕР И ФУТЕР) ================== */
 
-/* ================== 3. ОБЩИЕ UI-КОМПОНЕНТЫ ================== */
+/* Header */
+.header {
+    position: absolute;
+    width: 412px;
+    height: 60px;
+    left: 0px;
+    top: 0px;
+    background: var(--color-bg-white);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 100;
 
-/* --- Стеклянные карточки (Поиск, Авторы, Формы добавления) --- */
-.search-container, .author-card, .form-glass-card {
-    background: var(--glass-base);
-    border: 1px solid var(--border-glass);
-    box-shadow: var(--shadow-main);
-    backdrop-filter: var(--blur-main);
-    -webkit-backdrop-filter: var(--blur-main);
-    border-radius: var(--radius-card);
-    z-index: var(--z-content);
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
 }
 
-/* --- Инпуты (Поле поиска, Поля добавления) --- */
-.search-input-box, .form-input {
-    background: var(--glass-heavy);
-    border: 1px solid var(--border-input);
-    border-radius: var(--radius-input);
-    color: var(--text-primary);
-    outline: none;
-}
-
-/* --- Синие кнопки (Развернуть, Фильтр, Опубликовать) --- */
-.btn-sm, .btn-filter, .btn-publish {
-    background: var(--accent-blue);
-    color: #FFFFFF;
+.logo {
     font-weight: 700;
-    border: none;
-    border-radius: var(--radius-pill);
+    font-size: 16px;
+    color: var(--color-blue);
 }
 
-/* --- Прозрачные кнопки с обводкой (Черновик) --- */
-.btn-draft {
-    background: var(--glass-light);
-    border: 1px solid var(--border-input);
-    color: var(--text-primary);
-    border-radius: var(--radius-pill);
+/* Navigation (Футер) */
+.navbar {
+    position: absolute;
+    width: 412px;
+    height: 70px;
+    left: 0px;
+    top: 847px;
+    background: var(--color-bg-white);
+    border-top: 1px solid var(--color-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 100;
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
-/* --- Строго круглая кнопка Лайк (40x40, центрирование элементов) --- */
-.like-action-btn {
-    width: 40px;
-    height: 40px;
-    background: var(--glass-light);
-    border: 1px solid var(--border-input);
-    color: var(--text-primary);
+/* Кнопки в футере */
+.nav-item {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--color-gray);
+    padding: 8px 20px;
     border-radius: 980px;
+    transition: all 0.2s ease;
+}
+
+/* Активная кнопка в футере */
+.nav-item.active {
+    background: var(--color-blue);
+    color: var(--color-white);
+    font-weight: 700;
+}
+
+/* ================== 4. СТРАНИЦА: ЛЕНТА (FEED) ================== */
+
+.bg-video {
+    position: absolute;
+    width: 412px;
+    height: 917px;
+    left: 0;
+    top: 0;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* --- БОКОВАЯ ПАНЕЛЬ С КНОПКАМИ И ПАРАМЕТРАМИ --- */
+.feed-sidebar {
+    position: absolute;
+    right: 10px;
+    bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    z-index: 20;
+}
+
+.sidebar-item {
+    width: 44px;
+    height: 56px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    justify-content: space-between;
 }
 
-/* --- Состояние "Лайк поставлен" (.liked) --- */
-.like-action-btn.liked, .author-likes.liked {
-    background: var(--accent-blue);
-    color: #FFFFFF;
-    border: none;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
-}
-
-/* --- Строго круглая кнопка Вниз (40x40 со стеклом и центрированием иконки) --- */
-.down-action-btn {
+.circle-btn {
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 980px;
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    border-radius: 980px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    color: var(--color-dark-gray);
+    transition: all 0.2s ease;
+}
+
+/* Если кнопка активна (например, лайк поставлен) */
+.circle-btn.active {
+    background: var(--color-blue);
+    color: var(--color-white);
+    border: none;
+}
+
+/* Блок текста или иконки внутри кружка 30x30 */
+.inner-icon, .inner-text {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner-text {
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Текст цифр под кружками */
+.sidebar-text {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-white);
+    text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
+    line-height: 1;
+}
+
+/* --- ИНФОРМАЦИОННОЕ ОКНО --- */
+.feed-info {
+    position: absolute;
+    left: 10px;
+    bottom: 80px;
+    right: 64px;
+    min-height: 75px;
+    padding: 10px;
+
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 20;
+}
+
+/* Название в Ленте (Автор, Источник) */
+.feed-info-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-blue);
+    margin-bottom: 5px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* Описание корпуса */
+.feed-info-desc {
+    font-size: 12px;
+    color: var(--color-gray);
+    line-height: 1.3;
+    max-height: 2.6em;
+    overflow: hidden;
+    margin: 0;
     cursor: pointer;
 }
 
-/* Аккуратная маленькая стрелочка по центру кнопки вниз */
-.down-action-btn svg {
-    width: 14px;
-    height: 14px;
-    stroke: #16181D;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+/* Кнопка "Еще" */
+.feed-info-more {
+    font-weight: 700;
+    color: var(--color-dark-gray);
 }
 
-/* --- Чипсы (теги) и счетчики (Лайки на Плитке) --- */
-.chip, .author-likes {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: var(--glass-light); border: 1px solid var(--border-input);
-    border-radius: var(--radius-pill); color: var(--text-primary);
+
+/* ================== 5. СТРАНИЦА: ПЛИТКА (GRID) ================== */
+
+/* --- Блок поиска --- */
+.search-container {
+    position: absolute;
+    width: 380px;
+    height: 90px;
+    left: 17px;
+    top: 82px;
+
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    gap: 15px;
+    z-index: 50;
 }
 
-/* Умные SVG-иконки для лайков */
-.like-action-btn svg, .author-likes svg {
-    fill: currentColor;
-    transition: fill 0.2s ease;
+.slider-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-/* ================== 4. НАВИГАЦИЯ (ХЕДЕР И ФУТЕР) ================== */
-.header, .navbar {
-    position: absolute; width: 412px; left: 0;
-    background: var(--glass-heavy); z-index: var(--z-nav);
+.slider-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-gray);
+    margin-bottom: 2px;
 }
 
-/* Хедер */
-.header { height: 60px; top: 0; display: flex; align-items: center; padding-left: 16px; }
-.logo { font-weight: 700; font-size: 16px; color: var(--accent-blue); }
-
-/* Футер */
-.navbar { height: 70px; top: 847px; border-top: 1px solid var(--border-input); display: flex; justify-content: center; align-items: center; }
-.nav-item {
-    position: absolute; height: 36px; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 500; color: var(--text-secondary); border-radius: var(--radius-pill); transition: none;
+.slider-current {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-gray);
+    margin-bottom: 4px;
 }
-.nav-item:nth-child(1) { width: 56px; left: 66px; top: 17px; }
-.nav-item:nth-child(2) { width: 64px; left: 174px; top: 17px; }
-.nav-item:nth-child(3) { width: 78px; left: 279px; top: 17px; }
-.nav-item.active { background: var(--accent-blue); font-weight: 700; color: #FFFFFF; }
 
-
-/* ================== 5. СТРАНИЦА: ЛЕНТА (FEED) ================== */
-.bg-video { position: absolute; width: 412px; height: 917px; left: 0; top: 0; object-fit: cover; z-index: 1; }
-
-.side-buttons { position: absolute; right: 16px; top: 443px; display: flex; flex-direction: column; gap: 11px; z-index: var(--z-floating); }
-
-.info-card {
-    position: absolute; width: 382px; left: 15px; bottom: 85px; padding: 15px;
-    background: var(--glass-base); border: 1px solid var(--border-glass);
-    box-shadow: var(--shadow-sm); backdrop-filter: blur(7.5px); border-radius: 18px;
-    z-index: var(--z-content); display: flex; flex-direction: column; gap: 10px;
+.range-slider {
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--color-blue);
 }
-.info-title { font-weight: 700; font-size: 20px; }
-.info-subtitle { font-weight: 500; font-size: 14px; color: var(--accent-blue); }
-.info-desc { font-weight: 500; font-size: 12px; line-height: 16px; }
-.stats-container { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { padding: 6px 12px; font-weight: 500; font-size: 11px; white-space: nowrap; }
-.btn-sm { width: 70px; height: 23px; font-size: 10px; padding: 5px; }
 
+.slider-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-gray);
+    margin-top: 4px;
+}
 
-/* ================== 6. СТРАНИЦА: ПЛИТКА (GRID) ================== */
-.search-container { position: absolute; width: 380px; height: 276px; left: 16px; top: 82px; padding: 16px; }
-.search-title { font-weight: 500; font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; }
-.search-input-box { width: 100%; height: 158px; padding: 12px; margin-bottom: 16px; }
-.btn-filter { width: 113px; height: 38px; font-size: 14px; }
+.btn-search {
+    width: 48px;
+    height: 48px;
+    border-radius: 980px;
+    background: var(--color-blue);
+    color: var(--color-white);
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
 
+/* --- Карточки авторов (Сетка) --- */
 .authors-grid-container {
-    position: absolute; width: 412px; top: 375px; left: 0; padding: 0 16px 100px 16px;
-    display: flex; flex-wrap: wrap; gap: 16px;
+    position: absolute;
+    width: 380px;
+    left: 17px;
+    top: 187px;
+
+    display: grid;
+    grid-template-columns: 182px 182px;
+    gap: 15px 16px;
+    padding-bottom: 90px;
 }
-.author-card { position: relative; width: 182px; height: 227px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
-.author-img { width: 162px; height: 105px; object-fit: cover; border-radius: 18px; position: relative; }
-.author-likes { position: absolute; top: 15px; right: 15px; padding: 2px 6px; gap: 4px; font-weight: 700; font-size: 11px; }
-.author-name { font-weight: 700; font-size: 14px; margin-top: 4px; }
-.author-source { font-weight: 500; font-size: 11px; color: var(--text-secondary); }
-.author-volume { font-weight: 500; font-size: 11px; color: var(--accent-blue); }
 
-
-/* ================== 7. СТРАНИЦА: ДОБАВЛЕНИЕ (ADD) ================== */
-.add-page {
+.author-card {
     position: relative;
-    padding: 0 !important;
-    height: 917px;
-    overflow-y: auto;
+    width: 182px;
+    height: 191px;
+    padding: 5px;
+
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
 }
 
-/* Заголовок "Новый профиль" */
-.page-heading {
+.card-img {
+    width: 170px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 6px;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-dark-gray);
+    padding: 0 4px;
+    margin-top: 4px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* Кол-во слов слева снизу */
+.card-words {
+    position: absolute;
+    left: 9px;
+    bottom: 9px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-blue);
+}
+
+/* Кол-во лайков справа снизу */
+.card-likes {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-gray);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    padding: 4px 8px;
+    border-radius: 980px;
+}
+
+
+/* ================== СТРАНИЦА: ДОБАВЛЕНИЕ (ADD) ================== */
+/* Заголовок */
+.add-title {
     position: absolute;
     width: 110px;
     height: 18px;
@@ -228,78 +394,102 @@ body {
     top: 82px;
     font-weight: 700;
     font-size: 14px;
+    color: var(--color-dark-gray);
+    display: flex;
+    align-items: center;
 }
 
-/* Карточки-контейнеры формы */
-.form-glass-card {
+/* Фоны блоков */
+.form-card {
+    box-sizing: border-box;
     position: absolute;
     width: 380px;
+    height: 160px;
     left: 16px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0px 0px 32px 8px rgba(22, 24, 29, 0.07);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
 }
-.card-author-info { height: 160px; top: 122px; }
-.card-media-info { height: 160px; top: 304px; }
-.card-stats-info { height: 202px; top: 486px; }
+.card-top { top: 122px; }
+.card-bottom { top: 304px; }
 
-/* Общие стили лейблов и инпутов внутри формы */
+/* Подписи полей */
 .form-label {
     position: absolute;
+    width: 360px;
+    height: 15px;
+    left: 10px;
     font-weight: 500;
     font-size: 14px;
-    line-height: 18px;
-    color: var(--text-muted);
+    color: var(--color-gray);
+    display: flex;
+    align-items: center;
 }
-.form-input {
-    position: absolute;
+
+/* Рамки полей */
+.form-field {
     box-sizing: border-box;
-    padding: 10px;
-    font-weight: 500;
-    font-size: 14px;
+    position: absolute;
+    width: 360px;
+    height: 40px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 11px;
+    background: var(--color-white);
 }
 
-/* Позиционирование элементов в Карточке 1 (Автор и Источник) */
-.label-author { left: 10px; top: 10px; }
-.input-author { width: 360px; height: 40px; left: 10px; top: 35px; }
+/* Внутренний инпут */
+.form-input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--color-dark-gray);
+}
+.form-input::placeholder {
+    color: #757575;
+}
 
-.label-source { left: 10px; top: 85px; }
-.input-source { width: 360px; height: 40px; left: 10px; top: 110px; }
+/* Файлы */
+.file-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+.file-placeholder {
+    font-weight: 500;
+    font-size: 14px;
+    color: #757575;
+    z-index: 1;
+}
 
-/* Позиционирование элементов в Карточке 2 (Медиафайлы) */
-.label-img { left: 10px; top: 10px; }
-.input-img { width: 360px; height: 40px; left: 10px; top: 35px; padding: 6px !important; }
-
-.label-video { left: 10px; top: 85px; }
-.input-video { width: 360px; height: 40px; left: 10px; top: 110px; padding: 6px !important; }
-
-/* Позиционирование элементов в Карточке 3 (Статистика 2x2) */
-.label-words { left: 10px; top: 10px; width: 175px; }
-.input-words { width: 175px; height: 40px; left: 10px; top: 56px; }
-
-.label-prep { left: 195px; top: 10px; width: 175px; }
-.input-prep { width: 175px; height: 40px; left: 195px; top: 56px; }
-
-.label-pron { left: 10px; top: 106px; width: 175px; }
-.input-pron { width: 175px; height: 40px; left: 10px; top: 152px; }
-
-.label-conj { left: 195px; top: 106px; width: 175px; }
-.input-conj { width: 175px; height: 40px; left: 195px; top: 152px; }
-
-/* Кнопки в нижней части */
-.btn-publish {
+/* Кнопка */
+.btn-submit {
     position: absolute;
     width: 137px;
-    height: 56px;
-    left: 45px;
-    top: 710px;
+    height: 38px;
+    left: 137px;
+    top: 486px;
+    background: var(--color-blue);
+    border-radius: 980px;
+    border: none;
+    font-weight: 700;
     font-size: 14px;
-    z-index: var(--z-floating);
-}
-.btn-draft {
-    position: absolute;
-    width: 139px;
-    height: 58px;
-    left: 229px;
-    top: 710px;
-    font-weight: 500;
-    font-size: 14px;
-    z-index: var(--z-floating);
+    color: var(--color-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
