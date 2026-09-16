@@ -27,7 +27,7 @@ func New(dsn string) (*Repository, error) {
 
 func (r *Repository) GetCorpora() ([]ds.Corpus, error) {
 	var corpora []ds.Corpus
-	err := r.db.Preload("Likes").Where("is_delete = false").Find(&corpora).Error
+	err := r.db.Preload("Likes").Where("status = ? AND is_delete = false", "опубликован").Find(&corpora).Error
 	if err != nil {
 		return nil, err
 	}
