@@ -7,7 +7,7 @@
 </head>
 <body>
     <video autoplay loop muted playsinline class="bg-video">
-        <source src="{{ .corpus.VideoURL }}" type="video/mp4">
+        <source src="{{ .videoURL }}" type="video/mp4">
     </video>
 
     <header class="header">
@@ -18,7 +18,7 @@
         <h2 class="feed-info-title">{{ .corpus.Author }}, {{ .corpus.Source }}</h2>
 
         <p class="feed-info-desc">
-            Этот корпус отражает распределение служебных частей речи и используется... <span class="feed-info-more">ещё</span>
+            {{ .corpus.Description }}<span class="feed-info-more">ещё</span>
         </p>
     </div>
 

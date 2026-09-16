@@ -11,42 +11,68 @@
     </header>
 
     <main class="add-page">
-        <form action="/corpora/add" method="POST" enctype="multipart/form-data">
+        {{ if .isDraftExists }}
+        <form action="/corpora/publish" method="POST">
+            <input type="hidden" name="draft_id" value="{{ .draft.ID }}">
+            <h1 class="add-title">Публикация услуги: {{ .draft.Author }}</h1>
 
-            <input type="hidden" name="word_count" value="0">
-            <input type="hidden" name="prep_percent" value="0">
+            <div class="form-card card-top" style="height: 320px;">
+                <label class="form-label label-1">Количество слов</label>
+                <div class="form-field field-1">
+                    <input type="number"min="0"name="word_count" class="form-input" required>
+                </div>
 
-        <h1 class="add-title">Новый профиль</h1>
+                <label class="form-label label-2">% Предлогов</label>
+                <div class="form-field field-2">
+                    <input type="number"min="0"step="0.01" name="prep_percent" class="form-input" required>
+                </div>
 
-        <div class="form-card card-top">
-            <label class="form-label" style="top: 10px;">Имя автора</label>
-            <div class="form-field" style="top: 35px;">
-                <input type="text" name="author" class="form-input" placeholder="Введите имя..." required>
+                <label class="form-label label-3">% Местоимений</label>
+                <div class="form-field field-3">
+                    <input type="number"min="0"step="0.01" name="pron_percent" class="form-input" required>
+                </div>
+
+                <label class="form-label" style="top: 235px;">Описание</label>
+                <div class="form-field" style="top: 260px;">
+                    <input type="text" name="description" class="form-input" placeholder="Введите краткое описание..." required>
+                </div>
             </div>
 
-            <label class="form-label" style="top: 85px;">Источник / Произведение</label>
-            <div class="form-field" style="top: 110px;">
-                <input type="text" name="source" class="form-input" placeholder="Укажите источник..." required>
-            </div>
-        </div>
-
-        <div class="form-card card-bottom">
-            <label class="form-label" style="top: 10px;">Изображение</label>
-            <div class="form-field" style="top: 35px;">
-                <input type="file" name="image" accept="image/*" class="file-overlay" required>
-                <span class="file-placeholder">Файл изображения</span>
-            </div>
-
-            <label class="form-label" style="top: 85px;">Видео</label>
-            <div class="form-field" style="top: 110px;">
-                <input type="file" name="video" accept="video/*" class="file-overlay" required>
-                <span class="file-placeholder">Файл видео</span>
-            </div>
-        </div>
-
-        <button type="submit" class="btn-submit">Далее</button>
-
+            <button type="submit" class="btn-submit" style="top: 560px;">Опубликовать</button>
         </form>
+        {{ else }}
+        <form action="/corpora/add" method="POST" enctype="multipart/form-data">
+            <h1 class="add-title">Новый профиль</h1>
+
+            <div class="form-card card-top">
+                <label class="form-label label-1">Имя автора</label>
+                <div class="form-field field-1">
+                    <input type="text" name="author" class="form-input" placeholder="Введите имя..." required>
+                </div>
+
+                <label class="form-label label-2">Источник / Произведение</label>
+                <div class="form-field field-2">
+                    <input type="text" name="source" class="form-input" placeholder="Укажите источник..." required>
+                </div>
+            </div>
+
+            <div class="form-card card-bottom">
+                <label class="form-label label-1">Изображение</label>
+                <div class="form-field field-1">
+                    <input type="file" name="image" accept="image/*" class="file-overlay">
+                    <span class="file-placeholder">Файл изображения</span>
+                </div>
+
+                <label class="form-label label-2">Видео</label>
+                <div class="form-field field-2">
+                    <input type="file" name="video" accept="video/*" class="file-overlay">
+                    <span class="file-placeholder">Файл видео</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Далее</button>
+        </form>
+        {{ end }}
     </main>
 
     <nav class="navbar">

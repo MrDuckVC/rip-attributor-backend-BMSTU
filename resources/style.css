@@ -2,16 +2,16 @@
 
 /* ================== 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ================== */
 :root {
-    --color-blue: #316DE0;                   /* Синий 100% */
-    --color-black: #000000;                  /* Чёрный 100% */
-    --color-white: #FFFFFF;                  /* Белый 100% */
-    --color-bg-white: rgba(255, 255, 255, 0.8); /* Белый фон 80% (панели) */
-    --color-border: rgba(0, 0, 0, 0.12);     /* Чёрные грани 12% */
-    --color-gray: #5B6270;                   /* Серый 100% */
-    --color-dark-gray: #16181D;              /* Тёмносерый 100% */
+    --color-blue: #316DE0;
+    --color-black: #000000;
+    --color-white: #FFFFFF;
+    --color-bg-white: rgba(255, 255, 255, 0.8);
+    --color-border: rgba(0, 0, 0, 0.12);
+    --color-gray: #5B6270;
+    --color-dark-gray: #16181D;
 }
 
-/* ================== 2. БАЗОВЫЕ НАСТРОЙКИ (Rectangle 3) ================== */
+/* ================== 2. БАЗОВЫЕ НАСТРОЙКИ ================== */
 * {
     margin: 0;
     padding: 0;
@@ -38,9 +38,7 @@ body {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
-/* ================== 3. НАВИГАЦИЯ (ХЕДЕР И ФУТЕР) ================== */
-
-/* Header */
+/* ================== 3. НАВИГАЦИЯ ================== */
 .header {
     position: absolute;
     width: 412px;
@@ -52,7 +50,6 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 100;
-
     display: flex;
     align-items: center;
     padding-left: 24px;
@@ -64,7 +61,6 @@ body {
     color: var(--color-blue);
 }
 
-/* Navigation (Футер) */
 .navbar {
     position: absolute;
     width: 412px;
@@ -76,13 +72,11 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 100;
-
     display: flex;
     justify-content: space-evenly;
     align-items: center;
 }
 
-/* Кнопки в футере */
 .nav-item {
     font-weight: 500;
     font-size: 14px;
@@ -92,15 +86,13 @@ body {
     transition: all 0.2s ease;
 }
 
-/* Активная кнопка в футере */
 .nav-item.active {
     background: var(--color-blue);
     color: var(--color-white);
     font-weight: 700;
 }
 
-/* ================== 4. СТРАНИЦА: ЛЕНТА (FEED) ================== */
-
+/* ================== 4. ЛЕНТА ================== */
 .bg-video {
     position: absolute;
     width: 412px;
@@ -111,7 +103,6 @@ body {
     z-index: 1;
 }
 
-/* --- БОКОВАЯ ПАНЕЛЬ С КНОПКАМИ И ПАРАМЕТРАМИ --- */
 .feed-sidebar {
     position: absolute;
     right: 10px;
@@ -147,14 +138,12 @@ body {
     transition: all 0.2s ease;
 }
 
-/* Если кнопка активна (например, лайк поставлен) */
 .circle-btn.active {
     background: var(--color-blue);
     color: var(--color-white);
     border: none;
 }
 
-/* Блок текста или иконки внутри кружка 30x30 */
 .inner-icon, .inner-text {
     width: 30px;
     height: 30px;
@@ -169,7 +158,6 @@ body {
     text-align: center;
 }
 
-/* Текст цифр под кружками */
 .sidebar-text {
     font-size: 11px;
     font-weight: 700;
@@ -178,7 +166,6 @@ body {
     line-height: 1;
 }
 
-/* --- ИНФОРМАЦИОННОЕ ОКНО --- */
 .feed-info {
     position: absolute;
     left: 10px;
@@ -196,7 +183,6 @@ body {
     z-index: 20;
 }
 
-/* Название в Ленте (Автор, Источник) */
 .feed-info-title {
     font-size: 14px;
     font-weight: 700;
@@ -211,7 +197,6 @@ body {
     line-height: 1.2;
 }
 
-/* Описание корпуса */
 .feed-info-desc {
     font-size: 12px;
     color: var(--color-gray);
@@ -220,32 +205,32 @@ body {
     overflow: hidden;
     margin: 0;
     cursor: pointer;
+    position: relative;
 }
 
-/* Кнопка "Еще" */
 .feed-info-more {
+    position: absolute;
+    right: 0;
+    bottom: 0;
     font-weight: 700;
     color: var(--color-dark-gray);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), var(--color-bg-white) 40%);
+    padding-left: 15px;
 }
 
-
-/* ================== 5. СТРАНИЦА: ПЛИТКА (GRID) ================== */
-
-/* --- Блок поиска --- */
+/* ================== 5. ПЛИТКА ================== */
 .search-container {
     position: absolute;
     width: 380px;
     height: 90px;
     left: 17px;
     top: 82px;
-
     background: var(--color-bg-white);
     border: 1px solid var(--color-border);
     border-radius: 20px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -305,17 +290,20 @@ body {
     flex-shrink: 0;
 }
 
-/* --- Карточки авторов (Сетка) --- */
 .authors-grid-container {
     position: absolute;
     width: 380px;
     left: 17px;
     top: 187px;
-
     display: grid;
     grid-template-columns: 182px 182px;
     gap: 15px 16px;
     padding-bottom: 90px;
+}
+
+.author-card-wrapper {
+    position: relative;
+    display: block;
 }
 
 .author-card {
@@ -323,7 +311,6 @@ body {
     width: 182px;
     height: 191px;
     padding: 5px;
-
     background: var(--color-bg-white);
     border: 1px solid var(--color-border);
     border-radius: 16px;
@@ -346,7 +333,6 @@ body {
     color: var(--color-dark-gray);
     padding: 0 4px;
     margin-top: 4px;
-
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -355,17 +341,17 @@ body {
     line-height: 1.2;
 }
 
-/* Кол-во слов слева снизу */
+/* Кол-во слов слева снизу (смещаем правее, чтобы не перекрывать кнопку удаления) */
 .card-words {
     position: absolute;
-    left: 9px;
+    left: 42px;
     bottom: 9px;
     font-size: 10px;
     font-weight: 700;
     color: var(--color-blue);
 }
 
-/* Кол-во лайков справа снизу */
+/* Лайки в правом нижнем углу */
 .card-likes {
     position: absolute;
     right: 5px;
@@ -376,16 +362,37 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
-
     background: var(--color-bg-white);
     border: 1px solid var(--color-border);
     padding: 4px 8px;
     border-radius: 980px;
 }
 
+/* Форма удаления с корзиной (внизу) */
+.card-delete-form {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    z-index: 10;
+}
 
-/* ================== СТРАНИЦА: ДОБАВЛЕНИЕ (ADD) ================== */
-/* Заголовок */
+.btn-delete {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.btn-delete:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+/* ================== 6. ДОБАВЛЕНИЕ (ADD) ================== */
 .add-title {
     position: absolute;
     width: 110px;
@@ -399,7 +406,6 @@ body {
     align-items: center;
 }
 
-/* Фоны блоков */
 .form-card {
     box-sizing: border-box;
     position: absolute;
@@ -415,8 +421,8 @@ body {
 }
 .card-top { top: 122px; }
 .card-bottom { top: 304px; }
+.card-publish { height: 250px; } /* Для формы публикации */
 
-/* Подписи полей */
 .form-label {
     position: absolute;
     width: 360px;
@@ -429,7 +435,6 @@ body {
     align-items: center;
 }
 
-/* Рамки полей */
 .form-field {
     box-sizing: border-box;
     position: absolute;
@@ -444,7 +449,14 @@ body {
     background: var(--color-white);
 }
 
-/* Внутренний инпут */
+/* Позиционирование элементов внутри блока формы */
+.label-1 { top: 10px; }
+.field-1 { top: 35px; }
+.label-2 { top: 85px; }
+.field-2 { top: 110px; }
+.label-3 { top: 160px; }
+.field-3 { top: 185px; }
+
 .form-input {
     width: 100%;
     height: 100%;
@@ -459,7 +471,6 @@ body {
     color: #757575;
 }
 
-/* Файлы */
 .file-overlay {
     position: absolute;
     top: 0; left: 0;
@@ -475,7 +486,6 @@ body {
     z-index: 1;
 }
 
-/* Кнопка */
 .btn-submit {
     position: absolute;
     width: 137px;
