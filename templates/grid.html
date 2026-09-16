@@ -34,7 +34,7 @@
             <div class="author-card-wrapper">
 
                 <a href="/corpora/{{ .ID }}" class="author-card">
-                    <img src="{{ if .ImageURL }}{{ .ImageURL }}{{ else }}/static/defaultIcon.png{{ end }}" alt="{{ .Author }}" class="card-img">
+                    <img src="{{ if .ImageURL }}{{ .ImageURL }}{{ else }}http://localhost:9000/attributor-media/puskin.png{{ end }}" alt="{{ .Author }}" class="card-img">
 
                     <h3 class="card-title">{{ .Author }}, {{ .Source }}</h3>
 

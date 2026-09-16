@@ -84,7 +84,7 @@ func (h *Handler) GetGrid(ctx *gin.Context) {
 			}
 		}
 
-		imageURL := "http://localhost:9000/attributor-media/puskin.png"
+		imageURL := ""
 		if c.ImageURL != nil && *c.ImageURL != "" {
 			imageURL = *c.ImageURL
 		}
@@ -111,21 +111,44 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		ctx.String(http.StatusBadRequest, "Invalid ID")
+		ctx.String(http.StatusBadRequest, "Неверный ID")
 		return
 	}
 
-	isNext := ctx.Query("next")
-	if isNext == "true" {
-		id = id + 1
+	isNext := ctx.Query("next") == "true"
+
+	corpora, err := h.Repository.GetCorpora()
+	if err != nil || len(corpora) == 0 {
+		ctx.String(http.StatusNotFound, "Корпуса не найдены")
+		return
 	}
 
-	corpus, err := h.Repository.GetCorpusByID(id)
-	if err != nil || corpus == nil {
-		corpus, _ = h.Repository.GetCorpusByID(1)
+	currentIndex := -1
+	for i, c := range corpora {
+		if int(c.ID) == id {
+			currentIndex = i
+			break
+		}
 	}
 
-	videoURL := "http://localhost:9000/attributor-media/puskin.mp4"
+	var corpus *ds.Corpus
+
+	if isNext {
+		if currentIndex != -1 {
+			nextIndex := (currentIndex + 1) % len(corpora)
+			corpus = &corpora[nextIndex]
+		} else {
+			corpus = &corpora[0]
+		}
+	} else {
+		if currentIndex == -1 {
+			ctx.String(http.StatusNotFound, "Услуга не найдена или была удалена")
+			return
+		}
+		corpus = &corpora[currentIndex]
+	}
+
+	videoURL := ""
 	if corpus.VideoURL != nil && *corpus.VideoURL != "" {
 		videoURL = *corpus.VideoURL
 	}

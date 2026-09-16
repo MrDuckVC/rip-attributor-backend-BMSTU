@@ -395,15 +395,16 @@ body {
 /* ================== 6. ДОБАВЛЕНИЕ (ADD) ================== */
 .add-title {
     position: absolute;
-    width: 110px;
-    height: 18px;
-    left: 24px;
-    top: 82px;
+    width: 380px;
+    height: auto;
+    left: 16px;
+    top: 75px;
     font-weight: 700;
     font-size: 14px;
     color: var(--color-dark-gray);
     display: flex;
     align-items: center;
+    word-break: break-word;
 }
 
 .form-card {
@@ -421,7 +422,18 @@ body {
 }
 .card-top { top: 122px; }
 .card-bottom { top: 304px; }
-.card-publish { height: 250px; } /* Для формы публикации */
+.card-publish { height: 320px !important; }
+.label-desc {
+    top: 235px !important;
+}
+
+.field-desc {
+    top: 260px !important;
+}
+
+.btn-submit-publish {
+    top: 560px !important;
+}
 
 .form-label {
     position: absolute;

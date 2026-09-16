@@ -16,29 +16,29 @@
             <input type="hidden" name="draft_id" value="{{ .draft.ID }}">
             <h1 class="add-title">Публикация услуги: {{ .draft.Author }}</h1>
 
-            <div class="form-card card-top" style="height: 320px;">
+            <div class="form-card card-top card-publish">
                 <label class="form-label label-1">Количество слов</label>
                 <div class="form-field field-1">
-                    <input type="number"min="0"name="word_count" class="form-input" required>
+                    <input type="number" min="0" name="word_count" class="form-input" required>
                 </div>
 
                 <label class="form-label label-2">% Предлогов</label>
                 <div class="form-field field-2">
-                    <input type="number"min="0"step="0.01" name="prep_percent" class="form-input" required>
+                    <input type="number" min="0" max="100" step="0.01" name="prep_percent" class="form-input" required>
                 </div>
 
                 <label class="form-label label-3">% Местоимений</label>
                 <div class="form-field field-3">
-                    <input type="number"min="0"step="0.01" name="pron_percent" class="form-input" required>
+                    <input type="number" min="0" max="100" step="0.01" name="pron_percent" class="form-input" required>
                 </div>
 
-                <label class="form-label" style="top: 235px;">Описание</label>
-                <div class="form-field" style="top: 260px;">
+                <label class="form-label label-desc">Описание</label>
+                <div class="form-field field-desc">
                     <input type="text" name="description" class="form-input" placeholder="Введите краткое описание..." required>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit" style="top: 560px;">Опубликовать</button>
+            <button type="submit" class="btn-submit btn-submit-publish">Опубликовать</button>
         </form>
         {{ else }}
         <form action="/corpora/add" method="POST" enctype="multipart/form-data">
