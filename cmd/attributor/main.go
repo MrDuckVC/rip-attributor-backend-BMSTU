@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -27,7 +29,11 @@ func main() {
 	}
 
 	hand := handler.NewHandler(rep)
-	hand.RegisterStatic(router)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := rep.EnsureBucket(ctx); err != nil {
+		logrus.Fatalf("error initializing MinIO bucket: %v", err)
+	}
 	hand.RegisterHandler(router)
 
 	serverAddress := fmt.Sprintf("%s:%d", conf.ServiceHost, conf.ServicePort)

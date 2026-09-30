@@ -1,107 +1,84 @@
 package repository
 
 import (
-	"attributor/internal/app/ds"
+	"context"
 	"errors"
-	"time"
+	"os"
+	"strconv"
+	"strings"
 
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+var (
+	ErrConflict  = errors.New("conflicting state")
+	ErrForbidden = errors.New("another user's corpus")
+)
+
 type Repository struct {
-	db *gorm.DB
+	db     *gorm.DB
+	minio  *minio.Client
+	bucket string
 }
 
 func New(dsn string) (*Repository, error) {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
 	if err != nil {
 		return nil, err
 	}
-
-	return &Repository{
-		db: db,
-	}, nil
-}
-
-func (r *Repository) GetCorpora(page, pageSize int) ([]ds.Corpus, int64, error) {
-	var corpora []ds.Corpus
-	var count int64
-	query := r.db.Model(&ds.Corpus{}).Where("status = ? AND is_delete = false", "опубликован")
-	if err := query.Count(&count).Error; err != nil {
-		return nil, 0, err
+	endpoint := os.Getenv("MINIO_ENDPOINT")
+	if endpoint == "" {
+		endpoint = "localhost:9000"
 	}
-	err := query.Preload("Likes").Order("id ASC").Limit(pageSize).Offset((page - 1) * pageSize).Find(&corpora).Error
+	secure := false
+	if value := os.Getenv("MINIO_USE_SSL"); value != "" {
+		secure, err = strconv.ParseBool(value)
+		if err != nil {
+			return nil, err
+		}
+	}
+	client, err := minio.New(endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(os.Getenv("MINIO_ROOT_USER"), os.Getenv("MINIO_ROOT_PASSWORD"), ""),
+		Secure: secure,
+	})
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	return corpora, count, nil
+	bucket := os.Getenv("MINIO_BUCKET_NAME")
+	if bucket == "" {
+		bucket = "corpora"
+	}
+	return &Repository{db: db, minio: client, bucket: bucket}, nil
 }
 
-func (r *Repository) GetCorporaByWordCount(minWords, page, pageSize int) ([]ds.Corpus, int64, error) {
-	var corpora []ds.Corpus
-	var count int64
-	query := r.db.Model(&ds.Corpus{}).Where("status = ? AND is_delete = false AND word_count >= ?", "опубликован", minWords)
-	if err := query.Count(&count).Error; err != nil {
-		return nil, 0, err
-	}
-	err := query.Preload("Likes").Order("id ASC").Limit(pageSize).Offset((page - 1) * pageSize).Find(&corpora).Error
+func (r *Repository) EnsureBucket(ctx context.Context) error {
+	exists, err := r.minio.BucketExists(ctx, r.bucket)
 	if err != nil {
-		return nil, 0, err
+		return err
 	}
-	return corpora, count, nil
-}
-
-func (r *Repository) ToggleLike(userID, corpusID uint) error {
-	var like ds.Like
-	result := r.db.Where("user_id = ? AND corpus_id = ?", userID, corpusID).First(&like)
-
-	if result.Error == nil {
-		return r.db.Delete(&like).Error
+	if exists {
+		return nil
 	}
-
-	newLike := ds.Like{UserID: userID, CorpusID: corpusID}
-	return r.db.Create(&newLike).Error
-}
-
-func (r *Repository) GetCorpusByID(id int) (*ds.Corpus, error) {
-	corpus := &ds.Corpus{}
-	err := r.db.Preload("Likes").Where("id = ? AND status = ? AND is_delete = false", id, "опубликован").First(corpus).Error
-	return corpus, err
-}
-
-func (r *Repository) GetNextCorpus(id int) (*ds.Corpus, error) {
-	corpus := &ds.Corpus{}
-	err := r.db.Preload("Likes").Where("id > ? AND status = ? AND is_delete = false", id, "опубликован").Order("id ASC").First(corpus).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		err = r.db.Preload("Likes").Where("status = ? AND is_delete = false", "опубликован").Order("id ASC").First(corpus).Error
+	if err = r.minio.MakeBucket(ctx, r.bucket, minio.MakeBucketOptions{}); err != nil {
+		// Another server may have created the bucket concurrently.
+		if exists, checkErr := r.minio.BucketExists(ctx, r.bucket); checkErr == nil && exists {
+			return nil
+		}
+		return err
 	}
-	return corpus, err
+	return nil
 }
 
-func (r *Repository) GetDraft(userID uint) (*ds.Corpus, error) {
-	draft := &ds.Corpus{}
-	err := r.db.Where("creator_id = ? AND status = ? AND is_delete = false", userID, "черновик").First(draft).Error
-	return draft, err
+func normalizeError(err error) error {
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
+		return ErrConflict
+	}
+	return err
 }
 
-func (r *Repository) CreateDraft(corpus *ds.Corpus) error {
-	corpus.Status = "черновик"
-	corpus.DateCreate = time.Now()
-	return r.db.Create(corpus).Error
-}
-
-func (r *Repository) PublishCorpus(id int, wordCount int, pron float64) error {
-	now := time.Now()
-	return r.db.Model(&ds.Corpus{}).Where("id = ?", id).Updates(map[string]interface{}{
-		"status":       "опубликован",
-		"word_count":   wordCount,
-		"pron_percent": pron,
-		"date_finish":  &now,
-	}).Error
-}
-
-func (r *Repository) DeleteCorpus(id int) error {
-	query := "UPDATE corpora SET is_delete = true, status = 'удален' WHERE id = ?"
-	return r.db.Exec(query, id).Error
+func isLegacyURL(value string) bool {
+	return strings.HasPrefix(value, "http://") || strings.HasPrefix(value, "https://")
 }

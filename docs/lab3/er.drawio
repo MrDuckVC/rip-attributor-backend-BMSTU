@@ -1,0 +1,274 @@
+<mxfile host="Electron">
+  <diagram id="lab3-er" name="ER — исправления преподавателя">
+    <mxGraphModel dx="2203" dy="1489" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1620" pageHeight="1200" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=32;fontStyle=1;" value="ER-диаграмма — корпусы текстов" vertex="1">
+          <mxGeometry height="45" width="1450" x="100" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;fontStyle=0;" value="Исправленная структура по замечаниям преподавателя" vertex="1">
+          <mxGeometry height="35" width="1450" x="100" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="users" parent="1" style="group;fillColor=none;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="190" width="650" x="160" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="users_header" parent="users" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;fontFamily=DejaVu Sans;fontSize=24;fontStyle=1;align=center;verticalAlign=middle;" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;users&lt;/span&gt;" vertex="1">
+          <mxGeometry height="46" width="650" as="geometry" />
+        </mxCell>
+        <mxCell id="users_flag_column" parent="users" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="144" width="70" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="users_id_flag" parent="users_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="PK" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="users_login_flag" parent="users_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="U" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="users_password_flag" parent="users_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="users_is_moderator_flag" parent="users_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="users_name_column" parent="users" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="144" width="300" x="70" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="users_id_name" parent="users_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="id" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="users_login_name" parent="users_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="login" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="users_password_name" parent="users_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="password" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="users_is_moderator_name" parent="users_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="is_moderator" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="users_type_column" parent="users" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="144" width="280" x="370" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="users_id_type" parent="users_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="integer" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="users_login_type" parent="users_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="varchar(25)" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="users_password_type" parent="users_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="varchar(100)" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="users_is_moderator_type" parent="users_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="boolean" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora" parent="1" style="group;fillColor=none;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="478" width="650" x="160" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_header" parent="corpora" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;fontFamily=DejaVu Sans;fontSize=24;fontStyle=1;align=center;verticalAlign=middle;" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;corpora&lt;/span&gt;" vertex="1">
+          <mxGeometry height="46" width="650" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_flag_column" parent="corpora" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="432" width="70" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_id_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="PK" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_creator_id_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="FK" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_image_url_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_video_url_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_author_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_source_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="184" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_word_count_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="N" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_pron_percent_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="N" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_description_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="N" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="292" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_status_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="328" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_date_create_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="364" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_date_finish_flag" parent="corpora_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="N" vertex="1">
+          <mxGeometry height="28" width="50" x="10" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_name_column" parent="corpora" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="432" width="300" x="70" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_id_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="id" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_creator_id_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="creator_id" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_image_url_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="image_url" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_video_url_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="video_url" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_author_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="author" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_source_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="source" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="184" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_word_count_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="word_count" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_pron_percent_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="pron_percent" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_description_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="description" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="292" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_status_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="status" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="328" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_date_create_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="date_create" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="364" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_date_finish_name" parent="corpora_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="date_finish" vertex="1">
+          <mxGeometry height="28" width="280" x="10" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_type_column" parent="corpora" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="432" width="280" x="370" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_id_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="integer" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_creator_id_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="integer" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_image_url_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="varchar(255)" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_video_url_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="varchar(255)" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_author_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="varchar(50)" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_source_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="varchar(100)" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="184" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_word_count_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="integer" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_pron_percent_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="real" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_description_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="text" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="292" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_status_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="varchar(20)" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="328" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_date_create_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="timestamp" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="364" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_date_finish_type" parent="corpora_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="timestamp" vertex="1">
+          <mxGeometry height="28" width="260" x="10" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="likes" parent="1" style="group;fillColor=none;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="154" width="470" x="1070" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_header" parent="likes" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;fontFamily=DejaVu Sans;fontSize=24;fontStyle=1;align=center;verticalAlign=middle;" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;likes&lt;/span&gt;" vertex="1">
+          <mxGeometry height="46" width="470" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_flag_column" parent="likes" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="108" width="65" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_id_flag" parent="likes_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="PK" vertex="1">
+          <mxGeometry height="28" width="45" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_user_id_flag" parent="likes_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="FK" vertex="1">
+          <mxGeometry height="28" width="45" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_corpus_id_flag" parent="likes_flag_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="FK" vertex="1">
+          <mxGeometry height="28" width="45" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_name_column" parent="likes" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="108" width="195" x="65" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_id_name" parent="likes_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="id" vertex="1">
+          <mxGeometry height="28" width="175" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_user_id_name" parent="likes_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="user_id" vertex="1">
+          <mxGeometry height="28" width="175" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_corpus_id_name" parent="likes_name_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="corpus_id" vertex="1">
+          <mxGeometry height="28" width="175" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_type_column" parent="likes" style="html=1;rounded=0;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;shadow=0;" value="" vertex="1">
+          <mxGeometry height="108" width="210" x="260" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_id_type" parent="likes_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="integer" vertex="1">
+          <mxGeometry height="28" width="190" x="10" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_user_id_type" parent="likes_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="integer" vertex="1">
+          <mxGeometry height="28" width="190" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_corpus_id_type" parent="likes_type_column" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=22;" value="integer" vertex="1">
+          <mxGeometry height="28" width="190" x="10" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="users_corpora" edge="1" parent="1" source="users" style="edgeStyle=none;rounded=0;html=1;dashed=0;strokeColor=#000000;strokeWidth=1.5;startArrow=ERmandOne;startFill=0;startSize=14;endArrow=ERzeroToMany;endFill=0;endSize=20;exitX=0.0;exitY=0.3368421052631579;exitPerimeter=0;entryX=0.0;entryY=0.20920502092050208;entryPerimeter=0;" target="corpora" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="90" y="224" />
+              <mxPoint x="90" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="users_likes" edge="1" parent="1" source="users" style="edgeStyle=none;rounded=0;html=1;dashed=0;strokeColor=#000000;strokeWidth=1.5;startArrow=ERmandOne;startFill=0;startSize=14;endArrow=ERzeroToMany;endFill=0;endSize=20;exitX=1.0;exitY=0.3368421052631579;exitPerimeter=0;entryX=0.0;entryY=0.6493506493506493;entryPerimeter=0;" target="likes" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="224" />
+              <mxPoint x="940" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="corpora_likes" edge="1" parent="1" source="corpora" style="edgeStyle=none;rounded=0;html=1;dashed=0;strokeColor=#000000;strokeWidth=1.5;startArrow=ERmandOne;startFill=0;startSize=14;endArrow=ERzeroToMany;endFill=0;endSize=20;exitX=1.0;exitY=0.13389121338912133;exitPerimeter=0;entryX=0.0;entryY=0.8831168831168831;entryPerimeter=0;" target="likes" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="524" />
+              <mxPoint x="900" y="636" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="like_unique" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=21;fontStyle=0;" value="UNIQUE (user_id, corpus_id)" vertex="1">
+          <mxGeometry height="32" width="470" x="1070" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_title" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=24;fontStyle=1;" value="Обозначения" vertex="1">
+          <mxGeometry height="35" width="1350" x="160" y="985" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_keys" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=21;fontStyle=0;" value="PK — первичный ключ; FK — внешний ключ; U — уникальность." vertex="1">
+          <mxGeometry height="30" width="1350" x="160" y="1030" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_nullable" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=21;fontStyle=0;" value="N — допускается NULL; остальные поля — NOT NULL." vertex="1">
+          <mxGeometry height="30" width="1350" x="160" y="1065" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_relations" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=21;fontStyle=0;" value="Связи: один пользователь / корпус — от нуля до многих связанных записей." vertex="1">
+          <mxGeometry height="30" width="1350" x="160" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="current_difference" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=0;fontFamily=DejaVu Sans;fontColor=#000000;fontSize=19;fontStyle=0;" value="Текущий код: URL допускают NULL, word_count — NOT NULL. Здесь показаны требуемые правки." vertex="1">
+          <mxGeometry height="30" width="1350" x="160" y="1150" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

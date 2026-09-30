@@ -1,0 +1,309 @@
+<mxfile host="Electron">
+  <diagram id="lab3-backend" name="ЛР3 — диаграмма классов">
+    <mxGraphModel dx="3084" dy="2084" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3020" pageHeight="1980" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="heading" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=35;fontStyle=1;spacing=0;" value="Диаграмма классов бэкенда — атрибуция анонимного текста" vertex="1">
+          <mxGeometry height="55" width="2800" x="50" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=24;fontStyle=0;spacing=0;" value="ЛР3: 2 домена · 10 HTTP-методов · 3 модели · 3 таблицы · 4 страницы фронтенда" vertex="1">
+          <mxGeometry height="35" width="2800" x="50" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="pages_heading" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=22;fontStyle=1;spacing=0;" value="Страницы фронтенда" vertex="1">
+          <mxGeometry height="32" width="400" x="50" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="service_package" parent="1" style="shape=folder;tabWidth=210;tabHeight=30;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=5;fontFamily=DejaVu Sans;fontSize=21;fontStyle=1;strokeWidth=1.5;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;Веб-сервис&lt;/div&gt;" vertex="1">
+          <mxGeometry height="900" width="790" x="700" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="models_package" parent="1" style="shape=folder;tabWidth=210;tabHeight=30;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=5;fontFamily=DejaVu Sans;fontSize=21;fontStyle=1;strokeWidth=1.5;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;Модели&lt;/div&gt;" vertex="1">
+          <mxGeometry height="930" width="1240" x="1710" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="database_package" parent="1" style="shape=folder;tabWidth=230;tabHeight=30;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=5;fontFamily=DejaVu Sans;fontSize=21;fontStyle=1;strokeWidth=1.5;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;База данных&lt;/div&gt;" vertex="1">
+          <mxGeometry height="710" width="1240" x="1710" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog_page" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="102" width="300" x="50" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog_page_title" parent="catalog_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«страница»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;Каталог корпусов&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog_page_fields" parent="catalog_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="24" width="300" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog_page_operations" parent="catalog_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height:26px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="20" width="300" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="feed_page" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="102" width="300" x="50" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="feed_page_title" parent="feed_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=1;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«страница»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;Лента&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="feed_page_fields" parent="feed_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="24" width="300" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="feed_page_operations" parent="feed_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height:26px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="20" width="300" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="add_page" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="102" width="300" x="50" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="add_page_title" parent="add_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«страница»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;Добавление корпуса&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="add_page_fields" parent="add_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="24" width="300" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="add_page_operations" parent="add_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height:26px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="20" width="300" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="auth_page" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="128" width="300" x="50" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="auth_page_title" parent="auth_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«страница»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;Регистрация /&lt;br&gt;авторизация&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="84" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="auth_page_fields" parent="auth_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="24" width="300" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="auth_page_operations" parent="auth_page" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height:26px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="20" width="300" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_domain" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="319" width="690" x="750" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_domain_title" parent="corpora_domain" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«домен веб-сервиса»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;Корпусы — /api/corpora&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="690" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_domain_fields" parent="corpora_domain" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="24" width="690" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_domain_operations" parent="corpora_domain" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:31px&quot;&gt;+ GET /api/corpora?query=…&amp;amp;page=…&lt;br&gt;+ GET /api/corpora/feed[?id=…&amp;amp;next=true]&lt;br&gt;+ GET /api/corpora/draft&lt;br&gt;+ POST /api/corpora&lt;br&gt;+ PUT /api/corpora/:id/publication&lt;br&gt;+ DELETE /api/corpora/:id&lt;br&gt;+ POST /api/corpora/:id/like&lt;/div&gt;" vertex="1">
+          <mxGeometry height="237" width="690" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="users_domain" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="195" width="690" x="750" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="users_domain_title" parent="users_domain" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;fontSize=17;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;«домен веб-сервиса»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; line-height: 100%;&quot;&gt;Пользователи — /api/users&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="690" as="geometry" />
+        </mxCell>
+        <mxCell id="users_domain_fields" parent="users_domain" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="24" width="690" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="users_domain_operations" parent="users_domain" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:31px&quot;&gt;+ POST /api/users&lt;br&gt;+ POST /api/users/login  [заглушка]&lt;br&gt;+ POST /api/users/logout [заглушка]&lt;/div&gt;" vertex="1">
+          <mxGeometry height="113" width="690" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_interface" parent="1" style="ellipse;aspect=fixed;html=1;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="506" y="586" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_interface_label" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="API корпусов" vertex="1">
+          <mxGeometry height="52" width="158" x="536" y="632" as="geometry" />
+        </mxCell>
+        <mxCell id="users_interface" parent="1" style="ellipse;aspect=fixed;html=1;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="506" y="996" as="geometry" />
+        </mxCell>
+        <mxCell id="users_interface_label" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="API&lt;br&gt;пользователей" vertex="1">
+          <mxGeometry height="52" width="158" x="536" y="1042" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_model" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="520" width="600" x="1750" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_model_title" parent="corpus_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=1;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«Go model»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;Corpus — корпус текстов автора&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="600" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_model_fields" parent="corpus_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;+ ID: uint&lt;br&gt;+ CreatorID: uint&lt;br&gt;+ ImageURL: *string&lt;br&gt;+ VideoURL: *string&lt;br&gt;+ Author: string&lt;br&gt;+ Source: string&lt;br&gt;+ WordCount: int&lt;br&gt;+ PronPercent: *float64&lt;br&gt;+ Description: string&lt;br&gt;+ Status: string&lt;br&gt;+ DateCreate: time.Time&lt;br&gt;+ DateFinish: *time.Time&lt;br&gt;+ Creator: User&lt;br&gt;+ Likes: []Like&lt;/div&gt;" vertex="1">
+          <mxGeometry height="416" width="600" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_model_operations" parent="corpus_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:26px&quot;&gt;+ TableName(): string&lt;/div&gt;" vertex="1">
+          <mxGeometry height="46" width="600" y="474" as="geometry" />
+        </mxCell>
+        <mxCell id="user_model" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="214" width="400" x="2490" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="user_model_title" parent="user_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«Go model»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;User — пользователь&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="400" as="geometry" />
+        </mxCell>
+        <mxCell id="user_model_fields" parent="user_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;+ ID: uint&lt;br&gt;+ Login: string&lt;br&gt;+ Password: string&lt;br&gt;+ IsModerator: bool&lt;/div&gt;" vertex="1">
+          <mxGeometry height="136" width="400" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="user_model_operations" parent="user_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:26px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="20" width="400" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="like_model" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="242" width="400" x="2490" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="like_model_title" parent="like_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«Go model»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;Like — лайк&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="400" as="geometry" />
+        </mxCell>
+        <mxCell id="like_model_fields" parent="like_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;+ ID: uint&lt;br&gt;+ UserID: uint&lt;br&gt;+ CorpusID: uint&lt;br&gt;+ User: User&lt;br&gt;+ Corpus: Corpus&lt;/div&gt;" vertex="1">
+          <mxGeometry height="164" width="400" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="like_model_operations" parent="like_model" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:26px&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="20" width="400" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_table" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="490" width="600" x="1750" y="1300" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_table_title" parent="corpora_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;font-size:17px;line-height:22px&quot;&gt;«таблица PostgreSQL»&lt;/div&gt;&lt;div style=&quot;font-weight:bold;font-size:22px;line-height:26px&quot;&gt;corpora&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="600" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_table_fields" parent="corpora_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;id: integer [PK]&lt;br&gt;creator_id: integer [FK → users.id]&lt;br&gt;image_url: varchar(255) [NULL]&lt;br&gt;video_url: varchar(255) [NULL]&lt;br&gt;author: varchar(50)&lt;br&gt;source: varchar(100)&lt;br&gt;word_count: integer&lt;br&gt;pron_percent: real [NULL]&lt;br&gt;description: text&lt;br&gt;status: varchar(20)&lt;br&gt;date_create: timestamp&lt;br&gt;date_finish: timestamp [NULL]&lt;/div&gt;" vertex="1">
+          <mxGeometry height="360" width="600" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_table_operations" parent="corpora_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=18;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height:26px&quot;&gt;UNIQUE creator_id WHERE status = «черновик»&lt;br&gt;Статусы: черновик / опубликован / удален&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="600" y="418" as="geometry" />
+        </mxCell>
+        <mxCell id="users_table" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="240" width="400" x="2490" y="1300" as="geometry" />
+        </mxCell>
+        <mxCell id="users_table_title" parent="users_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«таблица PostgreSQL»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;users&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="400" as="geometry" />
+        </mxCell>
+        <mxCell id="users_table_fields" parent="users_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=20;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;id: integer [PK]&lt;br&gt;login: varchar(25)&lt;br&gt;password: varchar(100)&lt;br&gt;is_moderator: boolean&lt;/div&gt;" vertex="1">
+          <mxGeometry height="136" width="400" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="users_table_operations" parent="users_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=18;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:26px&quot;&gt;UNIQUE (login)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="46" width="400" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_table" parent="1" style="group;" value="" vertex="1">
+          <mxGeometry height="212" width="400" x="2490" y="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_table_title" parent="likes_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=6;strokeWidth=1.5;spacingTop=0;fontFamily=DejaVu Sans;" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;div style=&quot;font-size: 17px; line-height: 100%;&quot;&gt;«таблица PostgreSQL»&lt;/div&gt;&lt;div style=&quot;font-weight: bold; font-size: 22px; line-height: 100%;&quot;&gt;likes&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="400" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_table_fields" parent="likes_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=17;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:28px&quot;&gt;id: integer [PK]&lt;br&gt;user_id: integer [FK → users.id]&lt;br&gt;corpus_id: integer [FK → corpora.id]&lt;/div&gt;" vertex="1">
+          <mxGeometry height="108" width="400" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="likes_table_operations" parent="likes_table" style="html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;spacing=12;strokeWidth=1.5;fontSize=17;fontFamily=DejaVu Sans Mono;" value="&lt;div style=&quot;line-height:26px&quot;&gt;UNIQUE (user_id, corpus_id)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="46" width="400" y="166" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_provided" edge="1" parent="1" source="corpora_domain" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=0;dashPattern=7 6;endArrow=none;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=0.0;exitY=0.8463949843260188;exitPerimeter=0;entryX=1.0;entryY=0.5;entryPerimeter=0;" target="corpora_interface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="users_provided" edge="1" parent="1" source="users_domain" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=0;dashPattern=7 6;endArrow=none;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=0.0;exitY=0.6666666666666666;exitPerimeter=0;entryX=1.0;entryY=0.5;entryPerimeter=0;" target="users_interface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog_uses" edge="1" parent="1" source="catalog_page" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.49019607843137253;exitPerimeter=0;entryX=0.14285714285714285;entryY=0.14285714285714285;entryPerimeter=0;" target="corpora_interface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="feed_uses" edge="1" parent="1" source="feed_page" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.49019607843137253;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;" target="corpora_interface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="add_uses" edge="1" parent="1" source="add_page" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.49019607843137253;exitPerimeter=0;entryX=0.14285714285714285;entryY=0.8571428571428571;entryPerimeter=0;" target="corpora_interface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="auth_uses" edge="1" parent="1" source="auth_page" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.390625;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;" target="users_interface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_uses_corpus" edge="1" parent="1" source="corpora_domain" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.3761755485893417;exitPerimeter=0;entryX=0.0;entryY=0.23076923076923078;entryPerimeter=0;" target="corpus_model">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="corpora_uses_user" edge="1" parent="1" source="corpora_domain" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.28213166144200624;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;" target="user_model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1550" y="420" />
+              <mxPoint x="1550" y="195" />
+              <mxPoint x="2690" y="195" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="corpora_uses_like" edge="1" parent="1" source="corpora_domain" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.6896551724137931;exitPerimeter=0;entryX=1.0;entryY=0.49586776859504134;entryPerimeter=0;" target="like_model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1520" y="550" />
+              <mxPoint x="1520" y="170" />
+              <mxPoint x="2980" y="170" />
+              <mxPoint x="2980" y="850" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="users_uses_user" edge="1" parent="1" source="users_domain" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.6153846153846154;exitPerimeter=0;entryX=0.0;entryY=0.4205607476635514;entryPerimeter=0;" target="user_model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1630" y="1000" />
+              <mxPoint x="1630" y="290" />
+              <mxPoint x="2430" y="290" />
+              <mxPoint x="2430" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="corpus_mapping" edge="1" parent="1" source="corpus_model" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;" target="corpora_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="user_mapping" edge="1" parent="1" source="user_model" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;" target="users_table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2690" y="610" />
+              <mxPoint x="2410" y="610" />
+              <mxPoint x="2410" y="1180" />
+              <mxPoint x="2690" y="1180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="creator_fk" edge="1" parent="1" source="corpora_table" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=0;dashPattern=7 6;endArrow=none;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.20408163265306123;exitPerimeter=0;entryX=0.0;entryY=0.4166666666666667;entryPerimeter=0;" target="users_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="creator_many" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="0..*" vertex="1">
+          <mxGeometry height="25" width="70" x="2360" y="1370" as="geometry" />
+        </mxCell>
+        <mxCell id="creator_one" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="1" vertex="1">
+          <mxGeometry height="25" width="22" x="2462" y="1370" as="geometry" />
+        </mxCell>
+        <mxCell id="creator_role" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=16;fontStyle=0;spacing=0;" value="создатель" vertex="1">
+          <mxGeometry height="30" width="116" x="2366" y="1415" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_like_fk" edge="1" parent="1" source="corpora_table" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=0;dashPattern=7 6;endArrow=none;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.9591836734693877;exitPerimeter=0;entryX=0.0;entryY=0.42452830188679247;entryPerimeter=0;" target="likes_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_one" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="1" vertex="1">
+          <mxGeometry height="25" width="22" x="2360" y="1740" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_likes_many" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="0..*" vertex="1">
+          <mxGeometry height="25" width="45" x="2437" y="1740" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus_like_role" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=15;fontStyle=0;spacing=0;" value="лайки корпуса" vertex="1">
+          <mxGeometry height="30" width="115" x="2365" y="1785" as="geometry" />
+        </mxCell>
+        <mxCell id="user_like_fk" edge="1" parent="1" source="users_table" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=0;dashPattern=7 6;endArrow=none;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;" target="likes_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="user_one" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="1" vertex="1">
+          <mxGeometry height="25" width="25" x="2705" y="1552" as="geometry" />
+        </mxCell>
+        <mxCell id="user_likes_many" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=18;fontStyle=0;spacing=0;" value="0..*" vertex="1">
+          <mxGeometry height="25" width="55" x="2705" y="1643" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_heading" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=23;fontStyle=1;spacing=0;" value="Условные обозначения" vertex="1">
+          <mxGeometry height="35" width="1350" x="50" y="1260" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_dep" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=20;fontStyle=0;spacing=0;" value="Пунктир со стрелкой — зависимость: клиент → интерфейс, домен → модель." vertex="1">
+          <mxGeometry height="32" width="1350" x="50" y="1320" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_map" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=20;fontStyle=0;spacing=0;" value="Модель → таблица — отображение средствами GORM." vertex="1">
+          <mxGeometry height="32" width="1350" x="50" y="1360" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_assoc" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=20;fontStyle=0;spacing=0;" value="Сплошная линия между таблицами — связь; 1 / 0..* — кратности." vertex="1">
+          <mxGeometry height="32" width="1350" x="50" y="1400" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_http" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=20;fontStyle=0;spacing=0;" value="Два домена — группы URL одного веб-сервиса. Операции указаны с /api." vertex="1">
+          <mxGeometry height="32" width="1350" x="50" y="1440" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_pages" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontFamily=DejaVu Sans;fontSize=20;fontStyle=0;spacing=0;" value="Страницы показаны как потребители API; их реализация не входит в ЛР3." vertex="1">
+          <mxGeometry height="32" width="1350" x="50" y="1480" as="geometry" />
+        </mxCell>
+        <mxCell id="lKUz0HAfVDDa2vod2vqc-1" edge="1" parent="1" source="like_model" style="edgeStyle=none;html=1;rounded=0;strokeWidth=1.5;dashed=1;dashPattern=7 6;endArrow=open;endFill=0;endSize=10;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=1.0;entryY=0.4716981132075472;entryPerimeter=0;" target="likes_table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2690" y="1040" />
+              <mxPoint x="2970" y="1040" />
+              <mxPoint x="2970" y="1780" />
+            </Array>
+            <mxPoint x="2690" y="972" as="sourcePoint" />
+            <mxPoint x="2890" y="1780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

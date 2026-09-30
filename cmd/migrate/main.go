@@ -3,30 +3,21 @@ package main
 import (
 	"log"
 
+	"attributor/internal/app/dsn"
+	"attributor/internal/app/migration"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	"attributor/internal/app/ds"
-	"attributor/internal/app/dsn"
 )
 
 func main() {
 	_ = godotenv.Load()
-
-	db, err := gorm.Open(postgres.Open(dsn.FromEnv()), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn.FromEnv()), &gorm.Config{TranslateError: true})
 	if err != nil {
-		log.Panic("failed to connect database: ", err)
+		log.Fatal("failed to connect database: ", err)
 	}
-
-	err = db.AutoMigrate(
-		&ds.User{},
-		&ds.Corpus{},
-		&ds.Like{},
-	)
-	if err != nil {
-		log.Panic("cant migrate db: ", err)
+	if err := migration.Apply(db); err != nil {
+		log.Fatal("cannot migrate database: ", err)
 	}
-
 	log.Println("Migration completed successfully!")
 }
