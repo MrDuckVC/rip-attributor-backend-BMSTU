@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"errors"
 	"math"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 
 	"attributor/internal/app/ds"
 	"attributor/internal/app/repository"
@@ -33,16 +35,16 @@ func roundFloat(val *float64) float64 {
 
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/", func(c *gin.Context) {
-		c.Redirect(http.StatusFound, "/corpora/grid")
+		c.Redirect(http.StatusFound, "/corpora")
 	})
 
 	corporaGroup := router.Group("/corpora")
 	{
-		corporaGroup.GET("/grid", h.GetGrid)
-		corporaGroup.GET("/add", h.GetDraft)
-		corporaGroup.GET("/:id", h.GetFeed)
+		corporaGroup.GET("", h.GetCorpora)
+		corporaGroup.GET("/new", h.GetDraft)
+		corporaGroup.GET("/:id", h.GetCorpus)
 
-		corporaGroup.POST("/add", h.CreateDraft)
+		corporaGroup.POST("/new", h.CreateDraft)
 		corporaGroup.POST("/publish", h.Publish)
 		corporaGroup.POST("/delete", h.DeleteCorpus)
 	}
@@ -53,27 +55,38 @@ func (h *Handler) RegisterStatic(router *gin.Engine) {
 	router.Static("/static", "./resources")
 }
 
-func (h *Handler) GetGrid(ctx *gin.Context) {
+func (h *Handler) GetCorpora(ctx *gin.Context) {
 	var corpora []ds.Corpus
 	var err error
 
+	page, pageErr := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	if pageErr != nil || page < 1 || page > int(^uint(0)>>1)/6 {
+		ctx.Status(http.StatusBadRequest)
+		return
+	}
+	var count int64
 	searchQuery := ctx.Query("query")
 
 	if searchQuery == "" {
-		corpora, _ = h.Repository.GetCorpora()
+		corpora, count, err = h.Repository.GetCorpora(page, 6)
 	} else {
 		minWords, errParse := strconv.Atoi(searchQuery)
 		if errParse != nil {
 			logrus.Warn("Некорректный запрос поиска: ", searchQuery)
-			corpora, _ = h.Repository.GetCorpora()
+			corpora, count, err = h.Repository.GetCorpora(page, 6)
 		} else {
-			corpora, err = h.Repository.GetCorporaByWordCount(minWords)
+			corpora, count, err = h.Repository.GetCorporaByWordCount(minWords, page, 6)
 			if err != nil {
 				logrus.Error(err)
 			}
 		}
 	}
 
+	if err != nil {
+		logrus.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+		return
+	}
 	var corporaData []gin.H
 	for _, c := range corpora {
 		isLiked := false
@@ -101,13 +114,18 @@ func (h *Handler) GetGrid(ctx *gin.Context) {
 		})
 	}
 
-	ctx.HTML(http.StatusOK, "grid.html", gin.H{
-		"corpora": corporaData,
-		"query":   searchQuery,
+	ctx.HTML(http.StatusOK, "corpora.html", gin.H{
+		"corpora":      corporaData,
+		"query":        searchQuery,
+		"page":         page,
+		"previousPage": page - 1,
+		"nextPage":     page + 1,
+		"hasPrevious":  page > 1,
+		"hasNext":      int64(page*6) < count,
 	})
 }
 
-func (h *Handler) GetFeed(ctx *gin.Context) {
+func (h *Handler) GetCorpus(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -117,35 +135,20 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 
 	isNext := ctx.Query("next") == "true"
 
-	corpora, err := h.Repository.GetCorpora()
-	if err != nil || len(corpora) == 0 {
-		ctx.String(http.StatusNotFound, "Корпуса не найдены")
+	var corpus *ds.Corpus
+	if isNext {
+		corpus, err = h.Repository.GetNextCorpus(id)
+	} else {
+		corpus, err = h.Repository.GetCorpusByID(id)
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		ctx.String(http.StatusNotFound, "Услуга не найдена или была удалена")
 		return
 	}
-
-	currentIndex := -1
-	for i, c := range corpora {
-		if int(c.ID) == id {
-			currentIndex = i
-			break
-		}
-	}
-
-	var corpus *ds.Corpus
-
-	if isNext {
-		if currentIndex != -1 {
-			nextIndex := (currentIndex + 1) % len(corpora)
-			corpus = &corpora[nextIndex]
-		} else {
-			corpus = &corpora[0]
-		}
-	} else {
-		if currentIndex == -1 {
-			ctx.String(http.StatusNotFound, "Услуга не найдена или была удалена")
-			return
-		}
-		corpus = &corpora[currentIndex]
+	if err != nil {
+		logrus.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+		return
 	}
 
 	videoURL := ""
@@ -174,7 +177,7 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 		}
 	}
 
-	ctx.HTML(http.StatusOK, "feed.html", gin.H{
+	ctx.HTML(http.StatusOK, "corpus.html", gin.H{
 		"corpus":     corpus,
 		"likesCount": len(corpus.Likes),
 		"isLiked":    isLiked,
@@ -196,7 +199,7 @@ func (h *Handler) DeleteCorpus(ctx *gin.Context) {
 		logrus.Error("Ошибка при удалении корпуса: ", err)
 	}
 
-	ctx.Redirect(http.StatusFound, "/corpora/grid")
+	ctx.Redirect(http.StatusFound, "/corpora")
 }
 
 func (h *Handler) CreateDraft(ctx *gin.Context) {
@@ -204,13 +207,14 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 	source := ctx.PostForm("source")
 
 	draft := ds.Corpus{
-		CreatorID: currentUserID,
-		Author:    author,
-		Source:    source,
+		CreatorID:   currentUserID,
+		Author:      author,
+		Source:      source,
+		Description: ctx.PostForm("description"),
 	}
 
 	h.Repository.CreateDraft(&draft)
-	ctx.Redirect(http.StatusFound, "/corpora/add")
+	ctx.Redirect(http.StatusFound, "/corpora/new")
 }
 
 func (h *Handler) Publish(ctx *gin.Context) {
@@ -218,34 +222,27 @@ func (h *Handler) Publish(ctx *gin.Context) {
 	draftId, _ := strconv.Atoi(strId)
 
 	wordCount, _ := strconv.Atoi(ctx.PostForm("word_count"))
-	prep, _ := strconv.ParseFloat(ctx.PostForm("prep_percent"), 64)
 	pron, _ := strconv.ParseFloat(ctx.PostForm("pron_percent"), 64)
-	conj, _ := strconv.ParseFloat(ctx.PostForm("conj_percent"), 64)
-	description := ctx.PostForm("description")
 
-	if wordCount < 0 || prep < 0 || prep > 100 || pron < 0 || pron > 100 || conj < 0 || conj > 100 {
+	if wordCount < 0 || pron < 0 || pron > 100 {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Некорректные данные"})
 		return
 	}
 
-	h.Repository.PublishCorpus(draftId, wordCount, prep, pron, conj, description)
-	ctx.Redirect(http.StatusFound, "/corpora/grid")
+	h.Repository.PublishCorpus(draftId, wordCount, pron)
+	ctx.Redirect(http.StatusFound, "/corpora")
 }
 
 func (h *Handler) GetDraft(ctx *gin.Context) {
-	var draft ds.Corpus
-	isDraftExists := false
-
-	allCorpora, _ := h.Repository.GetCorpora()
-	for _, c := range allCorpora {
-		if c.Status == "черновик" && c.CreatorID == currentUserID {
-			draft = c
-			isDraftExists = true
-			break
-		}
+	draft, err := h.Repository.GetDraft(currentUserID)
+	isDraftExists := err == nil
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		logrus.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+		return
 	}
 
-	ctx.HTML(http.StatusOK, "add.html", gin.H{
+	ctx.HTML(http.StatusOK, "corpus_form.html", gin.H{
 		"draft":         draft,
 		"isDraftExists": isDraftExists,
 	})

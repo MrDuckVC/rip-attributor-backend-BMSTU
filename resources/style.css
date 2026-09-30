@@ -377,10 +377,12 @@ body {
 }
 
 .btn-delete {
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--color-bg-white);
     border: 1px solid var(--color-border);
-    border-radius: 50%;
-    padding: 5px;
+    border-radius: 980px;
+    padding: 4px 8px;
+    height: 24px;
+    color: var(--color-gray);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -514,4 +516,76 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+
+/* Переходы между страницами плитки. */
+.corpora-pagination {
+    position: absolute;
+    left: 17px;
+    right: 15px;
+    bottom: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 11px;
+}
+.corpora-pagination a {
+    background: var(--color-blue);
+    color: var(--color-white);
+    border-radius: 980px;
+    padding: 8px 12px;
+}
+
+/* Расположение элементов только на странице добавления. */
+.add-page {
+    position: absolute;
+    top: 60px;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+    padding: 15px 16px;
+}
+.add-page .add-title {
+    position: static;
+    width: 100%;
+    margin-bottom: 16px;
+}
+.add-page .form-card {
+    position: relative;
+    left: 0;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.add-page .form-label {
+    position: static;
+    width: 100%;
+}
+.add-page .form-field {
+    position: relative;
+    left: 0;
+    width: 100%;
+}
+.add-page .add-image-preview {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 11px;
+}
+.add-page .add-video-preview {
+    width: 135px;
+    height: 240px;
+    align-self: center;
+    object-fit: cover;
+    border-radius: 11px;
+}
+.add-page .btn-submit {
+    position: static;
+    margin: 0 auto;
 }

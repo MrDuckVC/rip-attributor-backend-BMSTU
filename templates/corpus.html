@@ -7,11 +7,11 @@
 </head>
 <body>
     <video autoplay loop muted playsinline class="bg-video">
-        <source src="{{ if .videoURL }}{{ .videoURL }}{{ else }}http://localhost:9000/attributor-media/puskin.mp4{{ end }}" type="video/mp4">
+        <source src="{{ if .videoURL }}{{ .videoURL }}{{ else }}/static/media/puskin.mp4{{ end }}" type="video/mp4">
     </video>
 
     <header class="header">
-        <a href="/grid" class="logo">Атрибутор</a>
+        <a href="/corpora" class="logo">Атрибутор</a>
     </header>
 
     <div class="feed-info">
@@ -46,19 +46,7 @@
             <span class="sidebar-text">{{ .corpus.PronPercent }}%</span>
         </div>
 
-        <div class="sidebar-item">
-            <div class="circle-btn">
-                <span class="inner-text">ПРЕД</span>
-            </div>
-            <span class="sidebar-text">{{ .corpus.PrepPercent }}%</span>
-        </div>
 
-        <div class="sidebar-item">
-            <div class="circle-btn">
-                <span class="inner-text">СОЮЗ</span>
-            </div>
-            <span class="sidebar-text">{{ .corpus.ConjPercent }}%</span>
-        </div>
 
         <a href="/corpora/{{ .corpus.ID }}?next=true" class="sidebar-item">
             <div class="circle-btn">
@@ -71,8 +59,8 @@
 
     <nav class="navbar">
         <a href="/corpora/1" class="nav-item active">Лента</a>
-        <a href="/corpora/add" class="nav-item">Добавить</a>
-        <a href="/corpora/grid" class="nav-item">Плитка</a>
+        <a href="/corpora/new" class="nav-item">Добавить</a>
+        <a href="/corpora" class="nav-item">Плитка</a>
     </nav>
 </body>
 </html>

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"attributor/internal/app/ds"
-	"database/sql"
 	"errors"
 	"time"
 
@@ -25,22 +24,32 @@ func New(dsn string) (*Repository, error) {
 	}, nil
 }
 
-func (r *Repository) GetCorpora() ([]ds.Corpus, error) {
+func (r *Repository) GetCorpora(page, pageSize int) ([]ds.Corpus, int64, error) {
 	var corpora []ds.Corpus
-	err := r.db.Preload("Likes").Where("status = ? AND is_delete = false", "опубликован").Find(&corpora).Error
-	if err != nil {
-		return nil, err
+	var count int64
+	query := r.db.Model(&ds.Corpus{}).Where("status = ? AND is_delete = false", "опубликован")
+	if err := query.Count(&count).Error; err != nil {
+		return nil, 0, err
 	}
-	return corpora, nil
+	err := query.Preload("Likes").Order("id ASC").Limit(pageSize).Offset((page - 1) * pageSize).Find(&corpora).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return corpora, count, nil
 }
 
-func (r *Repository) GetCorporaByWordCount(minWords int) ([]ds.Corpus, error) {
+func (r *Repository) GetCorporaByWordCount(minWords, page, pageSize int) ([]ds.Corpus, int64, error) {
 	var corpora []ds.Corpus
-	err := r.db.Preload("Likes").Where("status = ? AND is_delete = false AND word_count >= ?", "опубликован", minWords).Find(&corpora).Error
-	if err != nil {
-		return nil, err
+	var count int64
+	query := r.db.Model(&ds.Corpus{}).Where("status = ? AND is_delete = false AND word_count >= ?", "опубликован", minWords)
+	if err := query.Count(&count).Error; err != nil {
+		return nil, 0, err
 	}
-	return corpora, nil
+	err := query.Preload("Likes").Order("id ASC").Limit(pageSize).Offset((page - 1) * pageSize).Find(&corpora).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return corpora, count, nil
 }
 
 func (r *Repository) ToggleLike(userID, corpusID uint) error {
@@ -56,28 +65,24 @@ func (r *Repository) ToggleLike(userID, corpusID uint) error {
 }
 
 func (r *Repository) GetCorpusByID(id int) (*ds.Corpus, error) {
-	query := `SELECT id, creator_id, is_delete, image_url, video_url, author, source, word_count, prep_percent, pron_percent, conj_percent, description, status, date_create, date_finish
-			  FROM corpora WHERE id = $1 AND is_delete = false`
-
-	row := r.db.Raw(query, id).Row()
 	corpus := &ds.Corpus{}
+	err := r.db.Preload("Likes").Where("id = ? AND status = ? AND is_delete = false", id, "опубликован").First(corpus).Error
+	return corpus, err
+}
 
-	err := row.Scan(
-		&corpus.ID, &corpus.CreatorID, &corpus.IsDelete, &corpus.ImageURL, &corpus.VideoURL,
-		&corpus.Author, &corpus.Source, &corpus.WordCount,
-		&corpus.PrepPercent, &corpus.PronPercent, &corpus.ConjPercent, &corpus.Description, &corpus.Status,
-		&corpus.DateCreate, &corpus.DateFinish,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
-		}
-		return nil, err
+func (r *Repository) GetNextCorpus(id int) (*ds.Corpus, error) {
+	corpus := &ds.Corpus{}
+	err := r.db.Preload("Likes").Where("id > ? AND status = ? AND is_delete = false", id, "опубликован").Order("id ASC").First(corpus).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		err = r.db.Preload("Likes").Where("status = ? AND is_delete = false", "опубликован").Order("id ASC").First(corpus).Error
 	}
+	return corpus, err
+}
 
-	r.db.Model(corpus).Association("Likes").Find(&corpus.Likes)
-
-	return corpus, nil
+func (r *Repository) GetDraft(userID uint) (*ds.Corpus, error) {
+	draft := &ds.Corpus{}
+	err := r.db.Where("creator_id = ? AND status = ? AND is_delete = false", userID, "черновик").First(draft).Error
+	return draft, err
 }
 
 func (r *Repository) CreateDraft(corpus *ds.Corpus) error {
@@ -86,15 +91,12 @@ func (r *Repository) CreateDraft(corpus *ds.Corpus) error {
 	return r.db.Create(corpus).Error
 }
 
-func (r *Repository) PublishCorpus(id int, wordCount int, prep, pron, conj float64, description string) error {
+func (r *Repository) PublishCorpus(id int, wordCount int, pron float64) error {
 	now := time.Now()
 	return r.db.Model(&ds.Corpus{}).Where("id = ?", id).Updates(map[string]interface{}{
 		"status":       "опубликован",
 		"word_count":   wordCount,
-		"prep_percent": prep,
 		"pron_percent": pron,
-		"conj_percent": conj,
-		"description":  description,
 		"date_finish":  &now,
 	}).Error
 }

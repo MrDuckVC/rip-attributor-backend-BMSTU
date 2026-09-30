@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Атрибутор - Новый профиль</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="header">
+        <a href="/corpora" class="logo">Атрибутор</a>
+    </header>
+
+    <main class="add-page">
+        <form action="{{ if .isDraftExists }}/corpora/publish{{ else }}/corpora/new{{ end }}" method="POST">
+            <h1 class="add-title">{{ if .isDraftExists }}Публикация корпуса: {{ .draft.Author }}{{ else }}Новый корпус{{ end }}</h1>
+
+            <div class="form-card">
+                <img src="/static/media/puskin.png" alt="Изображение корпуса" class="add-image-preview">
+                {{ if not .isDraftExists }}
+                <label class="form-label" for="corpus-image">Изображение</label>
+                <div class="form-field">
+                    <input id="corpus-image" type="file" accept="image/*" class="file-overlay">
+                    <span class="file-placeholder">Файл изображения</span>
+                </div>
+                {{ end }}
+
+                <video src="/static/media/puskin.mp4" class="add-video-preview" controls muted loop playsinline></video>
+                {{ if not .isDraftExists }}
+                <label class="form-label" for="corpus-video">Видео</label>
+                <div class="form-field">
+                    <input id="corpus-video" type="file" accept="video/*" class="file-overlay">
+                    <span class="file-placeholder">Файл видео</span>
+                </div>
+                {{ end }}
+            </div>
+
+            <div class="form-card">
+                <label class="form-label" for="corpus-author">Имя автора</label>
+                <div class="form-field">
+                    <input id="corpus-author" class="form-input" {{ if .isDraftExists }}readonly value="{{ .draft.Author }}"{{ else }}name="author" placeholder="Введите имя..." required{{ end }}>
+                </div>
+
+                <label class="form-label" for="corpus-source">Источник / Произведение</label>
+                <div class="form-field">
+                    <input id="corpus-source" class="form-input" {{ if .isDraftExists }}readonly value="{{ .draft.Source }}"{{ else }}name="source" placeholder="Укажите источник..." required{{ end }}>
+                </div>
+
+                <label class="form-label" for="corpus-description">Описание</label>
+                <div class="form-field">
+                    <input id="corpus-description" class="form-input" {{ if .isDraftExists }}readonly value="{{ .draft.Description }}"{{ else }}name="description" placeholder="Введите краткое описание..." required{{ end }}>
+                </div>
+
+                {{ if .isDraftExists }}
+                <input type="hidden" name="draft_id" value="{{ .draft.ID }}">
+                <label class="form-label" for="corpus-words">Количество слов</label>
+                <div class="form-field">
+                    <input id="corpus-words" type="number" min="0" name="word_count" class="form-input" value="{{ .draft.WordCount }}" required>
+                </div>
+
+                <label class="form-label" for="corpus-pronouns">% Местоимений</label>
+                <div class="form-field">
+                    <input id="corpus-pronouns" type="number" min="0" max="100" step="0.01" name="pron_percent" class="form-input" value="{{ if .draft.PronPercent }}{{ .draft.PronPercent }}{{ else }}0{{ end }}" required>
+                </div>
+                {{ end }}
+            </div>
+
+            <button type="submit" class="btn-submit">{{ if .isDraftExists }}Опубликовать{{ else }}Далее{{ end }}</button>
+        </form>
+    </main>
+
+    <nav class="navbar">
+        <a href="/corpora/1" class="nav-item">Лента</a>
+        <a href="/corpora/new" class="nav-item active">Добавить</a>
+        <a href="/corpora" class="nav-item">Плитка</a>
+    </nav>
+</body>
+</html>
