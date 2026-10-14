@@ -72,9 +72,13 @@ func (r *Repository) GetCorpusByID(id int) (*ds.Corpus, error) {
 
 func (r *Repository) GetNextCorpus(id int) (*ds.Corpus, error) {
 	corpus := &ds.Corpus{}
-	err := r.db.Preload("Likes").Where("id > ? AND status = ? AND is_delete = false", id, "опубликован").Order("id ASC").First(corpus).Error
+	err := r.db.Preload("Likes").
+		Where("id > ? AND status = ? AND is_delete = false", id, "опубликован").
+		Order("id ASC").First(corpus).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		err = r.db.Preload("Likes").Where("status = ? AND is_delete = false", "опубликован").Order("id ASC").First(corpus).Error
+		err = r.db.Preload("Likes").
+			Where("status = ? AND is_delete = false", "опубликован").
+			Order("id ASC").First(corpus).Error
 	}
 	return corpus, err
 }

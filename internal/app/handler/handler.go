@@ -5,6 +5,8 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -104,8 +106,7 @@ func (h *Handler) GetCorpora(ctx *gin.Context) {
 
 		corporaData = append(corporaData, gin.H{
 			"ID":          c.ID,
-			"Author":      c.Author,
-			"Source":      c.Source,
+			"Name":        c.Name,
 			"ImageURL":    imageURL,
 			"WordCount":   c.WordCount,
 			"PrepPercent": roundFloat(c.PrepPercent),
@@ -203,17 +204,23 @@ func (h *Handler) DeleteCorpus(ctx *gin.Context) {
 }
 
 func (h *Handler) CreateDraft(ctx *gin.Context) {
-	author := ctx.PostForm("author")
-	source := ctx.PostForm("source")
+	name := strings.TrimSpace(ctx.PostForm("name"))
+	if name == "" || utf8.RuneCountInString(name) > 150 {
+		ctx.Status(http.StatusBadRequest)
+		return
+	}
 
 	draft := ds.Corpus{
 		CreatorID:   currentUserID,
-		Author:      author,
-		Source:      source,
+		Name:        name,
 		Description: ctx.PostForm("description"),
 	}
 
-	h.Repository.CreateDraft(&draft)
+	if err := h.Repository.CreateDraft(&draft); err != nil {
+		logrus.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+		return
+	}
 	ctx.Redirect(http.StatusFound, "/corpora/new")
 }
 

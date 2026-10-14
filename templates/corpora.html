@@ -34,9 +34,9 @@
             <div class="author-card-wrapper">
 
                 <a href="/corpora/{{ .ID }}" class="author-card">
-                    <img src="{{ if .ImageURL }}{{ .ImageURL }}{{ else }}/static/media/puskin.png{{ end }}" alt="{{ .Author }}" class="card-img">
+                    <img src="{{ if .ImageURL }}{{ .ImageURL }}{{ else }}/static/media/puskin.png{{ end }}" alt="{{ .Name }}" class="card-img">
 
-                    <h3 class="card-title">{{ .Author }}, {{ .Source }}</h3>
+                    <h3 class="card-title">{{ .Name }}</h3>
 
                     <div class="card-words">
                         {{ .WordCount }} слов

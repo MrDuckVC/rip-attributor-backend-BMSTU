@@ -12,7 +12,7 @@
 
     <main class="add-page">
         <form action="{{ if .isDraftExists }}/corpora/publish{{ else }}/corpora/new{{ end }}" method="POST">
-            <h1 class="add-title">{{ if .isDraftExists }}Публикация корпуса: {{ .draft.Author }}{{ else }}Новый корпус{{ end }}</h1>
+            <h1 class="add-title">{{ if .isDraftExists }}Публикация корпуса: {{ .draft.Name }}{{ else }}Новый корпус{{ end }}</h1>
 
             <div class="form-card">
                 <img src="/static/media/puskin.png" alt="Изображение корпуса" class="add-image-preview">
@@ -35,14 +35,9 @@
             </div>
 
             <div class="form-card">
-                <label class="form-label" for="corpus-author">Имя автора</label>
+                <label class="form-label" for="corpus-name">Название корпуса</label>
                 <div class="form-field">
-                    <input id="corpus-author" class="form-input" {{ if .isDraftExists }}readonly value="{{ .draft.Author }}"{{ else }}name="author" placeholder="Введите имя..." required{{ end }}>
-                </div>
-
-                <label class="form-label" for="corpus-source">Источник / Произведение</label>
-                <div class="form-field">
-                    <input id="corpus-source" class="form-input" {{ if .isDraftExists }}readonly value="{{ .draft.Source }}"{{ else }}name="source" placeholder="Укажите источник..." required{{ end }}>
+                    <input id="corpus-name" class="form-input" maxlength="150" {{ if .isDraftExists }}readonly value="{{ .draft.Name }}"{{ else }}name="name" placeholder="Введите название корпуса..." required{{ end }}>
                 </div>
 
                 <label class="form-label" for="corpus-description">Описание</label>
