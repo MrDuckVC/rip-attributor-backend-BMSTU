@@ -1,0 +1,448 @@
+basePath: /api
+definitions:
+  dto.Corpus:
+    properties:
+      date_create:
+        type: string
+      date_finish:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      is_liked:
+        type: integer
+      is_owner:
+        type: integer
+      likes_count:
+        type: integer
+      name:
+        type: string
+      prep_percent:
+        type: number
+      video_url:
+        type: string
+      word_count:
+        type: integer
+    type: object
+  dto.CorpusList:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dto.Corpus'
+        type: array
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  dto.LikeRequest:
+    properties:
+      like:
+        enum:
+        - 0
+        - 1
+        type: integer
+    required:
+    - like
+    type: object
+  dto.LikeResponse:
+    properties:
+      is_liked:
+        type: integer
+      likes_count:
+        type: integer
+    type: object
+  dto.LoginRequest:
+    properties:
+      login:
+        maxLength: 25
+        type: string
+      password:
+        maxLength: 72
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  dto.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      token_type:
+        type: string
+    type: object
+  dto.PublishCorpus:
+    properties:
+      prep_percent:
+        maximum: 100
+        minimum: 0
+        type: number
+      word_count:
+        maximum: 2147483647
+        minimum: 0
+        type: integer
+    required:
+    - prep_percent
+    - word_count
+    type: object
+  dto.RegisterUser:
+    properties:
+      login:
+        maxLength: 25
+        type: string
+      password:
+        maxLength: 72
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  dto.User:
+    properties:
+      id:
+        type: integer
+      login:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: 'Корпусы текстов потенциальных авторов: каталог, лента, публикация
+    и лайки. Процент предлогов и количество слов задаются при публикации.'
+  title: API корпусов авторов
+  version: "4.0"
+paths:
+  /corpora:
+    get:
+      operationId: getCorpora
+      parameters:
+      - description: Минимальное количество слов
+        in: query
+        maximum: 2147483647
+        minimum: 0
+        name: query
+        type: integer
+      - default: 1
+        description: Страница, по 6 корпусов
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CorpusList'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Каталог опубликованных корпусов
+      tags:
+      - Корпусы
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: createCorpus
+      parameters:
+      - description: Название корпуса
+        in: formData
+        maxLength: 150
+        name: name
+        required: true
+        type: string
+      - description: Описание корпуса
+        in: formData
+        name: description
+        type: string
+      - description: JPEG, PNG, GIF, WebP
+        in: formData
+        name: image
+        type: file
+      - description: Короткое вертикальное MP4 или WebM
+        in: formData
+        name: video
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.Corpus'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Добавить корпус с изображением и видео
+      tags:
+      - Корпусы
+  /corpora/{id}:
+    delete:
+      operationId: deleteCorpus
+      parameters:
+      - description: ID корпуса
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Логически удалить свой корпус
+      tags:
+      - Корпусы
+  /corpora/{id}/like:
+    post:
+      consumes:
+      - application/json
+      operationId: setCorpusLike
+      parameters:
+      - description: ID корпуса
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      - description: 1 поставить, 0 снять
+        in: body
+        name: like
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LikeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LikeResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Установить или снять лайк корпуса
+      tags:
+      - Корпусы
+  /corpora/{id}/publication:
+    put:
+      consumes:
+      - application/json
+      operationId: publishCorpus
+      parameters:
+      - description: ID корпуса
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      - description: Количество слов и процент предлогов
+        in: body
+        name: publication
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PublishCorpus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Опубликовать свой черновик корпуса
+      tags:
+      - Корпусы
+  /corpora/draft:
+    get:
+      operationId: getCorpusDraft
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Corpus'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Черновик текущего автора
+      tags:
+      - Корпусы
+  /corpora/feed:
+    get:
+      operationId: getCorpusFeed
+      parameters:
+      - description: ID корпуса
+        in: query
+        minimum: 1
+        name: id
+        type: integer
+      - description: Следующий опубликованный корпус; нужен id
+        in: query
+        name: next
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Corpus'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Лента корпусов
+      tags:
+      - Корпусы
+  /users:
+    post:
+      consumes:
+      - application/json
+      operationId: registerAuthor
+      parameters:
+      - description: Логин и пароль
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.User'
+        "400":
+          description: Bad Request
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+      summary: Зарегистрировать автора
+      tags:
+      - Авторы
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      operationId: loginAuthor
+      parameters:
+      - description: Логин и пароль
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Войти и получить JWT
+      tags:
+      - Авторы
+  /users/logout:
+    post:
+      operationId: logoutAuthor
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Выйти и отозвать текущий JWT
+      tags:
+      - Авторы
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    description: Введите Bearer и пробел, затем access_token из ответа POST /api/users/login.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

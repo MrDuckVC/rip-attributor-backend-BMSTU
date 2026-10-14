@@ -1,7 +1,6 @@
 package migration
 
 import (
-	"attributor/internal/app/currentuser"
 	"attributor/internal/app/ds"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -18,6 +17,9 @@ func Apply(db *gorm.DB) error {
 				return err
 			}
 		}
+		if err := migratePrepPercent(tx); err != nil {
+			return err
+		}
 		if err := tx.AutoMigrate(&ds.User{}, &ds.Corpus{}, &ds.Like{}); err != nil {
 			return err
 		}
@@ -27,7 +29,7 @@ func Apply(db *gorm.DB) error {
 				return err
 			}
 		}
-		for _, column := range []string{"prep_percent", "conj_percent", "is_delete"} {
+		for _, column := range []string{"conj_percent", "is_delete"} {
 			if tx.Migrator().HasColumn(&ds.Corpus{}, column) {
 				if err := tx.Migrator().DropColumn(&ds.Corpus{}, column); err != nil {
 					return err
@@ -38,7 +40,7 @@ func Apply(db *gorm.DB) error {
 			return err
 		}
 		var count int64
-		if err := tx.Model(&ds.User{}).Where("id = ?", currentuser.Get()).Count(&count).Error; err != nil {
+		if err := tx.Model(&ds.User{}).Where("id = ?", uint(1)).Count(&count).Error; err != nil {
 			return err
 		}
 		if count == 0 {
@@ -46,7 +48,7 @@ func Apply(db *gorm.DB) error {
 			if err != nil {
 				return err
 			}
-			user := ds.User{ID: currentuser.Get(), Login: "test", Password: string(hash)}
+			user := ds.User{ID: uint(1), Login: "test", Password: string(hash)}
 			if err := tx.Create(&user).Error; err != nil {
 				return err
 			}

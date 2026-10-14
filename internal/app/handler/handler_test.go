@@ -16,7 +16,7 @@ import (
 func TestInvalidRequests(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	NewHandler(nil).RegisterHandler(router)
+	validationRouter(router)
 	for _, test := range []struct{ method, path, body, contentType string }{
 		{"GET", "/api/corpora?page=0", "", ""},
 		{"GET", "/api/corpora?query=-1", "", ""},
@@ -30,14 +30,14 @@ func TestInvalidRequests(t *testing.T) {
 		{"PUT", "/api/corpora/1/publication", "", "application/json"},
 		{"PUT", "/api/corpora/1/publication", `{}`, "application/json"},
 		{"PUT", "/api/corpora/1/publication", `{"word_count":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":-1,"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":2147483648,"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":-1}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":101}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1.5,"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":0,"name":"Лишнее"}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":0,"creator_id":2}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"prep_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":-1,"prep_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":2147483648,"prep_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"prep_percent":-1}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"prep_percent":101}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1.5,"prep_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"prep_percent":0,"name":"Лишнее"}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"prep_percent":0,"creator_id":2}`, "application/json"},
 		{"DELETE", "/api/corpora/1", `{"creator_id":2}`, "application/json"},
 		{"POST", "/api/corpora/1/like", `{"like":2}`, "application/json"},
 		{"POST", "/api/corpora/1/like", `{}`, "application/json"},
@@ -64,8 +64,8 @@ func TestInvalidRequests(t *testing.T) {
 func TestMultipartRejectsSystemFieldsAndFakeFiles(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	NewHandler(nil).RegisterHandler(router)
-	for _, field := range []string{"author", "source", "status", "id", "creator_id", "date_create", "image", "video", "fake_image", "word_count", "pron_percent"} {
+	validationRouter(router)
+	for _, field := range []string{"author", "source", "status", "id", "creator_id", "date_create", "image", "video", "fake_image", "word_count", "prep_percent"} {
 		t.Run(field, func(t *testing.T) {
 			var body bytes.Buffer
 			writer := multipart.NewWriter(&body)
@@ -78,7 +78,7 @@ func TestMultipartRejectsSystemFieldsAndFakeFiles(t *testing.T) {
 				if field == "word_count" {
 					value = "200"
 				}
-				if field == "pron_percent" {
+				if field == "prep_percent" {
 					value = "8.5"
 				}
 				_ = writer.WriteField(field, value)
@@ -104,37 +104,105 @@ func TestEmptyCorpusSerializer(t *testing.T) {
 	if err := json.Unmarshal(payload, &result); err != nil {
 		t.Fatal(err)
 	}
-	for _, name := range []string{"id", "name", "description", "word_count", "pron_percent", "image_url", "video_url", "is_owner", "is_liked", "likes_count", "date_create", "date_finish"} {
+	for _, name := range []string{"id", "name", "description", "word_count", "prep_percent", "image_url", "video_url", "is_owner", "is_liked", "likes_count", "date_create", "date_finish"} {
 		if _, ok := result[name]; !ok {
 			t.Fatalf("missing %s", name)
 		}
 	}
-	for _, name := range []string{"author", "source", "creator", "creator_id", "status", "password", "prep_percent", "conj_percent", "is_delete"} {
+	for _, name := range []string{"author", "source", "creator", "creator_id", "status", "password", "pron_percent", "conj_percent", "is_delete"} {
 		if _, ok := result[name]; ok {
 			t.Fatalf("unexpected %s", name)
 		}
 	}
 }
 
-func TestAuthStubs(t *testing.T) {
+func TestAuthRequired(t *testing.T) {
 	router := gin.New()
-	NewHandler(nil).RegisterHandler(router)
-	for _, path := range []string{"/api/users/login", "/api/users/logout"} {
+	NewHandler(nil, nil).RegisterHandler(router)
+	for _, test := range []struct{ method, path string }{
+		{"POST", "/api/users/logout"}, {"GET", "/api/corpora/draft"}, {"POST", "/api/corpora"},
+		{"PUT", "/api/corpora/1/publication"}, {"DELETE", "/api/corpora/1"}, {"POST", "/api/corpora/1/like"},
+	} {
 		response := httptest.NewRecorder()
-		router.ServeHTTP(response, httptest.NewRequest("POST", path, nil))
-		if response.Code != 200 || response.Body.Len() != 0 || len(response.Result().Cookies()) != 0 {
-			t.Fatalf("stub returned %d %s", response.Code, response.Body.String())
+		router.ServeHTTP(response, httptest.NewRequest(test.method, test.path, nil))
+		if response.Code != 401 || response.Body.Len() != 0 {
+			t.Fatalf("%s: %d %s", test.path, response.Code, response.Body.String())
 		}
 	}
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest("POST", "/api/users/login", nil))
+	if response.Code != 400 {
+		t.Fatalf("missing credentials: %d", response.Code)
+	}
+}
+
+func validationRouter(router *gin.Engine) {
+	h := NewHandler(nil, nil)
+	router.Use(func(ctx *gin.Context) { ctx.Set("user_id", uint(1)) })
+	router.GET("/api/corpora", h.GetCorpora)
+	router.GET("/api/corpora/feed", h.GetFeed)
+	router.POST("/api/corpora", h.CreateDraft)
+	router.PUT("/api/corpora/:id/publication", h.Publish)
+	router.DELETE("/api/corpora/:id", h.DeleteCorpus)
+	router.POST("/api/corpora/:id/like", h.SetLike)
+	router.POST("/api/users", h.RegisterUser)
 }
 
 func TestUnknownRouteReturnsEmpty404(t *testing.T) {
 	router := gin.New()
-	NewHandler(nil).RegisterHandler(router)
+	NewHandler(nil, nil).RegisterHandler(router)
 	response := httptest.NewRecorder()
 	router.ServeHTTP(response, httptest.NewRequest("GET", "/api/unknown", nil))
 	if response.Code != 404 || response.Body.Len() != 0 {
 		t.Fatalf("got %d %s", response.Code, response.Body.String())
+	}
+}
+
+func TestSwaggerMatchesRoutes(t *testing.T) {
+	router := gin.New()
+	NewHandler(nil, nil).RegisterHandler(router)
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest("GET", "/swagger/doc.json", nil))
+	if response.Code != 200 {
+		t.Fatalf("specification unavailable: %d", response.Code)
+	}
+	var spec struct {
+		BasePath string `json:"basePath"`
+		Paths    map[string]map[string]struct {
+			OperationID string                `json:"operationId"`
+			Security    []map[string][]string `json:"security"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(response.Body.Bytes(), &spec); err != nil {
+		t.Fatal(err)
+	}
+	if spec.BasePath != "/api" {
+		t.Fatal("wrong API base path")
+	}
+	count := 0
+	for _, route := range router.Routes() {
+		if !strings.HasPrefix(route.Path, "/api/") {
+			continue
+		}
+		path := strings.TrimPrefix(route.Path, "/api")
+		path = strings.ReplaceAll(path, ":id", "{id}")
+		operation, exists := spec.Paths[path][strings.ToLower(route.Method)]
+		if !exists || operation.OperationID == "" {
+			t.Fatalf("undocumented route: %s %s", route.Method, route.Path)
+		}
+		public := route.Method == "GET" && (path == "/corpora" || path == "/corpora/feed") || path == "/users" || path == "/users/login"
+		if (len(operation.Security) == 0) != public {
+			t.Fatalf("wrong security declaration: %s", path)
+		}
+		count++
+	}
+	if count != 10 {
+		t.Fatalf("expected ten documented API routes, got %d", count)
+	}
+	response = httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest("GET", "/swagger/index.html", nil))
+	if response.Code != 200 || !strings.Contains(response.Body.String(), "swagger-ui") {
+		t.Fatal("Swagger UI unavailable")
 	}
 }
 

@@ -18,3 +18,9 @@ func (r *Repository) RegisterUser(ctx context.Context, login, password string) (
 	}
 	return user, nil
 }
+
+func (r *Repository) GetUserByLogin(ctx context.Context, login string) (*ds.User, error) {
+	var user ds.User
+	err := r.db.WithContext(ctx).Where("login = ?", login).First(&user).Error
+	return &user, err
+}

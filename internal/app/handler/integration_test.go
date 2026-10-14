@@ -18,10 +18,13 @@ import (
 	"testing"
 	"time"
 
+	"attributor/internal/app/auth"
 	"attributor/internal/app/ds"
 	"attributor/internal/app/dto"
 	"attributor/internal/app/migration"
+	blacklist "attributor/internal/app/redis"
 	"attributor/internal/app/repository"
+	"github.com/alicebob/miniredis/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -58,14 +61,15 @@ func TestAPIIntegration(t *testing.T) {
 	if err := db.AutoMigrate(&ds.User{}, &ds.Corpus{}, &ds.Like{}); err != nil {
 		t.Fatal(err)
 	}
-	if err := db.Exec("ALTER TABLE corpora ADD COLUMN prep_percent real, ADD COLUMN conj_percent real, ADD COLUMN is_delete boolean DEFAULT false").Error; err != nil {
+	if err := db.Exec("ALTER TABLE corpora RENAME COLUMN prep_percent TO pron_percent; ALTER TABLE corpora ADD COLUMN conj_percent real, ADD COLUMN is_delete boolean DEFAULT false").Error; err != nil {
 		t.Fatal(err)
 	}
-	if err := db.Create(&ds.User{ID: 1, Login: "test", Password: "legacy"}).Error; err != nil {
+	seedHash, _ := bcrypt.GenerateFromPassword([]byte("test123"), bcrypt.DefaultCost)
+	if err := db.Create(&ds.User{ID: 1, Login: "test", Password: string(seedHash)}).Error; err != nil {
 		t.Fatal(err)
 	}
 	legacy := ds.Corpus{CreatorID: 1, Name: "Legacy, Legacy", Status: ds.StatusPublished, DateCreate: time.Now()}
-	if err := db.Create(&legacy).Error; err != nil {
+	if err := db.Omit("PrepPercent").Create(&legacy).Error; err != nil {
 		t.Fatal(err)
 	}
 	if err := db.Model(&legacy).Update("is_delete", true).Error; err != nil {
@@ -80,7 +84,7 @@ func TestAPIIntegration(t *testing.T) {
 	if err := db.First(&legacy, legacy.ID).Error; err != nil || legacy.Status != ds.StatusDeleted {
 		t.Fatal("legacy deletion lost")
 	}
-	for _, column := range []string{"prep_percent", "conj_percent", "is_delete"} {
+	for _, column := range []string{"pron_percent", "conj_percent", "is_delete"} {
 		if db.Migrator().HasColumn(&ds.Corpus{}, column) {
 			t.Fatalf("column remains: %s", column)
 		}
@@ -114,10 +118,32 @@ func TestAPIIntegration(t *testing.T) {
 	})
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	NewHandler(rep).RegisterHandler(router)
+	redisAddress := os.Getenv("LAB4_TEST_REDIS_ADDR")
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+	if redisAddress == "" {
+		redisAddress = miniredis.RunT(t).Addr()
+		redisPassword = ""
+	}
+	store, err := blacklist.New(ctx, redisAddress, redisPassword)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	authentication, err := auth.New("integration-private-secret-of-at-least-32-bytes", "attributor", time.Hour, store)
+	if err != nil {
+		t.Fatal(err)
+	}
+	token, _, err := authentication.Issue(1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	NewHandler(rep, authentication).RegisterHandler(router)
 	request := func(method, path, body string, code int) *httptest.ResponseRecorder {
 		response := httptest.NewRecorder()
 		req := httptest.NewRequest(method, path, strings.NewReader(body))
+		if token != "" {
+			req.Header.Set("Authorization", "Bearer "+token)
+		}
 		if body != "" {
 			req.Header.Set("Content-Type", "application/json")
 		}
@@ -158,6 +184,7 @@ func TestAPIIntegration(t *testing.T) {
 		}
 		req := httptest.NewRequest("POST", "/api/corpora", &body)
 		req.Header.Set("Content-Type", writer.FormDataContentType())
+		req.Header.Set("Authorization", "Bearer "+token)
 		response := httptest.NewRecorder()
 		router.ServeHTTP(response, req)
 		return response
@@ -181,6 +208,16 @@ func TestAPIIntegration(t *testing.T) {
 		}
 		return corpus
 	}
+	request("POST", "/api/users/login", `{"login":"test","password":"wrong"}`, 401)
+	request("POST", "/api/users/login", `{"login":"absent","password":"test123"}`, 401)
+	var login dto.LoginResponse
+	if err := json.Unmarshal(request("POST", "/api/users/login", `{"login":"test","password":"test123"}`, 200).Body.Bytes(), &login); err != nil {
+		t.Fatal(err)
+	}
+	if login.TokenType != "Bearer" || login.ExpiresIn != 3600 || login.AccessToken == "" {
+		t.Fatal("invalid login response")
+	}
+	token = login.AccessToken
 	request("GET", "/api/corpora/draft", "", 404)
 	request("GET", "/api/corpora/feed", "", 404)
 	empty := request("GET", "/api/corpora", "", 200)
@@ -192,7 +229,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatalf("creation: %d %s", created.Code, created.Body.String())
 	}
 	corpus := decodeCorpus(created)
-	if corpus.IsOwner != 1 || corpus.PronPercent != nil || corpus.WordCount != 0 {
+	if corpus.IsOwner != 1 || corpus.PrepPercent != nil || corpus.WordCount != 0 {
 		t.Fatal("invalid corpus response")
 	}
 	var stored ds.Corpus
@@ -230,12 +267,12 @@ func TestAPIIntegration(t *testing.T) {
 	publication := fmt.Sprintf("/api/corpora/%d/publication", corpus.ID)
 	request("PUT", publication, `{"status":"черновик"}`, 400)
 	request("PUT", publication, `{"word_count":200}`, 400)
-	request("PUT", publication, `{"word_count":200,"pron_percent":101}`, 400)
-	if unchanged := decodeCorpus(request("GET", "/api/corpora/draft", "", 200)); unchanged.WordCount != 0 || unchanged.PronPercent != nil || unchanged.DateFinish != nil {
+	request("PUT", publication, `{"word_count":200,"prep_percent":101}`, 400)
+	if unchanged := decodeCorpus(request("GET", "/api/corpora/draft", "", 200)); unchanged.WordCount != 0 || unchanged.PrepPercent != nil || unchanged.DateFinish != nil {
 		t.Fatal("invalid publication changed draft")
 	}
-	request("PUT", publication, `{"word_count":200,"pron_percent":8.5}`, 200)
-	request("PUT", publication, `{"word_count":0,"pron_percent":0}`, 409)
+	request("PUT", publication, `{"word_count":200,"prep_percent":8.5}`, 200)
+	request("PUT", publication, `{"word_count":0,"prep_percent":0}`, 409)
 	request("GET", "/api/corpora/draft", "", 404)
 	filtered := request("GET", "/api/corpora?query=201", "", 200)
 	if !strings.Contains(filtered.Body.String(), `"items":[]`) {
@@ -243,7 +280,7 @@ func TestAPIIntegration(t *testing.T) {
 	}
 	request("GET", "/api/corpora?query=200", "", 200)
 	feed := decodeCorpus(request("GET", "/api/corpora/feed", "", 200))
-	if feed.ID != corpus.ID || feed.DateFinish == nil || feed.WordCount != 200 || feed.PronPercent == nil || *feed.PronPercent != 8.5 {
+	if feed.ID != corpus.ID || feed.DateFinish == nil || feed.WordCount != 200 || feed.PrepPercent == nil || *feed.PrepPercent != 8.5 {
 		t.Fatal("wrong feed")
 	}
 	request("GET", fmt.Sprintf("/api/corpora/feed?id=%d&next=true", corpus.ID), "", 200)
@@ -277,7 +314,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	request("DELETE", fmt.Sprintf("/api/corpora/%d", foreign.ID), "", 403)
-	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", foreign.ID), `{"word_count":0,"pron_percent":0}`, 403)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", foreign.ID), `{"word_count":0,"prep_percent":0}`, 403)
 	nextFeed := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d&next=true", corpus.ID), "", 200))
 	if nextFeed.ID != foreign.ID || nextFeed.IsOwner != 0 {
 		t.Fatal("next feed failed")
@@ -321,7 +358,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	failureRouter := gin.New()
-	NewHandler(unavailable).RegisterHandler(failureRouter)
+	NewHandler(unavailable, authentication).RegisterHandler(failureRouter)
 	original := router
 	router = failureRouter
 	if result := multipartRequest("minio_failure", true); result.Code != 500 {
@@ -352,10 +389,62 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatalf("concurrent results: %d successes, %d conflicts", successes, conflicts)
 	}
 	zeroDraft := decodeCorpus(request("GET", "/api/corpora/draft", "", 200))
-	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"word_count":0,"pron_percent":0}`, 200)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"word_count":0,"prep_percent":0}`, 200)
 	zeroPublished := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
-	if zeroPublished.WordCount != 0 || zeroPublished.PronPercent == nil || *zeroPublished.PronPercent != 0 || zeroPublished.DateFinish == nil {
+	if zeroPublished.WordCount != 0 || zeroPublished.PrepPercent == nil || *zeroPublished.PrepPercent != 0 || zeroPublished.DateFinish == nil {
 		t.Fatal("zero publication values not saved")
 	}
+
+	ownerToken := token
+	token = ""
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"word_count":1,"prep_percent":1}`, 401)
+	for _, guestToken := range []string{"", "broken"} {
+		token = guestToken
+		guest := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
+		if guest.IsOwner != 0 || guest.IsLiked != 0 {
+			t.Fatal("guest personalized")
+		}
+	}
+	token = ownerToken
+	request("POST", "/api/users/logout", "", 200)
+	request("GET", "/api/corpora/draft", "", 401)
+	guest := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
+	if guest.IsOwner != 0 {
+		t.Fatal("revoked token still personalized")
+	}
+	restartedRouter := gin.New()
+	NewHandler(rep, authentication).RegisterHandler(restartedRouter)
+	router = restartedRouter
+	request("GET", "/api/corpora/draft", "", 401)
+	request("POST", "/api/users/login", `{"login":"new_user","password":"test123"}`, 200)
+	var secondLogin dto.LoginResponse
+	if err := json.Unmarshal(request("POST", "/api/users/login", `{"login":"new_user","password":"test123"}`, 200).Body.Bytes(), &secondLogin); err != nil {
+		t.Fatal(err)
+	}
+	token = secondLogin.AccessToken
+	request("GET", "/api/corpora/draft", "", 404)
+	secondCreated := multipartRequest("Корпус второго автора", false)
+	if secondCreated.Code != 201 {
+		t.Fatalf("second user: %d", secondCreated.Code)
+	}
+	secondDraft := decodeCorpus(secondCreated)
+	var secondStored ds.Corpus
+	if err := db.First(&secondStored, secondDraft.ID).Error; err != nil || secondStored.CreatorID != user.ID {
+		t.Fatal("wrong authenticated creator")
+	}
+	request("DELETE", fmt.Sprintf("/api/corpora/%d", zeroDraft.ID), "", 403)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", secondDraft.ID), `{"word_count":20,"prep_percent":5}`, 200)
+	secondLikePath := fmt.Sprintf("/api/corpora/%d/like", zeroDraft.ID)
+	request("POST", secondLikePath, `{"like":1}`, 200)
+	secondFeed := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
+	if secondFeed.IsOwner != 0 || secondFeed.IsLiked != 1 {
+		t.Fatal("wrong second-user personalization")
+	}
+	token, _, _ = authentication.Issue(1)
+	firstFeed := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
+	if firstFeed.IsOwner != 1 || firstFeed.IsLiked != 0 {
+		t.Fatal("identities leaked between requests")
+	}
+	request("GET", "/api/corpora/draft", "", 404)
 
 }

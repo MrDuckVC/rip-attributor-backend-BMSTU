@@ -47,7 +47,7 @@ func TestLegacyCorpusNames(t *testing.T) {
 			if overflow {
 				author, source = strings.Repeat("А", 50), strings.Repeat("Б", 100)
 			}
-			row := map[string]interface{}{"id": 7, "creator_id": 1, "author": author, "source": source, "word_count": 200, "pron_percent": 8.5, "description": "Сохранилось", "status": ds.StatusPublished, "date_create": time.Now()}
+			row := map[string]interface{}{"id": 7, "creator_id": 1, "author": author, "source": source, "word_count": 200, "prep_percent": 8.5, "description": "Сохранилось", "status": ds.StatusPublished, "date_create": time.Now()}
 			if err := db.Table("corpora").Create(row).Error; err != nil {
 				t.Fatal(err)
 			}

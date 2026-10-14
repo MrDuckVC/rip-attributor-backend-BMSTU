@@ -11,7 +11,7 @@ type CreateCorpus struct {
 // PublishCorpus accepts only the two thematic fields. Pointers distinguish zero from omission.
 type PublishCorpus struct {
 	WordCount   *int     `json:"word_count" binding:"required,gte=0,lte=2147483647"`
-	PronPercent *float64 `json:"pron_percent" binding:"required,gte=0,lte=100"`
+	PrepPercent *float64 `json:"prep_percent" binding:"required,gte=0,lte=100"`
 }
 
 type LikeRequest struct {
@@ -25,7 +25,7 @@ type Corpus struct {
 	Name        string     `json:"name"`
 	Description string     `json:"description"`
 	WordCount   int        `json:"word_count"`
-	PronPercent *float64   `json:"pron_percent"`
+	PrepPercent *float64   `json:"prep_percent"`
 	ImageURL    string     `json:"image_url"`
 	VideoURL    string     `json:"video_url"`
 	IsOwner     int        `json:"is_owner"`

@@ -82,3 +82,11 @@ func normalizeError(err error) error {
 func isLegacyURL(value string) bool {
 	return strings.HasPrefix(value, "http://") || strings.HasPrefix(value, "https://")
 }
+
+func (r *Repository) Close() error {
+	db, err := r.db.DB()
+	if err != nil {
+		return err
+	}
+	return db.Close()
+}
