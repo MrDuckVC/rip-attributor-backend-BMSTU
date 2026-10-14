@@ -27,7 +27,7 @@ func parseCreate(ctx *gin.Context) (dto.CreateCorpus, []repository.Upload, error
 	if err := ctx.Request.ParseMultipartForm(2 << 20); err != nil {
 		return data, nil, err
 	}
-	allowed := map[string]bool{"author": true, "source": true, "description": true, "word_count": true, "pron_percent": true}
+	allowed := map[string]bool{"name": true, "description": true, "word_count": true, "pron_percent": true}
 	for field, values := range ctx.Request.MultipartForm.Value {
 		if !allowed[field] || len(values) != 1 {
 			return data, nil, errors.New("invalid form field")
@@ -36,7 +36,7 @@ func parseCreate(ctx *gin.Context) (dto.CreateCorpus, []repository.Upload, error
 	if err := ctx.ShouldBind(&data); err != nil {
 		return data, nil, err
 	}
-	if strings.TrimSpace(data.Author) == "" || strings.TrimSpace(data.Source) == "" {
+	if strings.TrimSpace(data.Name) == "" {
 		return data, nil, errors.New("empty field")
 	}
 	if err := binding.Validator.ValidateStruct(data); err != nil {

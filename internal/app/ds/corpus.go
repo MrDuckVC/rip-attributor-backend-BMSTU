@@ -13,8 +13,7 @@ type Corpus struct {
 	CreatorID   uint       `gorm:"type:int;not null"`
 	ImageURL    *string    `gorm:"type:varchar(255)"`
 	VideoURL    *string    `gorm:"type:varchar(255)"`
-	Author      string     `gorm:"type:varchar(50);not null"`
-	Source      string     `gorm:"type:varchar(100);not null"`
+	Name        string     `gorm:"type:varchar(150);not null"`
 	WordCount   int        `gorm:"type:int;not null;default:0"`
 	PronPercent *float64   `gorm:"type:real"`
 	Description string     `gorm:"type:text"`

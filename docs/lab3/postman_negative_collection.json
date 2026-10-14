@@ -660,7 +660,7 @@
         "description": "",
         "body": {
           "mode": "raw",
-          "raw": "{\"author\": \"Автор\"}",
+          "raw": "{\"name\": \"Автор\"}",
           "options": {
             "raw": {
               "language": "json"
@@ -854,13 +854,8 @@
           "mode": "formdata",
           "formdata": [
             {
-              "key": "author",
-              "value": "Автор",
-              "type": "text"
-            },
-            {
-              "key": "source",
-              "value": "Источник",
+              "key": "name",
+              "value": "Автор, Источник",
               "type": "text"
             },
             {

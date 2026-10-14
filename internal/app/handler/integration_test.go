@@ -64,7 +64,7 @@ func TestAPIIntegration(t *testing.T) {
 	if err := db.Create(&ds.User{ID: 1, Login: "test", Password: "legacy"}).Error; err != nil {
 		t.Fatal(err)
 	}
-	legacy := ds.Corpus{CreatorID: 1, Author: "Legacy", Source: "Legacy", Status: ds.StatusPublished, DateCreate: time.Now()}
+	legacy := ds.Corpus{CreatorID: 1, Name: "Legacy, Legacy", Status: ds.StatusPublished, DateCreate: time.Now()}
 	if err := db.Create(&legacy).Error; err != nil {
 		t.Fatal(err)
 	}
@@ -127,10 +127,10 @@ func TestAPIIntegration(t *testing.T) {
 		}
 		return response
 	}
-	multipartRequest := func(source string, withMedia bool) *httptest.ResponseRecorder {
+	multipartRequest := func(name string, withMedia bool) *httptest.ResponseRecorder {
 		var body bytes.Buffer
 		writer := multipart.NewWriter(&body)
-		for name, value := range map[string]string{"author": "Автор", "source": source, "word_count": "200", "pron_percent": "8.5"} {
+		for name, value := range map[string]string{"name": name, "word_count": "200", "pron_percent": "8.5"} {
 			if err := writer.WriteField(name, value); err != nil {
 				t.Fatal(err)
 			}
@@ -252,8 +252,11 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	request("POST", "/api/users", `{"login":"new_user","password":"test123"}`, 409)
-	foreign := ds.Corpus{CreatorID: user.ID, Author: "Чужой", Source: "Книга", Status: ds.StatusPublished, DateCreate: time.Now()}
+	foreign := ds.Corpus{ID: corpus.ID + 4, CreatorID: user.ID, Name: "Чужой, Книга", Status: ds.StatusPublished, DateCreate: time.Now()}
 	if err := db.Create(&foreign).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Exec("SELECT setval(pg_get_serial_sequence('corpora','id'), (SELECT MAX(id) FROM corpora), true)").Error; err != nil {
 		t.Fatal(err)
 	}
 	request("DELETE", fmt.Sprintf("/api/corpora/%d", foreign.ID), "", 403)
@@ -270,10 +273,10 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatal("soft delete failed")
 	}
 	// Uploads are removed when inserting the database row fails.
-	if err := db.Exec(`CREATE FUNCTION reject_test_source() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.source = 'db_failure' THEN RAISE EXCEPTION 'test failure'; END IF; RETURN NEW; END $$`).Error; err != nil {
+	if err := db.Exec(`CREATE FUNCTION reject_test_name() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.name = 'db_failure' THEN RAISE EXCEPTION 'test failure'; END IF; RETURN NEW; END $$`).Error; err != nil {
 		t.Fatal(err)
 	}
-	if err := db.Exec("CREATE TRIGGER reject_test_source BEFORE INSERT ON corpora FOR EACH ROW EXECUTE FUNCTION reject_test_source()").Error; err != nil {
+	if err := db.Exec("CREATE TRIGGER reject_test_name BEFORE INSERT ON corpora FOR EACH ROW EXECUTE FUNCTION reject_test_name()").Error; err != nil {
 		t.Fatal(err)
 	}
 	objectCount := func() int {

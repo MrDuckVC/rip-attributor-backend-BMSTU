@@ -103,7 +103,7 @@ func (h *Handler) serializeCorpus(ctx *gin.Context, corpus *ds.Corpus) (dto.Corp
 		owner = 1
 	}
 	return dto.Corpus{
-		ID: corpus.ID, Author: corpus.Author, Source: corpus.Source, Description: corpus.Description,
+		ID: corpus.ID, Name: corpus.Name, Description: corpus.Description,
 		WordCount: corpus.WordCount, PronPercent: corpus.PronPercent, ImageURL: image, VideoURL: video,
 		Creator: dto.User{ID: corpus.Creator.ID, Login: corpus.Creator.Login}, IsOwner: owner, IsLiked: liked, LikesCount: count,
 		DateCreate: corpus.DateCreate, DateFinish: corpus.DateFinish,
@@ -206,7 +206,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 		ctx.Status(http.StatusBadRequest)
 		return
 	}
-	corpus := &ds.Corpus{CreatorID: currentuser.Get(), Author: data.Author, Source: data.Source, Description: data.Description, WordCount: data.WordCount, PronPercent: data.PronPercent}
+	corpus := &ds.Corpus{CreatorID: currentuser.Get(), Name: data.Name, Description: data.Description, WordCount: data.WordCount, PronPercent: data.PronPercent}
 	for _, file := range files {
 		name := file.Name
 		if file.ContentType[:6] == "image/" {

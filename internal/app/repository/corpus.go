@@ -30,13 +30,16 @@ func (r *Repository) GetFeed(ctx context.Context, id *uint, next bool) (*ds.Corp
 		return corpus, query.Where("id = ?", *id).First(corpus).Error
 	}
 	if id != nil {
-		err := query.Where("id > ?", *id).Order("id ASC").First(corpus).Error
+		err := query.Where("id > ?", *id).
+			Order("id ASC").First(corpus).Error
 		if err == nil || err != gorm.ErrRecordNotFound {
 			return corpus, err
 		}
 	}
 	// First limits the main corpus query to one row, including wraparound.
-	return corpus, r.db.WithContext(ctx).Preload("Creator").Where("status = ?", ds.StatusPublished).Order("id ASC").First(corpus).Error
+	return corpus, r.db.WithContext(ctx).Preload("Creator").
+		Where("status = ?", ds.StatusPublished).
+		Order("id ASC").First(corpus).Error
 }
 
 func (r *Repository) GetDraft(ctx context.Context, userID uint) (*ds.Corpus, error) {

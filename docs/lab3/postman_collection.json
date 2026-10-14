@@ -97,13 +97,8 @@
           "mode": "formdata",
           "formdata": [
             {
-              "key": "author",
-              "value": "Автор",
-              "type": "text"
-            },
-            {
-              "key": "source",
-              "value": "Корпус текстов",
+              "key": "name",
+              "value": "Автор, Корпус текстов",
               "type": "text"
             },
             {

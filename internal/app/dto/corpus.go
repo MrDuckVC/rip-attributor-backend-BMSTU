@@ -4,8 +4,7 @@ import "time"
 
 // CreateCorpus contains only fields which the client may set.
 type CreateCorpus struct {
-	Author      string   `form:"author" binding:"required,max=50"`
-	Source      string   `form:"source" binding:"required,max=100"`
+	Name        string   `form:"name" binding:"required,max=150"`
 	Description string   `form:"description"`
 	WordCount   int      `form:"word_count" binding:"gte=0,lte=2147483647"`
 	PronPercent *float64 `form:"pron_percent" binding:"omitempty,gte=0,lte=100"`
@@ -19,8 +18,7 @@ type LikeRequest struct {
 // No omitempty: empty fields are still present in JSON.
 type Corpus struct {
 	ID          uint       `json:"id"`
-	Author      string     `json:"author"`
-	Source      string     `json:"source"`
+	Name        string     `json:"name"`
 	Description string     `json:"description"`
 	WordCount   int        `json:"word_count"`
 	PronPercent *float64   `json:"pron_percent"`

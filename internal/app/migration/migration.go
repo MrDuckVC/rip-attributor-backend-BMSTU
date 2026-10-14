@@ -10,6 +10,9 @@ import (
 // Apply migrates lab 2 records without recreating tables or deleting data rows.
 func Apply(db *gorm.DB) error {
 	return db.Transaction(func(tx *gorm.DB) error {
+		if err := migrateCorpusName(tx); err != nil {
+			return err
+		}
 		if tx.Migrator().HasTable(&ds.Corpus{}) && tx.Migrator().HasColumn(&ds.Corpus{}, "is_delete") {
 			if err := tx.Model(&ds.Corpus{}).Where("is_delete = ?", true).Update("status", ds.StatusDeleted).Error; err != nil {
 				return err

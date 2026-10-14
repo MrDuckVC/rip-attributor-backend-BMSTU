@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"attributor/internal/app/dto"
@@ -33,7 +34,7 @@ func TestInvalidRequests(t *testing.T) {
 		{"POST", "/api/users", `{"login":"","password":"test"}`, "application/json"},
 		{"POST", "/api/users", `{"login":"test","password":"test","is_moderator":true}`, "application/json"},
 		{"POST", "/api/users", `{"login":"test","password":"test"} {}`, "application/json"},
-		{"POST", "/api/corpora", `{"author":"test"}`, "application/json"},
+		{"POST", "/api/corpora", `{"name":"test"}`, "application/json"},
 	} {
 		t.Run(test.method+test.path+test.body, func(t *testing.T) {
 			req := httptest.NewRequest(test.method, test.path, bytes.NewBufferString(test.body))
@@ -53,12 +54,11 @@ func TestMultipartRejectsSystemFieldsAndFakeFiles(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	NewHandler(nil).RegisterHandler(router)
-	for _, field := range []string{"status", "id", "creator_id", "date_create", "image", "video", "fake_image", "word_count", "pron_percent"} {
+	for _, field := range []string{"author", "source", "status", "id", "creator_id", "date_create", "image", "video", "fake_image", "word_count", "pron_percent"} {
 		t.Run(field, func(t *testing.T) {
 			var body bytes.Buffer
 			writer := multipart.NewWriter(&body)
-			_ = writer.WriteField("author", "Автор")
-			_ = writer.WriteField("source", "Источник")
+			_ = writer.WriteField("name", "Автор, Источник")
 			if field == "fake_image" {
 				part, _ := writer.CreateFormFile("image", "image.png")
 				_, _ = part.Write([]byte("not an image"))
@@ -93,12 +93,12 @@ func TestEmptyCorpusSerializer(t *testing.T) {
 	if err := json.Unmarshal(payload, &result); err != nil {
 		t.Fatal(err)
 	}
-	for _, name := range []string{"id", "author", "source", "description", "word_count", "pron_percent", "image_url", "video_url", "creator", "is_owner", "is_liked", "likes_count", "date_create", "date_finish"} {
+	for _, name := range []string{"id", "name", "description", "word_count", "pron_percent", "image_url", "video_url", "creator", "is_owner", "is_liked", "likes_count", "date_create", "date_finish"} {
 		if _, ok := result[name]; !ok {
 			t.Fatalf("missing %s", name)
 		}
 	}
-	for _, name := range []string{"status", "password", "prep_percent", "conj_percent", "is_delete"} {
+	for _, name := range []string{"author", "source", "status", "password", "prep_percent", "conj_percent", "is_delete"} {
 		if _, ok := result[name]; ok {
 			t.Fatalf("unexpected %s", name)
 		}
@@ -124,5 +124,40 @@ func TestUnknownRouteReturnsEmpty404(t *testing.T) {
 	router.ServeHTTP(response, httptest.NewRequest("GET", "/api/unknown", nil))
 	if response.Code != 404 || response.Body.Len() != 0 {
 		t.Fatalf("got %d %s", response.Code, response.Body.String())
+	}
+}
+
+func TestCreateNameLength(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		valid bool
+	}{
+		{strings.Repeat("Я", 150), true},
+		{strings.Repeat("Я", 151), false},
+		{"", false},
+		{"   ", false},
+	} {
+		var body bytes.Buffer
+		writer := multipart.NewWriter(&body)
+		if err := writer.WriteField("name", test.name); err != nil {
+			t.Fatal(err)
+		}
+		if err := writer.Close(); err != nil {
+			t.Fatal(err)
+		}
+		req := httptest.NewRequest("POST", "/api/corpora", &body)
+		req.Header.Set("Content-Type", writer.FormDataContentType())
+		ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+		ctx.Request = req
+		data, _, err := parseCreate(ctx)
+		if req.MultipartForm != nil {
+			req.MultipartForm.RemoveAll()
+		}
+		if (err == nil) != test.valid {
+			t.Fatalf("name length %d: %v", len([]rune(test.name)), err)
+		}
+		if test.valid && data.Name != test.name {
+			t.Fatal("name changed")
+		}
 	}
 }
