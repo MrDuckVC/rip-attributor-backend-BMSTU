@@ -352,7 +352,7 @@
         "description": "",
         "body": {
           "mode": "raw",
-          "raw": "{\"status\": \"черновик\"}",
+          "raw": "{\"status\": \"черновик\", \"word_count\": 200, \"pron_percent\": 8.5}",
           "options": {
             "raw": {
               "language": "json"

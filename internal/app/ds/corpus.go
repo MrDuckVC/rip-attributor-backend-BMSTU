@@ -21,8 +21,7 @@ type Corpus struct {
 	DateCreate  time.Time  `gorm:"type:timestamp;not null"`
 	DateFinish  *time.Time `gorm:"type:timestamp"`
 
-	Creator User   `gorm:"foreignKey:CreatorID"`
-	Likes   []Like `gorm:"foreignKey:CorpusID"`
+	Likes []Like `gorm:"foreignKey:CorpusID"`
 }
 
 func (Corpus) TableName() string {

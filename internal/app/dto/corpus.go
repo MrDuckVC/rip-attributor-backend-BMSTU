@@ -4,10 +4,14 @@ import "time"
 
 // CreateCorpus contains only fields which the client may set.
 type CreateCorpus struct {
-	Name        string   `form:"name" binding:"required,max=150"`
-	Description string   `form:"description"`
-	WordCount   int      `form:"word_count" binding:"gte=0,lte=2147483647"`
-	PronPercent *float64 `form:"pron_percent" binding:"omitempty,gte=0,lte=100"`
+	Name        string `form:"name" binding:"required,max=150"`
+	Description string `form:"description"`
+}
+
+// PublishCorpus accepts only the two thematic fields. Pointers distinguish zero from omission.
+type PublishCorpus struct {
+	WordCount   *int     `json:"word_count" binding:"required,gte=0,lte=2147483647"`
+	PronPercent *float64 `json:"pron_percent" binding:"required,gte=0,lte=100"`
 }
 
 type LikeRequest struct {
@@ -24,7 +28,6 @@ type Corpus struct {
 	PronPercent *float64   `json:"pron_percent"`
 	ImageURL    string     `json:"image_url"`
 	VideoURL    string     `json:"video_url"`
-	Creator     User       `json:"creator"`
 	IsOwner     int        `json:"is_owner"`
 	IsLiked     int        `json:"is_liked"`
 	LikesCount  int64      `json:"likes_count"`

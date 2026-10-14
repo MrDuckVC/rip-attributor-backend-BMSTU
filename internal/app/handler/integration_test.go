@@ -130,7 +130,7 @@ func TestAPIIntegration(t *testing.T) {
 	multipartRequest := func(name string, withMedia bool) *httptest.ResponseRecorder {
 		var body bytes.Buffer
 		writer := multipart.NewWriter(&body)
-		for name, value := range map[string]string{"name": name, "word_count": "200", "pron_percent": "8.5"} {
+		for name, value := range map[string]string{"name": name, "description": "Описание корпуса"} {
 			if err := writer.WriteField(name, value); err != nil {
 				t.Fatal(err)
 			}
@@ -167,6 +167,18 @@ func TestAPIIntegration(t *testing.T) {
 		if err := json.Unmarshal(response.Body.Bytes(), &corpus); err != nil {
 			t.Fatal(err)
 		}
+		var fields map[string]interface{}
+		if err := json.Unmarshal(response.Body.Bytes(), &fields); err != nil {
+			t.Fatal(err)
+		}
+		for key, value := range fields {
+			if key == "creator" || key == "creator_id" {
+				t.Fatalf("unexpected creator field: %s", key)
+			}
+			if _, nested := value.(map[string]interface{}); nested {
+				t.Fatalf("nested corpus field: %s", key)
+			}
+		}
 		return corpus
 	}
 	request("GET", "/api/corpora/draft", "", 404)
@@ -180,7 +192,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatalf("creation: %d %s", created.Code, created.Body.String())
 	}
 	corpus := decodeCorpus(created)
-	if corpus.IsOwner != 1 || corpus.PronPercent == nil || *corpus.PronPercent != 8.5 {
+	if corpus.IsOwner != 1 || corpus.PronPercent != nil || corpus.WordCount != 0 {
 		t.Fatal("invalid corpus response")
 	}
 	var stored ds.Corpus
@@ -217,8 +229,13 @@ func TestAPIIntegration(t *testing.T) {
 	}
 	publication := fmt.Sprintf("/api/corpora/%d/publication", corpus.ID)
 	request("PUT", publication, `{"status":"черновик"}`, 400)
-	request("PUT", publication, "", 200)
-	request("PUT", publication, "", 409)
+	request("PUT", publication, `{"word_count":200}`, 400)
+	request("PUT", publication, `{"word_count":200,"pron_percent":101}`, 400)
+	if unchanged := decodeCorpus(request("GET", "/api/corpora/draft", "", 200)); unchanged.WordCount != 0 || unchanged.PronPercent != nil || unchanged.DateFinish != nil {
+		t.Fatal("invalid publication changed draft")
+	}
+	request("PUT", publication, `{"word_count":200,"pron_percent":8.5}`, 200)
+	request("PUT", publication, `{"word_count":0,"pron_percent":0}`, 409)
 	request("GET", "/api/corpora/draft", "", 404)
 	filtered := request("GET", "/api/corpora?query=201", "", 200)
 	if !strings.Contains(filtered.Body.String(), `"items":[]`) {
@@ -226,7 +243,7 @@ func TestAPIIntegration(t *testing.T) {
 	}
 	request("GET", "/api/corpora?query=200", "", 200)
 	feed := decodeCorpus(request("GET", "/api/corpora/feed", "", 200))
-	if feed.ID != corpus.ID || feed.DateFinish == nil {
+	if feed.ID != corpus.ID || feed.DateFinish == nil || feed.WordCount != 200 || feed.PronPercent == nil || *feed.PronPercent != 8.5 {
 		t.Fatal("wrong feed")
 	}
 	request("GET", fmt.Sprintf("/api/corpora/feed?id=%d&next=true", corpus.ID), "", 200)
@@ -260,7 +277,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	request("DELETE", fmt.Sprintf("/api/corpora/%d", foreign.ID), "", 403)
-	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", foreign.ID), "", 403)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", foreign.ID), `{"word_count":0,"pron_percent":0}`, 403)
 	nextFeed := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d&next=true", corpus.ID), "", 200))
 	if nextFeed.ID != foreign.ID || nextFeed.IsOwner != 0 {
 		t.Fatal("next feed failed")
@@ -334,4 +351,11 @@ func TestAPIIntegration(t *testing.T) {
 	if successes != 1 || conflicts != 1 {
 		t.Fatalf("concurrent results: %d successes, %d conflicts", successes, conflicts)
 	}
+	zeroDraft := decodeCorpus(request("GET", "/api/corpora/draft", "", 200))
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"word_count":0,"pron_percent":0}`, 200)
+	zeroPublished := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
+	if zeroPublished.WordCount != 0 || zeroPublished.PronPercent == nil || *zeroPublished.PronPercent != 0 || zeroPublished.DateFinish == nil {
+		t.Fatal("zero publication values not saved")
+	}
+
 }

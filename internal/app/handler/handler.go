@@ -14,6 +14,7 @@ import (
 	"attributor/internal/app/repository"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -105,7 +106,7 @@ func (h *Handler) serializeCorpus(ctx *gin.Context, corpus *ds.Corpus) (dto.Corp
 	return dto.Corpus{
 		ID: corpus.ID, Name: corpus.Name, Description: corpus.Description,
 		WordCount: corpus.WordCount, PronPercent: corpus.PronPercent, ImageURL: image, VideoURL: video,
-		Creator: dto.User{ID: corpus.Creator.ID, Login: corpus.Creator.Login}, IsOwner: owner, IsLiked: liked, LikesCount: count,
+		IsOwner: owner, IsLiked: liked, LikesCount: count,
 		DateCreate: corpus.DateCreate, DateFinish: corpus.DateFinish,
 	}, nil
 }
@@ -206,7 +207,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 		ctx.Status(http.StatusBadRequest)
 		return
 	}
-	corpus := &ds.Corpus{CreatorID: currentuser.Get(), Name: data.Name, Description: data.Description, WordCount: data.WordCount, PronPercent: data.PronPercent}
+	corpus := &ds.Corpus{CreatorID: currentuser.Get(), Name: data.Name, Description: data.Description}
 	for _, file := range files {
 		name := file.Name
 		if file.ContentType[:6] == "image/" {
@@ -229,11 +230,12 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 
 func (h *Handler) Publish(ctx *gin.Context) {
 	id, err := parseID(ctx.Param("id"))
-	if err != nil || decodeJSON(ctx, &struct{}{}, true) != nil {
+	var data dto.PublishCorpus
+	if err != nil || decodeJSON(ctx, &data, false) != nil || binding.Validator.ValidateStruct(&data) != nil {
 		ctx.Status(http.StatusBadRequest)
 		return
 	}
-	if err := h.Repository.PublishCorpus(ctx.Request.Context(), id, currentuser.Get()); err != nil {
+	if err := h.Repository.PublishCorpus(ctx.Request.Context(), id, currentuser.Get(), *data.WordCount, *data.PronPercent); err != nil {
 		respondError(ctx, err)
 		return
 	}

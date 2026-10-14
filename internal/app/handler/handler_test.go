@@ -27,6 +27,17 @@ func TestInvalidRequests(t *testing.T) {
 		{"GET", "/api/corpora/feed?id=%22", "", ""},
 		{"GET", "/api/corpora/feed?next=true", "", ""},
 		{"PUT", "/api/corpora/1/publication", `{"status":"черновик"}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", "", "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":-1,"pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":2147483648,"pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":-1}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":101}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1.5,"pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":0,"name":"Лишнее"}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":0,"creator_id":2}`, "application/json"},
 		{"DELETE", "/api/corpora/1", `{"creator_id":2}`, "application/json"},
 		{"POST", "/api/corpora/1/like", `{"like":2}`, "application/json"},
 		{"POST", "/api/corpora/1/like", `{}`, "application/json"},
@@ -65,10 +76,10 @@ func TestMultipartRejectsSystemFieldsAndFakeFiles(t *testing.T) {
 			} else {
 				value := "1"
 				if field == "word_count" {
-					value = "2147483648"
+					value = "200"
 				}
 				if field == "pron_percent" {
-					value = "101"
+					value = "8.5"
 				}
 				_ = writer.WriteField(field, value)
 			}
@@ -93,12 +104,12 @@ func TestEmptyCorpusSerializer(t *testing.T) {
 	if err := json.Unmarshal(payload, &result); err != nil {
 		t.Fatal(err)
 	}
-	for _, name := range []string{"id", "name", "description", "word_count", "pron_percent", "image_url", "video_url", "creator", "is_owner", "is_liked", "likes_count", "date_create", "date_finish"} {
+	for _, name := range []string{"id", "name", "description", "word_count", "pron_percent", "image_url", "video_url", "is_owner", "is_liked", "likes_count", "date_create", "date_finish"} {
 		if _, ok := result[name]; !ok {
 			t.Fatalf("missing %s", name)
 		}
 	}
-	for _, name := range []string{"author", "source", "status", "password", "prep_percent", "conj_percent", "is_delete"} {
+	for _, name := range []string{"author", "source", "creator", "creator_id", "status", "password", "prep_percent", "conj_percent", "is_delete"} {
 		if _, ok := result[name]; ok {
 			t.Fatalf("unexpected %s", name)
 		}

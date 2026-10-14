@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"attributor/internal/app/ds"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -19,13 +20,13 @@ func (r *Repository) GetCorpora(ctx context.Context, minWords *int, page int) ([
 	if err := query.Count(&count).Error; err != nil {
 		return nil, 0, err
 	}
-	err := query.Preload("Creator").Order("id ASC").Limit(6).Offset((page - 1) * 6).Find(&corpora).Error
+	err := query.Order("id ASC").Limit(6).Offset((page - 1) * 6).Find(&corpora).Error
 	return corpora, count, err
 }
 
 func (r *Repository) GetFeed(ctx context.Context, id *uint, next bool) (*ds.Corpus, error) {
 	corpus := &ds.Corpus{}
-	query := r.db.WithContext(ctx).Preload("Creator").Where("status = ?", ds.StatusPublished)
+	query := r.db.WithContext(ctx).Where("status = ?", ds.StatusPublished)
 	if id != nil && !next {
 		return corpus, query.Where("id = ?", *id).First(corpus).Error
 	}
@@ -37,14 +38,14 @@ func (r *Repository) GetFeed(ctx context.Context, id *uint, next bool) (*ds.Corp
 		}
 	}
 	// First limits the main corpus query to one row, including wraparound.
-	return corpus, r.db.WithContext(ctx).Preload("Creator").
+	return corpus, r.db.WithContext(ctx).
 		Where("status = ?", ds.StatusPublished).
 		Order("id ASC").First(corpus).Error
 }
 
 func (r *Repository) GetDraft(ctx context.Context, userID uint) (*ds.Corpus, error) {
 	corpus := &ds.Corpus{}
-	err := r.db.WithContext(ctx).Preload("Creator").Where("creator_id = ? AND status = ?", userID, ds.StatusDraft).First(corpus).Error
+	err := r.db.WithContext(ctx).Where("creator_id = ? AND status = ?", userID, ds.StatusDraft).First(corpus).Error
 	return corpus, err
 }
 
@@ -71,11 +72,9 @@ func (r *Repository) CreateDraft(ctx context.Context, corpus *ds.Corpus, files [
 				return err
 			}
 		}
-		corpus.Creator = ds.User{} // Never create or update an associated user here.
-		if err := tx.Omit("Creator", "Likes").Create(corpus).Error; err != nil {
+		if err := tx.Omit("Likes").Create(corpus).Error; err != nil {
 			return err
 		}
-		corpus.Creator = user
 		return nil
 	})
 	if err != nil {
@@ -95,7 +94,7 @@ func (r *Repository) ownedCorpus(tx *gorm.DB, id, userID uint) (*ds.Corpus, erro
 	return corpus, nil
 }
 
-func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint) error {
+func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint, wordCount int, pronPercent float64) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		corpus, err := r.ownedCorpus(tx, id, userID)
 		if err != nil {
@@ -104,7 +103,7 @@ func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint) error {
 		if corpus.Status != ds.StatusDraft {
 			return ErrConflict
 		}
-		return tx.Model(corpus).Updates(map[string]interface{}{"status": ds.StatusPublished, "date_finish": time.Now()}).Error
+		return tx.Model(corpus).Updates(map[string]interface{}{"status": ds.StatusPublished, "date_finish": time.Now(), "word_count": wordCount, "pron_percent": pronPercent}).Error
 	})
 }
 

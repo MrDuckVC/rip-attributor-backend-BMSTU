@@ -21,6 +21,12 @@ func Apply(db *gorm.DB) error {
 		if err := tx.AutoMigrate(&ds.User{}, &ds.Corpus{}, &ds.Like{}); err != nil {
 			return err
 		}
+		// CreatorID remains a foreign key even without a Creator object in the Go model.
+		if !tx.Migrator().HasConstraint(&ds.Corpus{}, "fk_corpora_creator") {
+			if err := tx.Exec("ALTER TABLE corpora ADD CONSTRAINT fk_corpora_creator FOREIGN KEY (creator_id) REFERENCES users(id)").Error; err != nil {
+				return err
+			}
+		}
 		for _, column := range []string{"prep_percent", "conj_percent", "is_delete"} {
 			if tx.Migrator().HasColumn(&ds.Corpus{}, column) {
 				if err := tx.Migrator().DropColumn(&ds.Corpus{}, column); err != nil {

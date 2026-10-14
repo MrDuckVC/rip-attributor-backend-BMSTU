@@ -67,6 +67,13 @@ func TestLegacyCorpusNames(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			if !db.Migrator().HasConstraint(&ds.Corpus{}, "fk_corpora_creator") {
+				t.Fatal("creator_id foreign key is missing")
+			}
+			orphan := ds.Corpus{CreatorID: 9999, Name: "Orphan", Status: ds.StatusDraft, DateCreate: time.Now()}
+			if err := db.Omit("Likes").Create(&orphan).Error; err == nil {
+				t.Fatal("creator_id accepts non-existent user")
+			}
 			var corpus ds.Corpus
 			if err := db.First(&corpus, 7).Error; err != nil {
 				t.Fatal(err)

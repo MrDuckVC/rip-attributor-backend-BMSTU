@@ -107,16 +107,6 @@
               "type": "text"
             },
             {
-              "key": "word_count",
-              "value": "200",
-              "type": "text"
-            },
-            {
-              "key": "pron_percent",
-              "value": "8.5",
-              "type": "text"
-            },
-            {
               "key": "image",
               "type": "file",
               "src": "resources/media/puskin.png"
@@ -176,7 +166,12 @@
       "name": "04 Публикация",
       "request": {
         "method": "PUT",
-        "header": [],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "url": {
           "raw": "{{base_url}}/api/corpora/{{corpus_id}}/publication",
           "host": [
@@ -189,7 +184,16 @@
             "publication"
           ]
         },
-        "description": ""
+        "description": "Публикация собственного черновика: только word_count и pron_percent.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"word_count\": 200, \"pron_percent\": 8.5}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
       },
       "event": [
         {
