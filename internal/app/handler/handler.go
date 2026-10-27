@@ -7,6 +7,7 @@ import (
 	"mime"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"attributor/internal/app/currentuser"
 	"attributor/internal/app/ds"
@@ -207,7 +208,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 		ctx.Status(http.StatusBadRequest)
 		return
 	}
-	corpus := &ds.Corpus{CreatorID: currentuser.Get(), Name: data.Name, Description: data.Description}
+	corpus := &ds.Corpus{CreatorID: currentuser.Get(), Name: data.Name}
 	for _, file := range files {
 		name := file.Name
 		if file.ContentType[:6] == "image/" {
@@ -231,11 +232,11 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 func (h *Handler) Publish(ctx *gin.Context) {
 	id, err := parseID(ctx.Param("id"))
 	var data dto.PublishCorpus
-	if err != nil || decodeJSON(ctx, &data, false) != nil || binding.Validator.ValidateStruct(&data) != nil {
+	if err != nil || decodeJSON(ctx, &data, false) != nil || binding.Validator.ValidateStruct(&data) != nil || strings.TrimSpace(data.Description) == "" {
 		ctx.Status(http.StatusBadRequest)
 		return
 	}
-	if err := h.Repository.PublishCorpus(ctx.Request.Context(), id, currentuser.Get(), *data.WordCount, *data.PronPercent); err != nil {
+	if err := h.Repository.PublishCorpus(ctx.Request.Context(), id, currentuser.Get(), data.Description, *data.WordCount, *data.PronPercent); err != nil {
 		respondError(ctx, err)
 		return
 	}

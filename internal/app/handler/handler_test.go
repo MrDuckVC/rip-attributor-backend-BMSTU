@@ -29,15 +29,15 @@ func TestInvalidRequests(t *testing.T) {
 		{"PUT", "/api/corpora/1/publication", `{"status":"черновик"}`, "application/json"},
 		{"PUT", "/api/corpora/1/publication", "", "application/json"},
 		{"PUT", "/api/corpora/1/publication", `{}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":-1,"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":2147483648,"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":-1}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":101}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1.5,"pron_percent":0}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":0,"name":"Лишнее"}`, "application/json"},
-		{"PUT", "/api/corpora/1/publication", `{"word_count":1,"pron_percent":0,"creator_id":2}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":-1,"pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":2147483648,"pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":1,"pron_percent":-1}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":1,"pron_percent":101}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":1.5,"pron_percent":0}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":1,"pron_percent":0,"name":"Лишнее"}`, "application/json"},
+		{"PUT", "/api/corpora/1/publication", `{"description":"Описание корпуса","word_count":1,"pron_percent":0,"creator_id":2}`, "application/json"},
 		{"DELETE", "/api/corpora/1", `{"creator_id":2}`, "application/json"},
 		{"POST", "/api/corpora/1/like", `{"like":2}`, "application/json"},
 		{"POST", "/api/corpora/1/like", `{}`, "application/json"},
@@ -65,7 +65,7 @@ func TestMultipartRejectsSystemFieldsAndFakeFiles(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	NewHandler(nil).RegisterHandler(router)
-	for _, field := range []string{"author", "source", "status", "id", "creator_id", "date_create", "image", "video", "fake_image", "word_count", "pron_percent"} {
+	for _, field := range []string{"description", "author", "source", "status", "id", "creator_id", "date_create", "image", "video", "fake_image", "word_count", "pron_percent"} {
 		t.Run(field, func(t *testing.T) {
 			var body bytes.Buffer
 			writer := multipart.NewWriter(&body)
