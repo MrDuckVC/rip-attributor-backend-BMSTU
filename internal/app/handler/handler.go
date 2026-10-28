@@ -7,6 +7,7 @@ import (
 	"mime"
 	"net/http"
 	"strconv"
+	"strings"
 
 	_ "attributor/docs/swagger"
 	"attributor/internal/app/auth"
@@ -250,7 +251,6 @@ func (h *Handler) GetDraft(ctx *gin.Context) {
 // @Produce json
 // @Accept multipart/form-data
 // @Param name formData string true "Название корпуса" maxlength(150)
-// @Param description formData string false "Описание корпуса"
 // @Param image formData file false "JPEG, PNG, GIF, WebP"
 // @Param video formData file false "Короткое вертикальное MP4 или WebM"
 // @Success 201 {object} dto.Corpus
@@ -270,7 +270,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 		ctx.Status(http.StatusBadRequest)
 		return
 	}
-	corpus := &ds.Corpus{CreatorID: currentUser(ctx), Name: data.Name, Description: data.Description}
+	corpus := &ds.Corpus{CreatorID: currentUser(ctx), Name: data.Name}
 	for _, file := range files {
 		name := file.Name
 		if file.ContentType[:6] == "image/" {
@@ -298,7 +298,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 // @Produce json
 // @Param id path int true "ID корпуса" minimum(1)
 // @Accept json
-// @Param publication body dto.PublishCorpus true "Количество слов и процент предлогов"
+// @Param publication body dto.PublishCorpus true "Описание корпуса, количество слов и процент предлогов"
 // @Success 200
 // @Failure 400
 // @Failure 500
@@ -312,11 +312,11 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 func (h *Handler) Publish(ctx *gin.Context) {
 	id, err := parseID(ctx.Param("id"))
 	var data dto.PublishCorpus
-	if err != nil || decodeJSON(ctx, &data, false) != nil || binding.Validator.ValidateStruct(&data) != nil {
+	if err != nil || decodeJSON(ctx, &data, false) != nil || binding.Validator.ValidateStruct(&data) != nil || strings.TrimSpace(data.Description) == "" {
 		ctx.Status(http.StatusBadRequest)
 		return
 	}
-	if err := h.Repository.PublishCorpus(ctx.Request.Context(), id, currentUser(ctx), *data.WordCount, *data.PrepPercent); err != nil {
+	if err := h.Repository.PublishCorpus(ctx.Request.Context(), id, currentUser(ctx), data.Description, *data.WordCount, *data.PrepPercent); err != nil {
 		respondError(ctx, err)
 		return
 	}

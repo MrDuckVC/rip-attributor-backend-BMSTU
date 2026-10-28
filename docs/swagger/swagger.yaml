@@ -78,6 +78,8 @@ definitions:
     type: object
   dto.PublishCorpus:
     properties:
+      description:
+        type: string
       prep_percent:
         maximum: 100
         minimum: 0
@@ -87,6 +89,7 @@ definitions:
         minimum: 0
         type: integer
     required:
+    - description
     - prep_percent
     - word_count
     type: object
@@ -156,10 +159,6 @@ paths:
         maxLength: 150
         name: name
         required: true
-        type: string
-      - description: Описание корпуса
-        in: formData
-        name: description
         type: string
       - description: JPEG, PNG, GIF, WebP
         in: formData
@@ -275,7 +274,7 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Количество слов и процент предлогов
+      - description: Описание корпуса, количество слов и процент предлогов
         in: body
         name: publication
         required: true

@@ -1,7 +1,8 @@
 {
   "info": {
     "name": "ЛР4 — гостевые запросы и права владельца",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Authorization добавлен вручную в Headers и переключается галочкой. На вкладке Authorization выбран No Auth. access_token содержит JWT без префикса Bearer. Описание корпуса заполняется только при PUT публикации."
   },
   "variable": [
     {
@@ -34,6 +35,12 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": true
           }
         ],
         "url": "{{base_url}}/api/corpora/1/publication",
@@ -42,7 +49,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"word_count\": 1, \"prep_percent\": 1}",
+          "raw": "{\"description\": \"Демонстрационный корпус потенциального автора\", \"word_count\": 1, \"prep_percent\": 1}",
           "options": {
             "raw": {
               "language": "json"
@@ -76,17 +83,17 @@
       "name": "02 Неверный JWT",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
+          }
+        ],
         "url": "{{base_url}}/api/corpora/draft",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         }
       },
       "event": [
@@ -106,17 +113,17 @@
       "name": "03 Каталог с неверным JWT",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
+          }
+        ],
         "url": "{{base_url}}/api/corpora",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         }
       },
       "event": [
@@ -282,17 +289,17 @@
       "name": "08 Создать черновик владельца",
       "request": {
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
+          }
+        ],
         "url": "{{base_url}}/api/corpora",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         },
         "body": {
           "mode": "formdata",
@@ -326,22 +333,21 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
           }
         ],
         "url": "{{base_url}}/api/corpora/{{corpus_id}}/publication",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"word_count\": 1, \"pron_percent\": 1}",
+          "raw": "{\"description\": \"Демонстрационный корпус потенциального автора\", \"word_count\": 1, \"pron_percent\": 1}",
           "options": {
             "raw": {
               "language": "json"
@@ -443,22 +449,21 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
           }
         ],
         "url": "{{base_url}}/api/corpora/{{corpus_id}}/publication",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"word_count\": 1, \"prep_percent\": 1}",
+          "raw": "{\"description\": \"Демонстрационный корпус потенциального автора\", \"word_count\": 1, \"prep_percent\": 1}",
           "options": {
             "raw": {
               "language": "json"
@@ -483,17 +488,17 @@
       "name": "13 Чужое удаление",
       "request": {
         "method": "DELETE",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
+          }
+        ],
         "url": "{{base_url}}/api/corpora/{{corpus_id}}",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         }
       },
       "event": [
@@ -513,17 +518,17 @@
       "name": "14 Нет собственного черновика",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
+          }
+        ],
         "url": "{{base_url}}/api/corpora/draft",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         }
       },
       "event": [
@@ -543,17 +548,17 @@
       "name": "15 Выход второго автора",
       "request": {
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
+          }
+        ],
         "url": "{{base_url}}/api/users/logout",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         }
       },
       "event": [
@@ -576,18 +581,17 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text",
+            "disabled": false
           }
         ],
         "url": "{{base_url}}/api/corpora/{{corpus_id}}/like",
         "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
+          "type": "noauth"
         },
         "body": {
           "mode": "raw",

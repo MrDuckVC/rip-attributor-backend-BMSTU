@@ -102,11 +102,6 @@
               "type": "text"
             },
             {
-              "key": "description",
-              "value": "Демонстрация ЛР3",
-              "type": "text"
-            },
-            {
               "key": "image",
               "type": "file",
               "src": "resources/media/puskin.png"
@@ -184,10 +179,10 @@
             "publication"
           ]
         },
-        "description": "Публикация собственного черновика: только word_count и pron_percent.",
+        "description": "Публикация собственного черновика: обязательные description, word_count и pron_percent.",
         "body": {
           "mode": "raw",
-          "raw": "{\"word_count\": 200, \"pron_percent\": 8.5}",
+          "raw": "{\"description\": \"Демонстрация ЛР3\", \"word_count\": 200, \"pron_percent\": 8.5}",
           "options": {
             "raw": {
               "language": "json"

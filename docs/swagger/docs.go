@@ -85,12 +85,6 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "Описание корпуса",
-                        "name": "description",
-                        "in": "formData"
-                    },
-                    {
                         "type": "file",
                         "description": "JPEG, PNG, GIF, WebP",
                         "name": "image",
@@ -352,7 +346,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Количество слов и процент предлогов",
+                        "description": "Описание корпуса, количество слов и процент предлогов",
                         "name": "publication",
                         "in": "body",
                         "required": true,
@@ -629,10 +623,14 @@ const docTemplate = `{
         "dto.PublishCorpus": {
             "type": "object",
             "required": [
+                "description",
                 "prep_percent",
                 "word_count"
             ],
             "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "prep_percent": {
                     "type": "number",
                     "maximum": 100,

@@ -156,7 +156,7 @@ func TestAPIIntegration(t *testing.T) {
 	multipartRequest := func(name string, withMedia bool) *httptest.ResponseRecorder {
 		var body bytes.Buffer
 		writer := multipart.NewWriter(&body)
-		for name, value := range map[string]string{"name": name, "description": "Описание корпуса"} {
+		for name, value := range map[string]string{"name": name} {
 			if err := writer.WriteField(name, value); err != nil {
 				t.Fatal(err)
 			}
@@ -229,7 +229,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatalf("creation: %d %s", created.Code, created.Body.String())
 	}
 	corpus := decodeCorpus(created)
-	if corpus.IsOwner != 1 || corpus.PrepPercent != nil || corpus.WordCount != 0 {
+	if corpus.Description != "" || corpus.IsOwner != 1 || corpus.PrepPercent != nil || corpus.WordCount != 0 {
 		t.Fatal("invalid corpus response")
 	}
 	var stored ds.Corpus
@@ -266,13 +266,18 @@ func TestAPIIntegration(t *testing.T) {
 	}
 	publication := fmt.Sprintf("/api/corpora/%d/publication", corpus.ID)
 	request("PUT", publication, `{"status":"черновик"}`, 400)
-	request("PUT", publication, `{"word_count":200}`, 400)
-	request("PUT", publication, `{"word_count":200,"prep_percent":101}`, 400)
-	if unchanged := decodeCorpus(request("GET", "/api/corpora/draft", "", 200)); unchanged.WordCount != 0 || unchanged.PrepPercent != nil || unchanged.DateFinish != nil {
+	request("PUT", publication, `{"description":"Описание корпуса","word_count":200}`, 400)
+	request("PUT", publication, `{"description":"Описание корпуса","word_count":200,"prep_percent":101}`, 400)
+	if unchanged := decodeCorpus(request("GET", "/api/corpora/draft", "", 200)); unchanged.Description != "" || unchanged.WordCount != 0 || unchanged.PrepPercent != nil || unchanged.DateFinish != nil {
 		t.Fatal("invalid publication changed draft")
 	}
-	request("PUT", publication, `{"word_count":200,"prep_percent":8.5}`, 200)
-	request("PUT", publication, `{"word_count":0,"prep_percent":0}`, 409)
+	request("PUT", publication, `{"word_count":200,"prep_percent":8.5}`, 400)
+	request("PUT", publication, `{"description":" \t\n","word_count":200,"prep_percent":8.5}`, 400)
+	request("PUT", publication, `{"description":"Описание корпуса","word_count":200,"prep_percent":8.5}`, 200)
+	if err := db.First(&stored, corpus.ID).Error; err != nil || stored.Description != "Описание корпуса" || stored.Status != ds.StatusPublished || stored.WordCount != 200 || stored.PrepPercent == nil || *stored.PrepPercent != 8.5 {
+		t.Fatalf("publication fields not saved atomically: %+v, %v", stored, err)
+	}
+	request("PUT", publication, `{"description":"Описание корпуса","word_count":0,"prep_percent":0}`, 409)
 	request("GET", "/api/corpora/draft", "", 404)
 	filtered := request("GET", "/api/corpora?query=201", "", 200)
 	if !strings.Contains(filtered.Body.String(), `"items":[]`) {
@@ -314,7 +319,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	request("DELETE", fmt.Sprintf("/api/corpora/%d", foreign.ID), "", 403)
-	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", foreign.ID), `{"word_count":0,"prep_percent":0}`, 403)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", foreign.ID), `{"description":"Описание корпуса","word_count":0,"prep_percent":0}`, 403)
 	nextFeed := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d&next=true", corpus.ID), "", 200))
 	if nextFeed.ID != foreign.ID || nextFeed.IsOwner != 0 {
 		t.Fatal("next feed failed")
@@ -389,15 +394,15 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatalf("concurrent results: %d successes, %d conflicts", successes, conflicts)
 	}
 	zeroDraft := decodeCorpus(request("GET", "/api/corpora/draft", "", 200))
-	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"word_count":0,"prep_percent":0}`, 200)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"description":"Описание корпуса","word_count":0,"prep_percent":0}`, 200)
 	zeroPublished := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
-	if zeroPublished.WordCount != 0 || zeroPublished.PrepPercent == nil || *zeroPublished.PrepPercent != 0 || zeroPublished.DateFinish == nil {
+	if zeroPublished.Description != "Описание корпуса" || zeroPublished.WordCount != 0 || zeroPublished.PrepPercent == nil || *zeroPublished.PrepPercent != 0 || zeroPublished.DateFinish == nil {
 		t.Fatal("zero publication values not saved")
 	}
 
 	ownerToken := token
 	token = ""
-	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"word_count":1,"prep_percent":1}`, 401)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", zeroDraft.ID), `{"description":"Описание корпуса","word_count":1,"prep_percent":1}`, 401)
 	for _, guestToken := range []string{"", "broken"} {
 		token = guestToken
 		guest := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))
@@ -433,7 +438,7 @@ func TestAPIIntegration(t *testing.T) {
 		t.Fatal("wrong authenticated creator")
 	}
 	request("DELETE", fmt.Sprintf("/api/corpora/%d", zeroDraft.ID), "", 403)
-	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", secondDraft.ID), `{"word_count":20,"prep_percent":5}`, 200)
+	request("PUT", fmt.Sprintf("/api/corpora/%d/publication", secondDraft.ID), `{"description":"Описание корпуса","word_count":20,"prep_percent":5}`, 200)
 	secondLikePath := fmt.Sprintf("/api/corpora/%d/like", zeroDraft.ID)
 	request("POST", secondLikePath, `{"like":1}`, 200)
 	secondFeed := decodeCorpus(request("GET", fmt.Sprintf("/api/corpora/feed?id=%d", zeroDraft.ID), "", 200))

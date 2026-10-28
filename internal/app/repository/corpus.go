@@ -94,7 +94,7 @@ func (r *Repository) ownedCorpus(tx *gorm.DB, id, userID uint) (*ds.Corpus, erro
 	return corpus, nil
 }
 
-func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint, wordCount int, prepPercent float64) error {
+func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint, description string, wordCount int, prepPercent float64) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		corpus, err := r.ownedCorpus(tx, id, userID)
 		if err != nil {
@@ -103,7 +103,7 @@ func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint, wordCou
 		if corpus.Status != ds.StatusDraft {
 			return ErrConflict
 		}
-		return tx.Model(corpus).Updates(map[string]interface{}{"status": ds.StatusPublished, "date_finish": time.Now(), "word_count": wordCount, "prep_percent": prepPercent}).Error
+		return tx.Model(corpus).Updates(map[string]interface{}{"description": description, "status": ds.StatusPublished, "date_finish": time.Now(), "word_count": wordCount, "prep_percent": prepPercent}).Error
 	})
 }
 

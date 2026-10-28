@@ -4,12 +4,13 @@ import "time"
 
 // CreateCorpus contains only fields which the client may set.
 type CreateCorpus struct {
-	Name        string `form:"name" binding:"required,max=150"`
-	Description string `form:"description"`
+	Name string `form:"name" binding:"required,max=150"`
 }
 
-// PublishCorpus accepts only the two thematic fields. Pointers distinguish zero from omission.
+// PublishCorpus accepts the description and two thematic fields.
+// Pointers distinguish zero from omission.
 type PublishCorpus struct {
+	Description string   `json:"description" binding:"required"`
 	WordCount   *int     `json:"word_count" binding:"required,gte=0,lte=2147483647"`
 	PrepPercent *float64 `json:"prep_percent" binding:"required,gte=0,lte=100"`
 }
