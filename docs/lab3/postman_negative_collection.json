@@ -3,45 +3,8 @@
     "name": "ЛР3 — ошибочные сценарии",
     "_postman_id": "87ed4cff-8d29-4f1b-9a33-edac7f375843",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Заполните corpus_id ID удалённого корпуса из основного показа, registration_login зарегистрированным логином, foreign_corpus_id ID опубликованного чужого корпуса. Остальные ошибки независимы от данных."
+    "description": "Переменных и автоматической подстановки нет. Адрес API: http://localhost:8080. JWT вставьте вручную после «Bearer » в Headers каждого нужного запроса. После создания замените демонстрационный ID 5 в URL на ID из ответа. Для повторной регистрации измените логин. Коллекции ЛР3 сохранены как исторические сценарии без JWT."
   },
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8080",
-      "type": "string"
-    },
-    {
-      "key": "corpus_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "registration_login",
-      "value": "student_lab3",
-      "type": "string"
-    },
-    {
-      "key": "registration_password",
-      "value": "test123",
-      "type": "string"
-    },
-    {
-      "key": "registered_user_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "like_value",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "foreign_corpus_id",
-      "value": "",
-      "type": "string"
-    }
-  ],
   "item": [
     {
       "name": "Отрицательный ID",
@@ -49,9 +12,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/feed?id=-1",
+          "raw": "http://localhost:8080/api/corpora/feed?id=-1",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -85,9 +48,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/feed?id=999999999999",
+          "raw": "http://localhost:8080/api/corpora/feed?id=999999999999",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -121,9 +84,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/feed?id=%22",
+          "raw": "http://localhost:8080/api/corpora/feed?id=%22",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -157,9 +120,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora?query=abc",
+          "raw": "http://localhost:8080/api/corpora?query=abc",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -192,9 +155,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora?query=-1",
+          "raw": "http://localhost:8080/api/corpora?query=-1",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -227,9 +190,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora?query=",
+          "raw": "http://localhost:8080/api/corpora?query=",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -262,9 +225,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora?page=0",
+          "raw": "http://localhost:8080/api/corpora?page=0",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -297,9 +260,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/feed?next=true",
+          "raw": "http://localhost:8080/api/corpora/feed?next=true",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -338,18 +301,18 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}/publication",
+          "raw": "http://localhost:8080/api/corpora/5/publication",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}",
+            "5",
             "publication"
           ]
         },
-        "description": "",
+        "description": "Перед отправкой проверьте ID в URL: 5 — пример ID нового черновика, 1 — пример чужого корпуса.",
         "body": {
           "mode": "raw",
           "raw": "{\"status\": \"черновик\", \"description\": \"Описание корпуса\", \"word_count\": 200, \"pron_percent\": 8.5}",
@@ -383,17 +346,17 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}",
+          "raw": "http://localhost:8080/api/corpora/5",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}"
+            "5"
           ]
         },
-        "description": "",
+        "description": "Перед отправкой проверьте ID в URL: 5 — пример ID нового черновика, 1 — пример чужого корпуса.",
         "body": {
           "mode": "raw",
           "raw": "{\"creator_id\": 2}",
@@ -427,14 +390,14 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}/like",
+          "raw": "http://localhost:8080/api/corpora/5/like",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}",
+            "5",
             "like"
           ]
         },
@@ -472,14 +435,14 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}/like",
+          "raw": "http://localhost:8080/api/corpora/5/like",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}",
+            "5",
             "like"
           ]
         },
@@ -517,14 +480,14 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}/like",
+          "raw": "http://localhost:8080/api/corpora/5/like",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}",
+            "5",
             "like"
           ]
         },
@@ -562,9 +525,9 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/users",
+          "raw": "http://localhost:8080/api/users",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -605,9 +568,9 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/users",
+          "raw": "http://localhost:8080/api/users",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -648,9 +611,9 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora",
+          "raw": "http://localhost:8080/api/corpora",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -686,9 +649,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/feed?id={{corpus_id}}",
+          "raw": "http://localhost:8080/api/corpora/feed?id=5",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -698,7 +661,7 @@
           "query": [
             {
               "key": "id",
-              "value": "{{corpus_id}}"
+              "value": "5"
             }
           ]
         },
@@ -727,14 +690,14 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}/like",
+          "raw": "http://localhost:8080/api/corpora/5/like",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}",
+            "5",
             "like"
           ]
         },
@@ -772,9 +735,9 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/users",
+          "raw": "http://localhost:8080/api/users",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -784,7 +747,7 @@
         "description": "",
         "body": {
           "mode": "raw",
-          "raw": "{\"login\": \"{{registration_login}}\", \"password\": \"test123\"}",
+          "raw": "{\"login\": \"student_lab3\", \"password\": \"test123\"}",
           "options": {
             "raw": {
               "language": "json"
@@ -810,17 +773,17 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{foreign_corpus_id}}",
+          "raw": "http://localhost:8080/api/corpora/1",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{foreign_corpus_id}}"
+            "1"
           ]
         },
-        "description": ""
+        "description": "Перед отправкой проверьте ID в URL: 5 — пример ID нового черновика, 1 — пример чужого корпуса."
       },
       "event": [
         {
@@ -840,9 +803,9 @@
         "method": "POST",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora",
+          "raw": "http://localhost:8080/api/corpora",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",

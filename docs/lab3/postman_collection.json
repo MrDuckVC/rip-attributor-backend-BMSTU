@@ -3,40 +3,8 @@
     "name": "ЛР3 — корпуса текстов (10 запросов)",
     "_postman_id": "e596a044-22d9-4bdb-a7c6-b9915048b008",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Основная коллекция для показа ЛР3. Скрипты Postman — только проверка ответов, не JavaScript приложения. Порядок скриншотов см. demo.md."
+    "description": "Переменных и автоматической подстановки нет. Адрес API: http://localhost:8080. JWT вставьте вручную после «Bearer » в Headers каждого нужного запроса. После создания замените демонстрационный ID 5 в URL на ID из ответа. Для повторной регистрации измените логин. Коллекции ЛР3 сохранены как исторические сценарии без JWT."
   },
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8080",
-      "type": "string"
-    },
-    {
-      "key": "corpus_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "registration_login",
-      "value": "student_lab3",
-      "type": "string"
-    },
-    {
-      "key": "registration_password",
-      "value": "test123",
-      "type": "string"
-    },
-    {
-      "key": "registered_user_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "like_value",
-      "value": "1",
-      "type": "string"
-    }
-  ],
   "item": [
     {
       "name": "01 Каталог с фильтром",
@@ -44,9 +12,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora?query=100&page=1",
+          "raw": "http://localhost:8080/api/corpora?query=100&page=1",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -83,9 +51,9 @@
         "method": "POST",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora",
+          "raw": "http://localhost:8080/api/corpora",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -120,8 +88,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
-              "if (pm.response.code === 201) { pm.collectionVariables.set(\"corpus_id\", pm.response.json().id); }"
+              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });"
             ]
           }
         }
@@ -133,9 +100,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/draft",
+          "raw": "http://localhost:8080/api/corpora/draft",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -168,18 +135,18 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}/publication",
+          "raw": "http://localhost:8080/api/corpora/5/publication",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}",
+            "5",
             "publication"
           ]
         },
-        "description": "Публикация собственного черновика: обязательные description, word_count и pron_percent.",
+        "description": "Публикация собственного черновика: обязательные description, word_count и pron_percent. Перед отправкой проверьте ID в URL: 5 — пример ID нового черновика, 1 — пример чужого корпуса.",
         "body": {
           "mode": "raw",
           "raw": "{\"description\": \"Демонстрация ЛР3\", \"word_count\": 200, \"pron_percent\": 8.5}",
@@ -208,9 +175,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/feed",
+          "raw": "http://localhost:8080/api/corpora/feed",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -220,7 +187,7 @@
           "query": [
             {
               "key": "id",
-              "value": "{{corpus_id}}",
+              "value": "5",
               "disabled": true
             },
             {
@@ -255,21 +222,21 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}/like",
+          "raw": "http://localhost:8080/api/corpora/5/like",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}",
+            "5",
             "like"
           ]
         },
         "description": "like_value=1 устанавливает лайк; 0 снимает.",
         "body": {
           "mode": "raw",
-          "raw": "{\"like\": {{like_value}}}",
+          "raw": "{\"like\": 1}",
           "options": {
             "raw": {
               "language": "json"
@@ -295,17 +262,17 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/corpora/{{corpus_id}}",
+          "raw": "http://localhost:8080/api/corpora/5",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
             "corpora",
-            "{{corpus_id}}"
+            "5"
           ]
         },
-        "description": ""
+        "description": "Перед отправкой проверьте ID в URL: 5 — пример ID нового черновика, 1 — пример чужого корпуса."
       },
       "event": [
         {
@@ -330,9 +297,9 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/users",
+          "raw": "http://localhost:8080/api/users",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -342,7 +309,7 @@
         "description": "",
         "body": {
           "mode": "raw",
-          "raw": "{\"login\": \"{{registration_login}}\", \"password\": \"{{registration_password}}\"}",
+          "raw": "{\"login\": \"student_lab3\", \"password\": \"test123\"}",
           "options": {
             "raw": {
               "language": "json"
@@ -356,8 +323,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
-              "if (pm.response.code === 201) { pm.collectionVariables.set(\"registered_user_id\", pm.response.json().id); }"
+              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });"
             ]
           }
         }
@@ -374,9 +340,9 @@
           }
         ],
         "url": {
-          "raw": "{{base_url}}/api/users/login",
+          "raw": "http://localhost:8080/api/users/login",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",
@@ -387,7 +353,7 @@
         "description": "",
         "body": {
           "mode": "raw",
-          "raw": "{\"login\": \"{{registration_login}}\", \"password\": \"{{registration_password}}\"}",
+          "raw": "{\"login\": \"student_lab3\", \"password\": \"test123\"}",
           "options": {
             "raw": {
               "language": "json"
@@ -413,9 +379,9 @@
         "method": "POST",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/users/logout",
+          "raw": "http://localhost:8080/api/users/logout",
           "host": [
-            "{{base_url}}"
+            "http://localhost:8080"
           ],
           "path": [
             "api",

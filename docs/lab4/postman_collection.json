@@ -2,30 +2,8 @@
   "info": {
     "name": "ЛР4 — корпусы авторов: полный сценарий",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Authorization добавлен вручную в Headers и переключается галочкой. На вкладке Authorization выбран No Auth. access_token содержит JWT без префикса Bearer. Описание корпуса заполняется только при PUT публикации."
+    "description": "Переменных и автоматической подстановки нет. Адрес API: http://localhost:8080. JWT вставьте вручную после «Bearer » в Headers каждого нужного запроса. После создания замените демонстрационный ID 5 в URL на ID из ответа. Для повторной регистрации измените логин. Коллекции ЛР3 сохранены как исторические сценарии без JWT."
   },
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8080"
-    },
-    {
-      "key": "login",
-      "value": "lab4_demo"
-    },
-    {
-      "key": "password",
-      "value": "test123"
-    },
-    {
-      "key": "access_token",
-      "value": ""
-    },
-    {
-      "key": "corpus_id",
-      "value": "1"
-    }
-  ],
   "item": [
     {
       "name": "01 Регистрация автора",
@@ -37,13 +15,13 @@
             "value": "application/json"
           }
         ],
-        "url": "{{base_url}}/api/users",
+        "url": "http://localhost:8080/api/users",
         "auth": {
           "type": "noauth"
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"login\": \"{{login}}\", \"password\": \"{{password}}\"}",
+          "raw": "{\"login\": \"test5\", \"password\": \"test5test5\"}",
           "options": {
             "raw": {
               "language": "json"
@@ -53,21 +31,11 @@
       },
       "event": [
         {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.collectionVariables.set(\"login\",\"lab4_\"+Date.now());"
-            ]
-          }
-        },
-        {
           "listen": "test",
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-              "pm.collectionVariables.set(\"author_id\",pm.response.json().id);"
+              "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));"
             ]
           }
         }
@@ -83,13 +51,13 @@
             "value": "application/json"
           }
         ],
-        "url": "{{base_url}}/api/users/login",
+        "url": "http://localhost:8080/api/users/login",
         "auth": {
           "type": "noauth"
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"login\": \"{{login}}\", \"password\": \"{{password}}\"}",
+          "raw": "{\"login\": \"test5\", \"password\": \"test5test5\"}",
           "options": {
             "raw": {
               "language": "json"
@@ -103,8 +71,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-              "pm.collectionVariables.set(\"access_token\",pm.response.json().access_token);"
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
             ]
           }
         }
@@ -117,12 +84,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora?query=100&page=1",
+        "url": "http://localhost:8080/api/corpora?query=100&page=1",
         "auth": {
           "type": "noauth"
         }
@@ -146,12 +113,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora",
+        "url": "http://localhost:8080/api/corpora",
         "auth": {
           "type": "noauth"
         },
@@ -183,7 +150,7 @@
             "type": "text/javascript",
             "exec": [
               "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-              "pm.collectionVariables.set(\"corpus_id\",pm.response.json().id); pm.test(\"Authenticated owner\",()=>pm.expect(pm.response.json().is_owner).to.eql(1));"
+              "pm.test(\"Authenticated owner\",()=>pm.expect(pm.response.json().is_owner).to.eql(1));"
             ]
           }
         }
@@ -196,12 +163,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora/draft",
+        "url": "http://localhost:8080/api/corpora/draft",
         "auth": {
           "type": "noauth"
         }
@@ -229,12 +196,12 @@
           },
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora/{{corpus_id}}/publication",
+        "url": "http://localhost:8080/api/corpora/5/publication",
         "auth": {
           "type": "noauth"
         },
@@ -246,7 +213,8 @@
               "language": "json"
             }
           }
-        }
+        },
+        "description": "Перед отправкой проверьте ID в URL: 5 — пример ID нового черновика, 1 — пример чужого корпуса."
       },
       "event": [
         {
@@ -267,12 +235,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora/feed",
+        "url": "http://localhost:8080/api/corpora/feed",
         "auth": {
           "type": "noauth"
         }
@@ -296,12 +264,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora/feed?id={{corpus_id}}&next=true",
+        "url": "http://localhost:8080/api/corpora/feed?id=5&next=true",
         "auth": {
           "type": "noauth"
         }
@@ -329,12 +297,12 @@
           },
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora/{{corpus_id}}/like",
+        "url": "http://localhost:8080/api/corpora/5/like",
         "auth": {
           "type": "noauth"
         },
@@ -367,12 +335,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": true
           }
         ],
-        "url": "{{base_url}}/api/corpora",
+        "url": "http://localhost:8080/api/corpora",
         "auth": {
           "type": "noauth"
         }
@@ -396,15 +364,16 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora/{{corpus_id}}",
+        "url": "http://localhost:8080/api/corpora/5",
         "auth": {
           "type": "noauth"
-        }
+        },
+        "description": "Перед отправкой проверьте ID в URL: 5 — пример ID нового черновика, 1 — пример чужого корпуса."
       },
       "event": [
         {
@@ -425,12 +394,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/users/logout",
+        "url": "http://localhost:8080/api/users/logout",
         "auth": {
           "type": "noauth"
         }
@@ -454,12 +423,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora/draft",
+        "url": "http://localhost:8080/api/corpora/draft",
         "auth": {
           "type": "noauth"
         }
@@ -484,12 +453,12 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{access_token}}",
+            "value": "Bearer ",
             "type": "text",
             "disabled": false
           }
         ],
-        "url": "{{base_url}}/api/corpora",
+        "url": "http://localhost:8080/api/corpora",
         "auth": {
           "type": "noauth"
         }
