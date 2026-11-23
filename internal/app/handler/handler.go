@@ -1,28 +1,32 @@
+// Package handler обрабатывает HTTP-запросы приложения.
 package handler
 
 import (
 	"net/http"
 	"strconv"
 
-	"attributor/internal/app/repository"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+
+	"attributor/internal/app/repository"
 )
 
+// Handler содержит зависимости обработчиков HTTP-запросов.
 type Handler struct {
 	Repository *repository.Repository
 }
 
+// NewHandler создаёт обработчики HTTP-запросов.
 func NewHandler(r *repository.Repository) *Handler {
 	return &Handler{
 		Repository: r,
 	}
 }
 
+// currentUserID задаёт идентификатор демонстрационного пользователя.
 const currentUserID = 1
 
-// Плитка (Grid)
+// GetGrid показывает плитку опубликованных корпусов с фильтром по количеству слов.
 func (h *Handler) GetGrid(ctx *gin.Context) {
 	var corpora []repository.AuthorCorpus
 	var err error
@@ -76,7 +80,7 @@ func (h *Handler) GetGrid(ctx *gin.Context) {
 	})
 }
 
-// Лента (Feed)
+// GetFeed показывает корпус из ленты.
 func (h *Handler) GetFeed(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -110,7 +114,7 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 	})
 }
 
-// Добавление (Draft)
+// GetDraft обрабатывает запрос черновика текущего пользователя.
 func (h *Handler) GetDraft(ctx *gin.Context) {
 	allCorpora, _ := h.Repository.GetCorpora()
 	var draft repository.AuthorCorpus

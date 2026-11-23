@@ -33,13 +33,23 @@
 3. Запустите инфраструктуру через Docker:
 
     ```bash
-    docker-compose up -d
+    make docker-up
     ```
 
 4. Запустите приложение:
 
     ```bash
-    go run cmd/attributor/main.go
+    make run
     ```
 
 Сервер будет доступен по адресу: `http://localhost:8080`
+
+## Команды Make
+
+- `make lint` проверяет код, `make lint-fix` применяет доступные исправления.
+- `make docker-up` запускает сервисы из Compose, `make docker-down` останавливает их.
+- `make docker-build` собирает образ бэкенда `attributor:local`.
+- `make migrate` применяет миграции базы данных, если они есть в лабораторной.
+- `make run` запускает бэкенд локально.
+
+GitHub Actions проверяет линтер, сборку образа и запуск приложения с зависимостями.

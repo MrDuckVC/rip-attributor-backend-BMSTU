@@ -1,14 +1,16 @@
+// Package api настраивает и запускает HTTP-сервер.
 package api
 
 import (
 	"log"
 
+	"github.com/gin-gonic/gin"
+
 	"attributor/internal/app/handler"
 	"attributor/internal/app/repository"
-
-	"github.com/gin-gonic/gin"
 )
 
+// StartServer регистрирует страницы и запускает HTTP-сервер.
 func StartServer() {
 	repo, _ := repository.NewRepository()
 	h := handler.NewHandler(repo)
@@ -28,5 +30,5 @@ func StartServer() {
 	})
 
 	log.Println("Server is running on :8080")
-	r.Run("0.0.0.0:8080")
+	_ = r.Run("0.0.0.0:8080")
 }

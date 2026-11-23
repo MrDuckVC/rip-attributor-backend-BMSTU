@@ -1,10 +1,11 @@
+// Package repository предоставляет доступ к корпусам и связанным данным.
 package repository
 
 import (
 	"fmt"
 )
 
-// AuthorCorpus - структура корпуса текста автора (наша "Услуга")
+// AuthorCorpus содержит данные демонстрационного корпуса текстов автора.
 type AuthorCorpus struct {
 	ID          int
 	Author      string
@@ -19,12 +20,15 @@ type AuthorCorpus struct {
 	Likes       []int  // Вложенные ID пользователей, поставивших лайк
 }
 
+// Repository предоставляет доступ к данным приложения.
 type Repository struct{}
 
+// NewRepository создаёт репозиторий демонстрационных корпусов.
 func NewRepository() (*Repository, error) {
 	return &Repository{}, nil
 }
 
+// generateLikes формирует список лайков с заданным признаком лайка текущего пользователя.
 func generateLikes(count int, likedByMe bool) []int {
 	likes := make([]int, count)
 	if likedByMe && count > 0 {
@@ -35,7 +39,7 @@ func generateLikes(count int, likedByMe bool) []int {
 	return likes
 }
 
-// GetCorpora возвращает нашу мок-коллекцию корпусов
+// GetCorpora возвращает демонстрационный набор корпусов.
 func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
 	corpora := []AuthorCorpus{
 		{
@@ -109,7 +113,7 @@ func (r *Repository) GetCorpora() ([]AuthorCorpus, error) {
 	return corpora, nil
 }
 
-// GetCorpusByID
+// GetCorpusByID ищет корпус по идентификатору.
 func (r *Repository) GetCorpusByID(id int) (AuthorCorpus, error) {
 	corpora, _ := r.GetCorpora()
 	for _, c := range corpora {
@@ -120,7 +124,7 @@ func (r *Repository) GetCorpusByID(id int) (AuthorCorpus, error) {
 	return AuthorCorpus{}, fmt.Errorf("корпус не найден")
 }
 
-// GetCorporaByWordCount
+// GetCorporaByWordCount выбирает корпусы с заданным минимальным количеством слов.
 func (r *Repository) GetCorporaByWordCount(minWords int) ([]AuthorCorpus, error) {
 	corpora, _ := r.GetCorpora()
 	var result []AuthorCorpus
