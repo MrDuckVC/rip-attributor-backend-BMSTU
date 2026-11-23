@@ -11,9 +11,9 @@
 ```bash
 cp .env.example .env  # только если .env ещё не создан
 # Укажите свои параметры в .env.
-docker compose up -d
-go run ./cmd/migrate
-go run ./cmd/attributor
+make docker-up
+make migrate
+make run
 ```
 
 API: `http://localhost:8080/api`. Консоль MinIO: `http://localhost:9001`. SQL-клиент Adminer: `http://localhost:8082` (сервер `postgres`). Для показа API браузер не требуется.
@@ -151,22 +151,12 @@ ID, статус, создатель, даты и имена объектов в
 - [SELECT для трёх таблиц](docs/lab3/select.sql).
 - [Диаграмма классов для draw.io](docs/lab3/classes.drawio).
 
-```bash
-go test ./...
-go vet ./...
-go build ./...
-```
+## Команды Make
 
-Интеграционная проверка использует временную схему PostgreSQL и отдельный бакет MinIO; по завершении удаляет только эти тестовые ресурсы:
+- `make lint` проверяет код, `make lint-fix` применяет доступные исправления.
+- `make docker-up` запускает сервисы из Compose, `make docker-down` останавливает их.
+- `make docker-build` собирает образ бэкенда `attributor:local`.
+- `make migrate` применяет миграции базы данных, если они есть в лабораторной.
+- `make run` запускает бэкенд локально.
 
-```bash
-# Сначала загрузите настройки MinIO из .env в окружение.
-set -a
-. ./.env
-set +a
-export MINIO_ENDPOINT="${MINIO_ENDPOINT:-localhost:9000}"
-export LAB3_TEST_DSN="host=$DB_HOST port=$DB_PORT user=$DB_USER password=$DB_PASS dbname=$DB_NAME sslmode=disable"
-go test -tags=integration ./internal/app/handler -run TestAPIIntegration -v
-```
-
-Интеграционная проверка охватывает переход с модели ЛР2, повторный запуск миграции, создание с двумя файлами, фильтр, ленту, лайки, владельца, удаление, регистрацию, откат при ошибке БД/MinIO и конкурентное создание черновика. Подлинные скриншоты снимаются по результатам показа; ранее подготовленные материалы ЛР1 в `screenshots/` сохранены.
+GitHub Actions проверяет линтер, сборку образа и запуск приложения с зависимостями.

@@ -4,11 +4,13 @@ import (
 	"net/http"
 	"strings"
 
-	"attributor/internal/app/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+
+	"attributor/internal/app/dto"
 )
 
+// RegisterUser проверяет данные регистрации и возвращает созданного пользователя.
 func (h *Handler) RegisterUser(ctx *gin.Context) {
 	var data dto.RegisterUser
 	if decodeJSON(ctx, &data, false) != nil || binding.Validator.ValidateStruct(data) != nil || strings.TrimSpace(data.Login) == "" || len([]byte(data.Password)) > 72 {
@@ -23,7 +25,7 @@ func (h *Handler) RegisterUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, dto.User{ID: user.ID, Login: user.Login})
 }
 
-// Lab 3 stubs: no sessions, cookies, tokens or current-user changes.
+// Login проверяет запрос входа в демонстрационном режиме.
 func (h *Handler) Login(ctx *gin.Context) {
 	var data struct {
 		Login    string `json:"login"`
@@ -36,6 +38,7 @@ func (h *Handler) Login(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// Logout обрабатывает демонстрационный запрос выхода.
 func (h *Handler) Logout(ctx *gin.Context) {
 	if decodeJSON(ctx, &struct{}{}, true) != nil {
 		ctx.Status(http.StatusBadRequest)

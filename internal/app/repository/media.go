@@ -10,22 +10,25 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Upload описывает загружаемый медиафайл и его имя в хранилище.
 type Upload struct {
 	Header      *multipart.FileHeader
 	Name        string
 	ContentType string
 }
 
+// upload записывает медиафайл в MinIO.
 func (r *Repository) upload(ctx context.Context, upload Upload) error {
 	file, err := upload.Header.Open()
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 	_, err = r.minio.PutObject(ctx, r.bucket, upload.Name, file, upload.Header.Size, minio.PutObjectOptions{ContentType: upload.ContentType})
 	return err
 }
 
+// removeUploads удаляет объекты MinIO после сбоя создания черновика.
 func (r *Repository) removeUploads(names []string) {
 	// Cleanup must still run if the request context was cancelled.
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -37,6 +40,7 @@ func (r *Repository) removeUploads(names []string) {
 	}
 }
 
+// MediaURL возвращает адрес медиафайла, формируя подписанную ссылку для объекта MinIO.
 func (r *Repository) MediaURL(ctx context.Context, name *string) (string, error) {
 	if name == nil || *name == "" {
 		return "", nil

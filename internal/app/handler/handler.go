@@ -1,3 +1,4 @@
+// Package handler обрабатывает HTTP-запросы приложения.
 package handler
 
 import (
@@ -9,21 +10,24 @@ import (
 	"strconv"
 	"strings"
 
-	"attributor/internal/app/currentuser"
-	"attributor/internal/app/ds"
-	"attributor/internal/app/dto"
-	"attributor/internal/app/repository"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+
+	"attributor/internal/app/currentuser"
+	"attributor/internal/app/ds"
+	"attributor/internal/app/dto"
+	"attributor/internal/app/repository"
 )
 
+// Handler содержит зависимости обработчиков HTTP-запросов.
 type Handler struct{ Repository *repository.Repository }
 
+// NewHandler создаёт обработчики HTTP-запросов.
 func NewHandler(r *repository.Repository) *Handler { return &Handler{Repository: r} }
 
+// RegisterHandler регистрирует маршруты приложения.
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.NoRoute(func(ctx *gin.Context) { ctx.AbortWithStatus(http.StatusNotFound) })
 	api := router.Group("/api")
@@ -39,6 +43,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	api.POST("/users/logout", h.Logout)
 }
 
+// respondError преобразует ошибку приложения в статус HTTP.
 func respondError(ctx *gin.Context, err error) {
 	switch {
 	case errors.Is(err, gorm.ErrRecordNotFound):
@@ -53,6 +58,7 @@ func respondError(ctx *gin.Context, err error) {
 	}
 }
 
+// parseID преобразует строку в положительный идентификатор.
 func parseID(value string) (uint, error) {
 	id, err := strconv.ParseUint(value, 10, 31)
 	if err != nil || id == 0 {
@@ -61,7 +67,7 @@ func parseID(value string) (uint, error) {
 	return uint(id), nil
 }
 
-// Strict request DTOs reject system fields as well as any other unknown fields.
+// decodeJSON читает одно значение JSON и отклоняет неизвестные поля.
 func decodeJSON(ctx *gin.Context, value interface{}, allowEmpty bool) error {
 	contentType := ctx.GetHeader("Content-Type")
 	if contentType != "" {
@@ -86,6 +92,7 @@ func decodeJSON(ctx *gin.Context, value interface{}, allowEmpty bool) error {
 	return nil
 }
 
+// serializeCorpus собирает ответ о корпусе со ссылками на медиафайлы и статистикой лайков.
 func (h *Handler) serializeCorpus(ctx *gin.Context, corpus *ds.Corpus) (dto.Corpus, error) {
 	current := currentuser.Get()
 	image, err := h.Repository.MediaURL(ctx.Request.Context(), corpus.ImageURL)
@@ -112,6 +119,7 @@ func (h *Handler) serializeCorpus(ctx *gin.Context, corpus *ds.Corpus) (dto.Corp
 	}, nil
 }
 
+// GetCorpora возвращает каталог опубликованных корпусов.
 func (h *Handler) GetCorpora(ctx *gin.Context) {
 	page, err := strconv.Atoi(ctx.DefaultQuery("page", "1"))
 	if err != nil || page < 1 || page > int(^uint(0)>>1)/6 {
@@ -147,6 +155,7 @@ func (h *Handler) GetCorpora(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// GetFeed показывает корпус из ленты.
 func (h *Handler) GetFeed(ctx *gin.Context) {
 	var id *uint
 	if ctx.Request.URL.Query().Has("id") {
@@ -185,6 +194,7 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
+// GetDraft обрабатывает запрос черновика текущего пользователя.
 func (h *Handler) GetDraft(ctx *gin.Context) {
 	corpus, err := h.Repository.GetDraft(ctx.Request.Context(), currentuser.Get())
 	if err != nil {
@@ -199,10 +209,11 @@ func (h *Handler) GetDraft(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
+// CreateDraft обрабатывает запрос на создание черновика.
 func (h *Handler) CreateDraft(ctx *gin.Context) {
 	data, files, err := parseCreate(ctx)
 	if ctx.Request.MultipartForm != nil {
-		defer ctx.Request.MultipartForm.RemoveAll()
+		defer func() { _ = ctx.Request.MultipartForm.RemoveAll() }()
 	}
 	if err != nil {
 		ctx.Status(http.StatusBadRequest)
@@ -229,6 +240,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, result)
 }
 
+// Publish обрабатывает запрос на публикацию черновика.
 func (h *Handler) Publish(ctx *gin.Context) {
 	id, err := parseID(ctx.Param("id"))
 	var data dto.PublishCorpus
@@ -243,6 +255,7 @@ func (h *Handler) Publish(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// DeleteCorpus обрабатывает запрос на удаление корпуса.
 func (h *Handler) DeleteCorpus(ctx *gin.Context) {
 	id, err := parseID(ctx.Param("id"))
 	if err != nil || decodeJSON(ctx, &struct{}{}, true) != nil {
@@ -256,6 +269,7 @@ func (h *Handler) DeleteCorpus(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// SetLike устанавливает или снимает лайк корпуса.
 func (h *Handler) SetLike(ctx *gin.Context) {
 	id, err := parseID(ctx.Param("id"))
 	var data dto.LikeRequest

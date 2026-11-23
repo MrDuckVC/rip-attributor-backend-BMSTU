@@ -3,12 +3,12 @@ package migration
 import (
 	"fmt"
 
-	"attributor/internal/app/ds"
 	"gorm.io/gorm"
+
+	"attributor/internal/app/ds"
 )
 
-// migrateCorpusName also accepts a database already migrated by lab 2.
-// The caller runs it in the same transaction as the remaining lab 3 migration.
+// migrateCorpusName переносит название корпуса из полей автора и источника. Поддерживает базу, уже обновлённую миграцией ЛР2.
 func migrateCorpusName(tx *gorm.DB) error {
 	if !tx.Migrator().HasTable(&ds.Corpus{}) {
 		return nil

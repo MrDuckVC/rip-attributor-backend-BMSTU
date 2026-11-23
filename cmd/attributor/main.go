@@ -1,3 +1,4 @@
+// Команда attributor запускает HTTP-сервис атрибуции.
 package main
 
 import (
@@ -14,6 +15,7 @@ import (
 	"attributor/internal/app/repository"
 )
 
+// main запускает сервер атрибуции.
 func main() {
 	router := gin.Default()
 

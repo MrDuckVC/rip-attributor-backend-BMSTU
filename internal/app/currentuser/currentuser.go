@@ -1,9 +1,10 @@
+// Package currentuser задаёт пользователя для демонстрационных запросов.
 package currentuser
 
-// ID is fixed for lab 3. Authentication will be implemented in lab 4.
+// ID задаёт постоянный идентификатор пользователя в ЛР3.
 const ID uint = 1
 
-// Get returns the same current user for every request (singleton).
+// Get возвращает один и тот же идентификатор пользователя для всех запросов.
 func Get() uint {
 	return ID
 }

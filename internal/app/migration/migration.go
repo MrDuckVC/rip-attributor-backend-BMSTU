@@ -1,13 +1,15 @@
+// Package migration обновляет схему и существующие записи базы данных.
 package migration
 
 import (
-	"attributor/internal/app/currentuser"
-	"attributor/internal/app/ds"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+
+	"attributor/internal/app/currentuser"
+	"attributor/internal/app/ds"
 )
 
-// Apply migrates lab 2 records without recreating tables or deleting data rows.
+// Apply обновляет схему и переносит существующие записи в одной транзакции.
 func Apply(db *gorm.DB) error {
 	return db.Transaction(func(tx *gorm.DB) error {
 		if err := migrateCorpusName(tx); err != nil {

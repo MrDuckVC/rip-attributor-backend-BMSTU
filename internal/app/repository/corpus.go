@@ -1,15 +1,17 @@
+// Package repository предоставляет доступ к корпусам и связанным данным.
 package repository
 
 import (
 	"context"
 	"time"
 
-	"attributor/internal/app/ds"
-
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+
+	"attributor/internal/app/ds"
 )
 
+// GetCorpora выбирает корпусы для каталога.
 func (r *Repository) GetCorpora(ctx context.Context, minWords *int, page int) ([]ds.Corpus, int64, error) {
 	corpora := []ds.Corpus{}
 	query := r.db.WithContext(ctx).Model(&ds.Corpus{}).Where("status = ?", ds.StatusPublished)
@@ -24,6 +26,7 @@ func (r *Repository) GetCorpora(ctx context.Context, minWords *int, page int) ([
 	return corpora, count, err
 }
 
+// GetFeed выбирает опубликованный корпус для ленты.
 func (r *Repository) GetFeed(ctx context.Context, id *uint, next bool) (*ds.Corpus, error) {
 	corpus := &ds.Corpus{}
 	query := r.db.WithContext(ctx).Where("status = ?", ds.StatusPublished)
@@ -43,12 +46,14 @@ func (r *Repository) GetFeed(ctx context.Context, id *uint, next bool) (*ds.Corp
 		Order("id ASC").First(corpus).Error
 }
 
+// GetDraft ищет черновик пользователя.
 func (r *Repository) GetDraft(ctx context.Context, userID uint) (*ds.Corpus, error) {
 	corpus := &ds.Corpus{}
 	err := r.db.WithContext(ctx).Where("creator_id = ? AND status = ?", userID, ds.StatusDraft).First(corpus).Error
 	return corpus, err
 }
 
+// CreateDraft сохраняет новый черновик.
 func (r *Repository) CreateDraft(ctx context.Context, corpus *ds.Corpus, files []Upload) error {
 	uploaded := []string{}
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -83,6 +88,7 @@ func (r *Repository) CreateDraft(ctx context.Context, corpus *ds.Corpus, files [
 	return normalizeError(err)
 }
 
+// ownedCorpus блокирует строку неудалённого корпуса и проверяет его владельца.
 func (r *Repository) ownedCorpus(tx *gorm.DB, id, userID uint) (*ds.Corpus, error) {
 	corpus := &ds.Corpus{}
 	if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("id = ? AND status <> ?", id, ds.StatusDeleted).First(corpus).Error; err != nil {
@@ -94,6 +100,7 @@ func (r *Repository) ownedCorpus(tx *gorm.DB, id, userID uint) (*ds.Corpus, erro
 	return corpus, nil
 }
 
+// PublishCorpus сохраняет параметры публикации и переводит корпус в опубликованное состояние.
 func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint, description string, wordCount int, pronPercent float64) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		corpus, err := r.ownedCorpus(tx, id, userID)
@@ -107,6 +114,7 @@ func (r *Repository) PublishCorpus(ctx context.Context, id, userID uint, descrip
 	})
 }
 
+// DeleteCorpus переводит корпус в удалённое состояние.
 func (r *Repository) DeleteCorpus(ctx context.Context, id, userID uint) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		corpus, err := r.ownedCorpus(tx, id, userID)
@@ -120,6 +128,7 @@ func (r *Repository) DeleteCorpus(ctx context.Context, id, userID uint) error {
 	})
 }
 
+// LikeStats возвращает число лайков и признак лайка пользователя.
 func (r *Repository) LikeStats(ctx context.Context, corpusID, userID uint) (int64, int, error) {
 	var total, mine int64
 	query := r.db.WithContext(ctx).Model(&ds.Like{}).Where("corpus_id = ?", corpusID)
@@ -135,6 +144,7 @@ func (r *Repository) LikeStats(ctx context.Context, corpusID, userID uint) (int6
 	return total, 0, nil
 }
 
+// SetLike устанавливает или снимает лайк корпуса.
 func (r *Repository) SetLike(ctx context.Context, corpusID, userID uint, value int) (int64, error) {
 	var count int64
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {

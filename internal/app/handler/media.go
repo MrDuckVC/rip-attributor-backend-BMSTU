@@ -10,13 +10,14 @@ import (
 	"net/http"
 	"strings"
 
-	"attributor/internal/app/dto"
-	"attributor/internal/app/repository"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+
+	"attributor/internal/app/dto"
+	"attributor/internal/app/repository"
 )
 
+// parseCreate читает имя корпуса и файлы из формы создания черновика.
 func parseCreate(ctx *gin.Context) (dto.CreateCorpus, []repository.Upload, error) {
 	var data dto.CreateCorpus
 	mediaType, _, err := mime.ParseMediaType(ctx.GetHeader("Content-Type"))
@@ -56,13 +57,14 @@ func parseCreate(ctx *gin.Context) (dto.CreateCorpus, []repository.Upload, error
 	return data, files, nil
 }
 
+// validateUpload определяет тип медиафайла, проверяет его и назначает имя объекта.
 func validateUpload(header *multipart.FileHeader, field string) (repository.Upload, error) {
 	upload := repository.Upload{Header: header}
 	file, err := header.Open()
 	if err != nil {
 		return upload, err
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 	buffer := make([]byte, 512)
 	n, err := file.Read(buffer)
 	if err != nil && !errors.Is(err, io.EOF) {

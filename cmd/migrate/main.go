@@ -1,15 +1,18 @@
+// Команда migrate выполняет миграции базы данных.
 package main
 
 import (
 	"log"
 
-	"attributor/internal/app/dsn"
-	"attributor/internal/app/migration"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"attributor/internal/app/dsn"
+	"attributor/internal/app/migration"
 )
 
+// main подключается к PostgreSQL и применяет миграции.
 func main() {
 	_ = godotenv.Load()
 	db, err := gorm.Open(postgres.Open(dsn.FromEnv()), &gorm.Config{TranslateError: true})

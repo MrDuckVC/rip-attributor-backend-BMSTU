@@ -1,13 +1,19 @@
+// Package ds описывает модели хранения данных.
 package ds
 
 import "time"
 
+// Статусы корпуса.
 const (
-	StatusDraft     = "черновик"
+	// StatusDraft обозначает черновик корпуса.
+	StatusDraft = "черновик"
+	// StatusPublished обозначает опубликованный корпус.
 	StatusPublished = "опубликован"
-	StatusDeleted   = "удален"
+	// StatusDeleted обозначает удалённый корпус.
+	StatusDeleted = "удален"
 )
 
+// Corpus описывает корпус текстов автора.
 type Corpus struct {
 	ID          uint       `gorm:"primaryKey;type:int"`
 	CreatorID   uint       `gorm:"type:int;not null"`
@@ -24,6 +30,7 @@ type Corpus struct {
 	Likes []Like `gorm:"foreignKey:CorpusID"`
 }
 
+// TableName задаёт имя таблицы корпусов в PostgreSQL.
 func (Corpus) TableName() string {
 	return "corpora"
 }
