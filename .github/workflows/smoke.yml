@@ -36,8 +36,19 @@ jobs:
           else
             route=/api/corpora
           fi
-          curl --fail --silent --show-error --retry 20 --retry-all-errors \
-            --retry-delay 1 --max-time 5 "http://127.0.0.1:8080$route"
+          response="$(mktemp)"
+          code="$(curl --fail --silent --show-error --retry 20 --retry-all-errors \
+            --retry-delay 1 --max-time 5 --output "$response" \
+            --write-out '%{http_code}' "http://127.0.0.1:8080$route")"
+          test "$code" = 200
+          if [[ "$route" == /api/corpora ]]; then
+            jq --exit-status '.page == 1 and (.items | type == "array")' "$response"
+          else
+            grep -qi '<html' "$response"
+            curl --fail --silent --show-error --max-time 5 \
+              --output "$response" http://127.0.0.1:8080/static/style.css
+            test -s "$response"
+          fi
       - name: Print service logs
         if: failure()
         run: |
