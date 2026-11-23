@@ -1,3 +1,4 @@
+// Package handler обрабатывает HTTP-запросы приложения.
 package handler
 
 import (
@@ -16,18 +17,22 @@ import (
 	"attributor/internal/app/repository"
 )
 
+// Handler содержит зависимости обработчиков HTTP-запросов.
 type Handler struct {
 	Repository *repository.Repository
 }
 
+// NewHandler создаёт обработчики HTTP-запросов.
 func NewHandler(r *repository.Repository) *Handler {
 	return &Handler{
 		Repository: r,
 	}
 }
 
+// currentUserID задаёт идентификатор демонстрационного пользователя.
 const currentUserID uint = 1
 
+// roundFloat округляет процент до двух знаков после запятой.
 func roundFloat(val *float64) float64 {
 	if val == nil {
 		return 0.0
@@ -35,6 +40,7 @@ func roundFloat(val *float64) float64 {
 	return math.Round(*val*100) / 100
 }
 
+// RegisterHandler регистрирует маршруты приложения.
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/corpora")
@@ -52,11 +58,13 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	}
 }
 
+// RegisterStatic подключает HTML-шаблоны и статические файлы.
 func (h *Handler) RegisterStatic(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./resources")
 }
 
+// GetCorpora возвращает каталог опубликованных корпусов.
 func (h *Handler) GetCorpora(ctx *gin.Context) {
 	var corpora []ds.Corpus
 	var err error
@@ -126,6 +134,7 @@ func (h *Handler) GetCorpora(ctx *gin.Context) {
 	})
 }
 
+// GetCorpus показывает страницу корпуса или следующий корпус в ленте.
 func (h *Handler) GetCorpus(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -186,6 +195,7 @@ func (h *Handler) GetCorpus(ctx *gin.Context) {
 	})
 }
 
+// DeleteCorpus обрабатывает запрос на удаление корпуса.
 func (h *Handler) DeleteCorpus(ctx *gin.Context) {
 	strId := ctx.PostForm("corpus_id")
 	id, err := strconv.Atoi(strId)
@@ -203,6 +213,7 @@ func (h *Handler) DeleteCorpus(ctx *gin.Context) {
 	ctx.Redirect(http.StatusFound, "/corpora")
 }
 
+// CreateDraft обрабатывает запрос на создание черновика.
 func (h *Handler) CreateDraft(ctx *gin.Context) {
 	name := strings.TrimSpace(ctx.PostForm("name"))
 	if name == "" || utf8.RuneCountInString(name) > 150 {
@@ -224,6 +235,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 	ctx.Redirect(http.StatusFound, "/corpora/new")
 }
 
+// Publish обрабатывает запрос на публикацию черновика.
 func (h *Handler) Publish(ctx *gin.Context) {
 	strId := ctx.PostForm("draft_id")
 	draftId, _ := strconv.Atoi(strId)
@@ -236,10 +248,11 @@ func (h *Handler) Publish(ctx *gin.Context) {
 		return
 	}
 
-	h.Repository.PublishCorpus(draftId, wordCount, pron)
+	_ = h.Repository.PublishCorpus(draftId, wordCount, pron)
 	ctx.Redirect(http.StatusFound, "/corpora")
 }
 
+// GetDraft обрабатывает запрос черновика текущего пользователя.
 func (h *Handler) GetDraft(ctx *gin.Context) {
 	draft, err := h.Repository.GetDraft(currentUserID)
 	isDraftExists := err == nil

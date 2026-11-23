@@ -1,3 +1,4 @@
+// Package config загружает настройки приложения.
 package config
 
 import (
@@ -8,11 +9,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config хранит параметры сервиса.
 type Config struct {
 	ServiceHost string
 	ServicePort int
 }
 
+// NewConfig загружает настройки сервиса из файла конфигурации и окружения.
 func NewConfig() (*Config, error) {
 	configName := "config"
 	_ = godotenv.Load()

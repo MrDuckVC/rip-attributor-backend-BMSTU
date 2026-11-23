@@ -1,7 +1,9 @@
+// Package ds описывает модели хранения данных.
 package ds
 
 import "time"
 
+// Corpus описывает корпус текстов автора.
 type Corpus struct {
 	ID          uint       `gorm:"primaryKey;type:int"`
 	CreatorID   uint       `gorm:"type:int;not null"`
@@ -22,6 +24,7 @@ type Corpus struct {
 	Likes   []Like `gorm:"foreignKey:CorpusID"`
 }
 
+// TableName задаёт имя таблицы корпусов в PostgreSQL.
 func (Corpus) TableName() string {
 	return "corpora"
 }

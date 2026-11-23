@@ -1,3 +1,4 @@
+// Команда migrate выполняет миграции базы данных.
 package main
 
 import (
@@ -12,6 +13,7 @@ import (
 	"attributor/internal/app/dsn"
 )
 
+// main подключается к PostgreSQL и применяет миграции.
 func main() {
 	_ = godotenv.Load()
 
@@ -28,7 +30,7 @@ func main() {
 	log.Println("Migration completed successfully!")
 }
 
-// migrate preserves the title previously displayed as "Author, Source".
+// migrate переносит название из полей автора и источника и обновляет схему в одной транзакции.
 func migrate(db *gorm.DB) error {
 	return db.Transaction(func(tx *gorm.DB) error {
 		if tx.Migrator().HasTable(&ds.Corpus{}) {

@@ -1,0 +1,52 @@
+name: Lab startup
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Build backend image
+        run: make docker-build
+      - name: Start dependencies
+        run: |
+          cp .env.example .env
+          docker compose config --quiet
+          make docker-up
+          curl --fail --silent --show-error --retry 20 --retry-all-errors \
+            --retry-delay 1 --max-time 5 http://127.0.0.1:9000/minio/health/ready
+      - name: Apply database migrations
+        run: |
+          if [[ -d cmd/migrate ]]; then
+            docker run --rm --network host --env-file .env attributor:local /app/bin/migrate
+          fi
+      - name: Start backend and check HTTP response
+        run: |
+          docker run --detach --name attributor-smoke --network host \
+            --env-file .env attributor:local
+          if [[ -f templates/grid.html ]]; then
+            route=/grid
+          elif [[ -d templates ]]; then
+            route=/corpora
+          else
+            route=/api/corpora
+          fi
+          curl --fail --silent --show-error --retry 20 --retry-all-errors \
+            --retry-delay 1 --max-time 5 "http://127.0.0.1:8080$route"
+      - name: Print service logs
+        if: failure()
+        run: |
+          docker logs attributor-smoke || true
+          docker compose logs || true
+      - name: Stop containers
+        if: always()
+        run: |
+          docker rm -f attributor-smoke || true
+          if [[ -f .env ]]; then
+            docker compose down --volumes
+          fi
