@@ -17,6 +17,8 @@ services:
 
   minio:
     image: alpine/minio:latest-release
+    # Том /data может принадлежать root после создания или запуска старого образа.
+    user: "0:0"
     ports:
       - "9000:9000"
       - "9001:9001"
