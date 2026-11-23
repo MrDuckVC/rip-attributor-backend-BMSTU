@@ -1,3 +1,4 @@
+// Package dsn собирает строку подключения к PostgreSQL.
 package dsn
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// FromEnv формирует строку подключения из переменных окружения.
 func FromEnv() string {
 	_ = godotenv.Load()
 	_ = godotenv.Load("../.env")

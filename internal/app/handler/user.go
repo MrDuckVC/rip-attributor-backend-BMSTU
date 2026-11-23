@@ -1,19 +1,20 @@
 package handler
 
 import (
-	"attributor/internal/app/auth"
 	"errors"
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"net/http"
 	"strings"
 
-	"attributor/internal/app/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+
+	"attributor/internal/app/auth"
+	"attributor/internal/app/dto"
 )
 
-// RegisterUser godoc
+// RegisterUser проверяет данные регистрации и возвращает созданного пользователя.
 // @ID registerAuthor
 // @Summary Зарегистрировать автора
 // @Tags Авторы
@@ -39,7 +40,7 @@ func (h *Handler) RegisterUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, dto.User{ID: user.ID, Login: user.Login})
 }
 
-// Login godoc
+// Login проверяет учётные данные и возвращает токен доступа.
 // @ID loginAuthor
 // @Summary Войти и получить JWT
 // @Tags Авторы
@@ -78,7 +79,7 @@ func (h *Handler) Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto.LoginResponse{AccessToken: token, TokenType: "Bearer", ExpiresIn: ttl})
 }
 
-// Logout godoc
+// Logout отзывает токен текущего запроса.
 // @ID logoutAuthor
 // @Summary Выйти и отозвать текущий JWT
 // @Tags Авторы

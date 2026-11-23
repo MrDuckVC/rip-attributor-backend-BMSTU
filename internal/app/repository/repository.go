@@ -13,17 +13,22 @@ import (
 	"gorm.io/gorm"
 )
 
+// Ошибки пакета.
 var (
-	ErrConflict  = errors.New("conflicting state")
+	// ErrConflict обозначает конфликт с текущим состоянием данных.
+	ErrConflict = errors.New("conflicting state")
+	// ErrForbidden обозначает попытку изменить корпус другого пользователя.
 	ErrForbidden = errors.New("another user's corpus")
 )
 
+// Repository предоставляет доступ к данным приложения.
 type Repository struct {
 	db     *gorm.DB
 	minio  *minio.Client
 	bucket string
 }
 
+// New открывает подключение к хранилищам приложения.
 func New(dsn string) (*Repository, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
 	if err != nil {
@@ -54,6 +59,7 @@ func New(dsn string) (*Repository, error) {
 	return &Repository{db: db, minio: client, bucket: bucket}, nil
 }
 
+// EnsureBucket проверяет наличие бакета MinIO и создаёт его при необходимости.
 func (r *Repository) EnsureBucket(ctx context.Context) error {
 	exists, err := r.minio.BucketExists(ctx, r.bucket)
 	if err != nil {
@@ -72,6 +78,7 @@ func (r *Repository) EnsureBucket(ctx context.Context) error {
 	return nil
 }
 
+// normalizeError преобразует ошибку конфликта PostgreSQL в ошибку репозитория.
 func normalizeError(err error) error {
 	if errors.Is(err, gorm.ErrDuplicatedKey) {
 		return ErrConflict
@@ -79,10 +86,12 @@ func normalizeError(err error) error {
 	return err
 }
 
+// isLegacyURL определяет, хранится ли медиафайл по готовой HTTP-ссылке.
 func isLegacyURL(value string) bool {
 	return strings.HasPrefix(value, "http://") || strings.HasPrefix(value, "https://")
 }
 
+// Close закрывает подключение к PostgreSQL.
 func (r *Repository) Close() error {
 	db, err := r.db.DB()
 	if err != nil {

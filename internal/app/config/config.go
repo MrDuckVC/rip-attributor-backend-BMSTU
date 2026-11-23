@@ -1,3 +1,4 @@
+// Package config загружает настройки приложения.
 package config
 
 import (
@@ -10,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config хранит параметры сервиса.
 type Config struct {
 	ServiceHost   string
 	ServicePort   int
@@ -20,6 +22,7 @@ type Config struct {
 	RedisPassword string
 }
 
+// NewConfig загружает настройки сервиса из файла конфигурации и окружения.
 func NewConfig() (*Config, error) {
 	configName := "config"
 	_ = godotenv.Load()
@@ -61,6 +64,7 @@ func NewConfig() (*Config, error) {
 	return cfg, nil
 }
 
+// envDefault возвращает непустое значение переменной окружения или заданное значение по умолчанию.
 func envDefault(key, fallback string) string {
 	if value := os.Getenv(key); value != "" {
 		return value

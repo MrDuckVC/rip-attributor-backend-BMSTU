@@ -11,14 +11,14 @@
 ```bash
 cp .env.example .env  # только если .env ещё не создан
 # Укажите свои параметры в .env.
-docker compose up -d
-go run ./cmd/migrate
-go run ./cmd/attributor
+make docker-up
+make migrate
+make run
 ```
 
 API: `http://localhost:8080/api`. Консоль MinIO: `http://localhost:9001`. SQL-клиент Adminer: `http://localhost:8082` (сервер `postgres`). Для ЛР4 браузер используется для Swagger, остальные запросы выполняются в Postman/Insomnia.
 
-Настройки `.env`: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_NAME`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`. Дополнительные настройки MinIO: `MINIO_ENDPOINT` (по умолчанию `localhost:9000`), `MINIO_BUCKET_NAME` (`corpora`), `MINIO_USE_SSL` (`false`). Параметры сервера остаются в `config/config.toml`; переменная `SERVICE_PORT` позволяет переопределить порт, например `SERVICE_PORT=8083 go run ./cmd/attributor`.
+Настройки `.env`: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_NAME`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`. Дополнительные настройки MinIO: `MINIO_ENDPOINT` (по умолчанию `localhost:9000`), `MINIO_BUCKET_NAME` (`corpora`), `MINIO_USE_SSL` (`false`). Параметры сервера остаются в `config/config.toml`; переменная `SERVICE_PORT` позволяет переопределить порт, например `SERVICE_PORT=8083 make run`.
 
 Миграция обновляет существующие таблицы, переносит старый признак `is_delete=true` в статус «удален», удаляет старые столбцы `conj_percent`, `is_delete` и добавляет ограничения уникальности. Таблицы не пересоздаются. Если в старых данных есть несколько черновиков одного пользователя или повторные лайки, миграция завершается ошибкой: данные автоматически не удаляются. Миграцию можно запускать повторно. Названия из старых столбцов `author` и `source` объединяются в `name` в формате «Автор, Источник». Если результат длиннее 150 символов, миграция останавливается с ID записей без обрезания данных. БД, уже обновлённая в ветке ЛР2, поддерживается без повторного объединения.
 
@@ -26,7 +26,7 @@ API: `http://localhost:8080/api`. Консоль MinIO: `http://localhost:9001`.
 
 Перед запуском добавьте в `.env` параметры из `.env.example`: `JWT_SECRET` (приватная случайная строка от 32 байт), `JWT_ISSUER=attributor`, `JWT_TTL=1h`, `REDIS_ADDR=localhost:6379`, `REDIS_PASSWORD=attributor-redis-local`. Секрет можно сгенерировать через `openssl rand -hex 32`. Не публикуйте `.env`.
 
-Redis 8 разворачивается вместе с PostgreSQL и MinIO: `docker compose up -d`. Он использует пароль, AOF и отдельный volume. При старте API проверяет соединение с Redis; при остановке закрывает подключения. Старые пользовательские данные сохраняются, старые пароли автоматически не преобразуются: если они не bcrypt, зарегистрируйте нового автора.
+Redis 8 разворачивается вместе с PostgreSQL и MinIO: `make docker-up`. Он использует пароль, AOF и отдельный volume. При старте API проверяет соединение с Redis; при остановке закрывает подключения. Старые пользовательские данные сохраняются, старые пароли автоматически не преобразуются: если они не bcrypt, зарегистрируйте нового автора.
 
 Вход `POST /api/users/login` принимает обязательные `login` и `password` и возвращает:
 
@@ -191,8 +191,6 @@ ID, статус, создатель, даты и имена объектов в
 - [Документация и исходники Word](docs/lab4/README.md).
 - [Ответы на контрольные вопросы](docs/lab4/theory.md).
 
-`go test ./...`, `go vet ./...` и `go build ./...` запускают обычные тесты, vet и сборку. Интеграционная проверка: `go test -tags=integration ./internal/app/handler -run TestAPIIntegration -v` после загрузки `.env` и `LAB3_TEST_DSN` в окружение; она создаёт временную схему PostgreSQL и отдельный бакет MinIO и очищает их. `LAB4_TEST_REDIS_ADDR` задаёт настоящий Redis; без него используется изолированный miniredis. Ключи реального Redis имеют TTL и удаляются автоматически.
-
 Текущая ветка: `lab4-implement-auth`. Репозиторий: https://github.com/MrDuckVC/rip-attributor-backend-BMSTU. Ссылки на будущие фронтенд и Pages будут добавлены после их создания.
 
 ## Исторические материалы ЛР3
@@ -203,22 +201,12 @@ ID, статус, создатель, даты и имена объектов в
 - [SELECT для трёх таблиц](docs/lab3/select.sql).
 - [Диаграмма классов для draw.io](docs/lab3/classes.drawio).
 
-```bash
-go test ./...
-go vet ./...
-go build ./...
-```
+## Команды Make
 
-Интеграционная проверка использует временную схему PostgreSQL и отдельный бакет MinIO; по завершении удаляет только эти тестовые ресурсы:
+- `make lint` проверяет код, `make lint-fix` применяет доступные исправления.
+- `make docker-up` запускает сервисы из Compose, `make docker-down` останавливает их.
+- `make docker-build` собирает образ бэкенда `attributor:local`.
+- `make migrate` применяет миграции базы данных, если они есть в лабораторной.
+- `make run` запускает бэкенд локально.
 
-```bash
-# Сначала загрузите настройки MinIO из .env в окружение.
-set -a
-. ./.env
-set +a
-export MINIO_ENDPOINT="${MINIO_ENDPOINT:-localhost:9000}"
-export LAB3_TEST_DSN="host=$DB_HOST port=$DB_PORT user=$DB_USER password=$DB_PASS dbname=$DB_NAME sslmode=disable"
-go test -tags=integration ./internal/app/handler -run TestAPIIntegration -v
-```
-
-Интеграционная проверка охватывает переход с модели ЛР2, повторный запуск миграции, создание с двумя файлами, фильтр, ленту, лайки, владельца, удаление, регистрацию, откат при ошибке БД/MinIO и конкурентное создание черновика. Подлинные скриншоты снимаются по результатам показа; ранее подготовленные материалы ЛР1 в `screenshots/` сохранены.
+GitHub Actions проверяет линтер, сборку образа и запуск приложения с зависимостями.

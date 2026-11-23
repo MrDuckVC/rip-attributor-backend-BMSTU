@@ -1,3 +1,4 @@
+// Команда attributor запускает HTTP-сервис атрибуции.
 package main
 
 import (
@@ -9,16 +10,18 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+
 	"attributor/internal/app/auth"
 	"attributor/internal/app/config"
 	"attributor/internal/app/dsn"
 	"attributor/internal/app/handler"
 	"attributor/internal/app/redis"
 	"attributor/internal/app/repository"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
+// main запускает сервер атрибуции.
 // @title API корпусов авторов
 // @version 4.0
 // @description Корпусы текстов потенциальных авторов: каталог, лента, публикация и лайки. Процент предлогов и количество слов задаются при публикации.
@@ -34,6 +37,7 @@ func main() {
 	}
 }
 
+// run инициализирует зависимости и управляет запуском и остановкой HTTP-сервера.
 func run() error {
 	conf, err := config.NewConfig()
 	if err != nil {
@@ -43,14 +47,14 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("PostgreSQL: %w", err)
 	}
-	defer rep.Close()
+	defer func() { _ = rep.Close() }()
 	startup, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	blacklist, err := redis.New(startup, conf.RedisAddress, conf.RedisPassword)
 	if err != nil {
-		return fmt.Errorf("Redis: %w", err)
+		return fmt.Errorf("redis: %w", err)
 	}
-	defer blacklist.Close()
+	defer func() { _ = blacklist.Close() }()
 	authentication, err := auth.New(conf.JWTSecret, conf.JWTIssuer, conf.JWTTTL, blacklist)
 	if err != nil {
 		return err

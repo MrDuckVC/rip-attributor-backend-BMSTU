@@ -1,3 +1,4 @@
+// Package auth выпускает, проверяет и отзывает токены доступа.
 package auth
 
 import (
@@ -11,16 +12,21 @@ import (
 	"github.com/google/uuid"
 )
 
+// Ошибки пакета.
 var (
+	// ErrUnauthorized обозначает недействительные учётные данные или токен.
 	ErrUnauthorized = errors.New("invalid credentials or token")
-	ErrUnavailable  = errors.New("blacklist unavailable")
+	// ErrUnavailable обозначает недоступность хранилища отозванных токенов.
+	ErrUnavailable = errors.New("blacklist unavailable")
 )
 
+// Blacklist описывает операции с отозванными токенами.
 type Blacklist interface {
 	Contains(context.Context, string) (bool, error)
 	Revoke(context.Context, string, time.Time) error
 }
 
+// Service управляет выпуском, проверкой и отзывом JWT.
 type Service struct {
 	secret    []byte
 	issuer    string
@@ -28,6 +34,7 @@ type Service struct {
 	blacklist Blacklist
 }
 
+// New настраивает сервис JWT и хранилище отозванных токенов.
 func New(secret, issuer string, ttl time.Duration, blacklist Blacklist) (*Service, error) {
 	if len(secret) < 32 || issuer == "" || ttl < time.Second || blacklist == nil {
 		return nil, errors.New("JWT needs a secret of at least 32 bytes, issuer, positive TTL and blacklist")
@@ -35,6 +42,7 @@ func New(secret, issuer string, ttl time.Duration, blacklist Blacklist) (*Servic
 	return &Service{[]byte(secret), issuer, ttl, blacklist}, nil
 }
 
+// Issue выпускает токен доступа и возвращает его срок жизни в секундах.
 func (s *Service) Issue(userID uint) (string, int, error) {
 	if userID == 0 {
 		return "", 0, ErrUnauthorized
@@ -48,6 +56,7 @@ func (s *Service) Issue(userID uint) (string, int, error) {
 	return token, int(s.ttl / time.Second), err
 }
 
+// Validate проверяет подпись, параметры и отзыв токена доступа.
 func (s *Service) Validate(ctx context.Context, raw string) (uint, *jwt.RegisteredClaims, error) {
 	claims := &jwt.RegisteredClaims{}
 	_, err := jwt.ParseWithClaims(raw, claims, func(_ *jwt.Token) (interface{}, error) { return s.secret, nil },
@@ -69,6 +78,7 @@ func (s *Service) Validate(ctx context.Context, raw string) (uint, *jwt.Register
 	return uint(id), claims, nil
 }
 
+// Logout отзывает токен доступа до окончания его срока действия.
 func (s *Service) Logout(ctx context.Context, raw string, expiresAt time.Time) error {
 	if err := s.blacklist.Revoke(ctx, raw, expiresAt); err != nil {
 		return fmt.Errorf("%w: %v", ErrUnavailable, err)

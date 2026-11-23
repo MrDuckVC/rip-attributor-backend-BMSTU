@@ -1,5 +1,6 @@
 package ds
 
+// User описывает учётную запись пользователя.
 type User struct {
 	ID          uint   `gorm:"primaryKey;type:int"`
 	Login       string `gorm:"type:varchar(25);unique;not null"`

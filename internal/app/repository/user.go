@@ -3,10 +3,12 @@ package repository
 import (
 	"context"
 
-	"attributor/internal/app/ds"
 	"golang.org/x/crypto/bcrypt"
+
+	"attributor/internal/app/ds"
 )
 
+// RegisterUser создаёт пользователя и сохраняет хеш пароля.
 func (r *Repository) RegisterUser(ctx context.Context, login, password string) (*ds.User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -19,6 +21,7 @@ func (r *Repository) RegisterUser(ctx context.Context, login, password string) (
 	return user, nil
 }
 
+// GetUserByLogin ищет пользователя по логину.
 func (r *Repository) GetUserByLogin(ctx context.Context, login string) (*ds.User, error) {
 	var user ds.User
 	err := r.db.WithContext(ctx).Where("login = ?", login).First(&user).Error

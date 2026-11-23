@@ -1,3 +1,4 @@
+// Package handler обрабатывает HTTP-запросы приложения.
 package handler
 
 import (
@@ -5,17 +6,20 @@ import (
 	"net/http"
 	"strings"
 
-	"attributor/internal/app/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+
+	"attributor/internal/app/auth"
 )
 
+// currentUser возвращает идентификатор пользователя из контекста запроса.
 func currentUser(ctx *gin.Context) uint {
 	id, _ := ctx.Get("user_id")
 	value, _ := id.(uint)
 	return value
 }
 
+// withAuth проверяет токен Bearer и записывает данные пользователя в контекст запроса.
 func (h *Handler) withAuth(required bool) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		parts := strings.Fields(ctx.GetHeader("Authorization"))
@@ -42,6 +46,7 @@ func (h *Handler) withAuth(required bool) gin.HandlerFunc {
 	}
 }
 
+// tokenClaims возвращает проверенные утверждения JWT из контекста запроса.
 func tokenClaims(ctx *gin.Context) *jwt.RegisteredClaims {
 	return ctx.MustGet("jwt_claims").(*jwt.RegisteredClaims)
 }

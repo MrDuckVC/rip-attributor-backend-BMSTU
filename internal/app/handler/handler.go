@@ -9,29 +9,32 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/sirupsen/logrus"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
+
 	_ "attributor/docs/swagger"
 	"attributor/internal/app/auth"
 	"attributor/internal/app/ds"
 	"attributor/internal/app/dto"
 	"attributor/internal/app/repository"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/sirupsen/logrus"
-	"gorm.io/gorm"
 )
 
+// Handler содержит зависимости обработчиков HTTP-запросов.
 type Handler struct {
 	Repository *repository.Repository
 	Auth       *auth.Service
 }
 
+// NewHandler создаёт обработчики HTTP-запросов.
 func NewHandler(r *repository.Repository, a *auth.Service) *Handler {
 	return &Handler{Repository: r, Auth: a}
 }
 
+// RegisterHandler регистрирует маршруты приложения.
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.NoRoute(func(ctx *gin.Context) { ctx.AbortWithStatus(http.StatusNotFound) })
 	api := router.Group("/api")
@@ -48,6 +51,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	api.POST("/users/logout", h.withAuth(true), h.Logout)
 }
 
+// respondError преобразует ошибку приложения в статус HTTP.
 func respondError(ctx *gin.Context, err error) {
 	switch {
 	case errors.Is(err, gorm.ErrRecordNotFound):
@@ -62,6 +66,7 @@ func respondError(ctx *gin.Context, err error) {
 	}
 }
 
+// parseID преобразует строку в положительный идентификатор.
 func parseID(value string) (uint, error) {
 	id, err := strconv.ParseUint(value, 10, 31)
 	if err != nil || id == 0 {
@@ -70,7 +75,7 @@ func parseID(value string) (uint, error) {
 	return uint(id), nil
 }
 
-// Strict request DTOs reject system fields as well as any other unknown fields.
+// decodeJSON читает одно значение JSON и отклоняет неизвестные поля.
 func decodeJSON(ctx *gin.Context, value interface{}, allowEmpty bool) error {
 	contentType := ctx.GetHeader("Content-Type")
 	if contentType != "" {
@@ -95,6 +100,7 @@ func decodeJSON(ctx *gin.Context, value interface{}, allowEmpty bool) error {
 	return nil
 }
 
+// serializeCorpus собирает ответ о корпусе со ссылками на медиафайлы и статистикой лайков.
 func (h *Handler) serializeCorpus(ctx *gin.Context, corpus *ds.Corpus) (dto.Corpus, error) {
 	current := currentUser(ctx)
 	image, err := h.Repository.MediaURL(ctx.Request.Context(), corpus.ImageURL)
@@ -121,7 +127,7 @@ func (h *Handler) serializeCorpus(ctx *gin.Context, corpus *ds.Corpus) (dto.Corp
 	}, nil
 }
 
-// GetCorpora godoc
+// GetCorpora возвращает каталог опубликованных корпусов.
 // @ID getCorpora
 // @Summary Каталог опубликованных корпусов
 // @Tags Корпусы
@@ -167,7 +173,7 @@ func (h *Handler) GetCorpora(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-// GetFeed godoc
+// GetFeed показывает корпус из ленты.
 // @ID getCorpusFeed
 // @Summary Лента корпусов
 // @Tags Корпусы
@@ -217,7 +223,7 @@ func (h *Handler) GetFeed(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
-// GetDraft godoc
+// GetDraft обрабатывает запрос черновика текущего пользователя.
 // @ID getCorpusDraft
 // @Summary Черновик текущего автора
 // @Tags Корпусы
@@ -244,7 +250,7 @@ func (h *Handler) GetDraft(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
-// CreateDraft godoc
+// CreateDraft обрабатывает запрос на создание черновика.
 // @ID createCorpus
 // @Summary Добавить корпус с изображением и видео
 // @Tags Корпусы
@@ -264,7 +270,7 @@ func (h *Handler) GetDraft(ctx *gin.Context) {
 func (h *Handler) CreateDraft(ctx *gin.Context) {
 	data, files, err := parseCreate(ctx)
 	if ctx.Request.MultipartForm != nil {
-		defer ctx.Request.MultipartForm.RemoveAll()
+		defer func() { _ = ctx.Request.MultipartForm.RemoveAll() }()
 	}
 	if err != nil {
 		ctx.Status(http.StatusBadRequest)
@@ -291,7 +297,7 @@ func (h *Handler) CreateDraft(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, result)
 }
 
-// Publish godoc
+// Publish обрабатывает запрос на публикацию черновика.
 // @ID publishCorpus
 // @Summary Опубликовать свой черновик корпуса
 // @Tags Корпусы
@@ -323,7 +329,7 @@ func (h *Handler) Publish(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
-// DeleteCorpus godoc
+// DeleteCorpus обрабатывает запрос на удаление корпуса.
 // @ID deleteCorpus
 // @Summary Логически удалить свой корпус
 // @Tags Корпусы
@@ -351,7 +357,7 @@ func (h *Handler) DeleteCorpus(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
-// SetLike godoc
+// SetLike устанавливает или снимает лайк корпуса.
 // @ID setCorpusLike
 // @Summary Установить или снять лайк корпуса
 // @Tags Корпусы

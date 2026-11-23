@@ -1,11 +1,12 @@
 package migration
 
 import (
-	"attributor/internal/app/ds"
 	"gorm.io/gorm"
+
+	"attributor/internal/app/ds"
 )
 
-// Lab 4 treats the old percentages as demonstration values, preserving every row.
+// migratePrepPercent переносит демонстрационный процент из pron_percent в prep_percent с сохранением строк.
 func migratePrepPercent(tx *gorm.DB) error {
 	if !tx.Migrator().HasTable(&ds.Corpus{}) || !tx.Migrator().HasColumn(&ds.Corpus{}, "pron_percent") {
 		return nil
